@@ -315,6 +315,13 @@ var TIERS={
    ------------------------------------------------------------ */
 
 var FALLBACK_EN={
+ tp_title:'Is anything being moved',tp_pickup:'Pick up from',tp_dropoff:'Take it to',
+ tp_example:'Gold Souk, entrance 3',tp_from:'From:',tp_to:'To:',tp_go:'directions',
+ tp_route:'the whole route',tp_type:'Type a place first.',tp_hereis:'Where I am now',
+ tp_saved_noloc:'Saved as text — no map location found.',
+
+ sh_where:'where',sh_nopin:'no location',
+
  bk_day:'Which day',bk_time:'What time',bk_at:'at',bk_other:'Somewhere else',
  bk_address:'Address of the property',bk_sent:'Request sent.',bk_sentdep:'Request sent, deposit taken:',
 
@@ -668,6 +675,13 @@ var FALLBACK_EN={
 var U={
  en:{name:'English',dir:'ltr'},
  ar:{name:'العربية',dir:'rtl',
+  tp_title:'هل هناك ما يُنقل',tp_pickup:'الاستلام من',tp_dropoff:'التسليم إلى',
+  tp_example:'سوق الذهب، المدخل ٣',tp_from:'من:',tp_to:'إلى:',tp_go:'الاتجاهات',
+  tp_route:'المسار كاملاً',tp_type:'اكتب المكان أولاً.',tp_hereis:'موقعي الآن',
+  tp_saved_noloc:'حُفظ كنص — لم يُعثر على موقع.',
+
+  sh_where:'أين',sh_nopin:'بلا موقع',
+
   bk_day:'أي يوم',bk_time:'أي وقت',bk_at:'الساعة',bk_other:'مكان آخر',
   bk_address:'عنوان العقار',bk_sent:'أُرسل الطلب.',bk_sentdep:'أُرسل الطلب، وأُخذ العربون:',
 
@@ -1139,7 +1153,7 @@ var TASK_TYPES=[
  {id:'inspect',name:'Check the property over',fee:45,mins:25},
  {id:'pharmacy',name:'Pharmacy or shop run',fee:35,mins:25}];
 var T={
- en:{name:'English',dir:'ltr',myhours:'My hours this week',nohours:'No hours yet.',nohourssub:'Clock in when you start and they appear here.',inat:'in',outat:'out',stillon:'still on the clock',thisweek:'This week at your rate',onjobs:'Time on jobs',clockin:'Clock in',clockout:'Clock out',clockedin:'On the clock since',notclocked:'Not clocked in',coming:'Coming up',navigate:'Navigate there',openmap:'Open the map',nolocation:'No location saved for this property yet',today:'Today',jobs:'jobs',free:'Free',onjob:'On a job',start:'Start job',complete:'Complete job',
+ en:{name:'English',dir:'ltr',tfrom:'From:',tto:'To:',tgo:'directions',troute:'the whole route',nogps:'This phone cannot give a location.',needgps:'Turn location on to clock in. It records where the day started.',gettingpos:'Finding you...',pinned:'(pinned)',myhours:'My hours this week',nohours:'No hours yet.',nohourssub:'Clock in when you start and they appear here.',inat:'in',outat:'out',stillon:'still on the clock',thisweek:'This week at your rate',onjobs:'Time on jobs',clockin:'Clock in',clockout:'Clock out',clockedin:'On the clock since',notclocked:'Not clocked in',coming:'Coming up',navigate:'Navigate there',openmap:'Open the map',nolocation:'No location saved for this property yet',today:'Today',jobs:'jobs',free:'Free',onjob:'On a job',start:'Start job',complete:'Complete job',
  addphoto:'Add photo',problem:'Report problem',nothing:'Nothing left today',alldone:'All your jobs are done.',since:'since',
  ticked:'done',before:'before',after:'after',photos:'Photos',access:'Access',whatwrong:'What happened',send:'Send to manager',
  cancel:'Cancel',priority:'Priority',low:'Low',med:'Medium',high:'High',clean:'clean',startnote:'Starting records your arrival.',
@@ -1150,7 +1164,7 @@ var T={
  inside_fridge:'Inside the fridge',inside_oven:'Inside the oven',balcony:'Balcony',skirting:'Skirting boards',
  damage:'Damage',missing:'Missing item',broken:'Broken equipment',heavydirt:'Heavy dirt',noaccess:'No access',
  customer:'Customer issue',nosupplies:'Supplies missing',other:'Other'},
- ar:{name:'العربية',dir:'rtl',coming:'المهام القادمة',myhours:'ساعاتي هذا الأسبوع',nohours:'لا توجد ساعات بعد.',nohourssub:'سجّل الدخول عند البدء وستظهر هنا.',inat:'دخول',outat:'خروج',stillon:'ما زال على الدوام',thisweek:'هذا الأسبوع بأجرك',onjobs:'الوقت في المهام',clockin:'تسجيل الدخول',clockout:'تسجيل الخروج',clockedin:'على الدوام منذ',notclocked:'غير مسجّل',today:'اليوم',navigate:'الاتجاهات',openmap:'افتح الخريطة',nolocation:'لم يُحفظ موقع لهذا العقار بعد',jobs:'مهام',free:'متاح',onjob:'في مهمة',start:'ابدأ المهمة',complete:'إنهاء المهمة',
+ ar:{name:'العربية',dir:'rtl',coming:'المهام القادمة',myhours:'ساعاتي هذا الأسبوع',tfrom:'من:',tto:'إلى:',tgo:'الاتجاهات',troute:'المسار كاملاً',nohours:'لا توجد ساعات بعد.',nohourssub:'سجّل الدخول عند البدء وستظهر هنا.',inat:'دخول',outat:'خروج',stillon:'ما زال على الدوام',thisweek:'هذا الأسبوع بأجرك',onjobs:'الوقت في المهام',clockin:'تسجيل الدخول',clockout:'تسجيل الخروج',clockedin:'على الدوام منذ',notclocked:'غير مسجّل',today:'اليوم',navigate:'الاتجاهات',openmap:'افتح الخريطة',nolocation:'لم يُحفظ موقع لهذا العقار بعد',jobs:'مهام',free:'متاح',onjob:'في مهمة',start:'ابدأ المهمة',complete:'إنهاء المهمة',
  addphoto:'إضافة صورة',problem:'الإبلاغ عن مشكلة',nothing:'لا يوجد المزيد اليوم',alldone:'اكتملت جميع مهامك.',since:'منذ',
  ticked:'مكتمل',before:'قبل',after:'بعد',photos:'الصور',access:'الدخول',whatwrong:'ماذا حدث',send:'إرسال للمدير',
  cancel:'إلغاء',priority:'الأولوية',low:'منخفضة',med:'متوسطة',high:'عالية',clean:'تنظيف',startnote:'البدء يسجل وقت وصولك.',
@@ -1161,7 +1175,7 @@ var T={
  inside_fridge:'داخل الثلاجة',inside_oven:'داخل الفرن',balcony:'الشرفة',skirting:'الوزرات',
  damage:'ضرر',missing:'شيء مفقود',broken:'معدات معطلة',heavydirt:'اتساخ شديد',noaccess:'لا يوجد دخول',
  customer:'مشكلة مع العميل',nosupplies:'نقص مستلزمات',other:'أخرى'},
- hi:{name:'हिन्दी',dir:'ltr',coming:'आगे आने वाले',myhours:'इस हफ़्ते मेरे घंटे',nohours:'अभी कोई घंटे नहीं।',nohourssub:'शुरू करते समय हाज़िरी लगाएँ।',inat:'आए',outat:'गए',stillon:'अभी ड्यूटी पर',thisweek:'इस हफ़्ते आपकी दर पर',onjobs:'कामों में समय',clockin:'हाज़िरी लगाएँ',clockout:'छुट्टी',clockedin:'ड्यूटी पर से',notclocked:'हाज़िरी नहीं',today:'आज',navigate:'रास्ता देखें',openmap:'नक्शा खोलें',nolocation:'इस प्रॉपर्टी का स्थान अभी दर्ज नहीं है',jobs:'काम',free:'खाली',onjob:'काम पर',start:'काम शुरू करें',complete:'काम पूरा करें',
+ hi:{name:'हिन्दी',dir:'ltr',coming:'आगे आने वाले',myhours:'इस हफ़्ते मेरे घंटे',tfrom:'से:',tto:'तक:',tgo:'रास्ता',troute:'पूरा रास्ता',nohours:'अभी कोई घंटे नहीं।',nohourssub:'शुरू करते समय हाज़िरी लगाएँ।',inat:'आए',outat:'गए',stillon:'अभी ड्यूटी पर',thisweek:'इस हफ़्ते आपकी दर पर',onjobs:'कामों में समय',clockin:'हाज़िरी लगाएँ',clockout:'छुट्टी',clockedin:'ड्यूटी पर से',notclocked:'हाज़िरी नहीं',today:'आज',navigate:'रास्ता देखें',openmap:'नक्शा खोलें',nolocation:'इस प्रॉपर्टी का स्थान अभी दर्ज नहीं है',jobs:'काम',free:'खाली',onjob:'काम पर',start:'काम शुरू करें',complete:'काम पूरा करें',
  addphoto:'फोटो जोड़ें',problem:'समस्या बताएं',nothing:'आज और कुछ नहीं',alldone:'सभी काम पूरे हैं।',since:'से',
  ticked:'पूरे',before:'पहले',after:'बाद',photos:'फोटो',access:'प्रवेश',whatwrong:'क्या हुआ',send:'मैनेजर को भेजें',
  cancel:'रद्द करें',priority:'प्राथमिकता',low:'कम',med:'मध्यम',high:'ज़्यादा',clean:'सफाई',startnote:'शुरू करने पर समय दर्ज होता है।',
@@ -1172,7 +1186,7 @@ var T={
  inside_fridge:'फ्रिज के अंदर',inside_oven:'ओवन के अंदर',balcony:'बालकनी',skirting:'स्कर्टिंग',
  damage:'नुकसान',missing:'गायब सामान',broken:'टूटा उपकरण',heavydirt:'बहुत गंदगी',noaccess:'अंदर नहीं जा सके',
  customer:'ग्राहक समस्या',nosupplies:'सामान खत्म',other:'अन्य'},
- ur:{name:'اردو',dir:'rtl',coming:'آنے والے کام',myhours:'اس ہفتے میرے گھنٹے',nohours:'ابھی کوئی گھنٹے نہیں۔',nohourssub:'شروع کرتے وقت حاضری لگائیں۔',inat:'آمد',outat:'روانگی',stillon:'ابھی ڈیوٹی پر',thisweek:'اس ہفتے آپ کی شرح پر',onjobs:'کاموں میں وقت',clockin:'حاضری لگائیں',clockout:'چھٹی',clockedin:'ڈیوٹی پر سے',notclocked:'حاضری نہیں',today:'آج',navigate:'راستہ دیکھیں',openmap:'نقشہ کھولیں',nolocation:'اس پراپرٹی کا مقام ابھی محفوظ نہیں',jobs:'کام',free:'فارغ',onjob:'کام پر',start:'کام شروع کریں',complete:'کام مکمل کریں',
+ ur:{name:'اردو',dir:'rtl',coming:'آنے والے کام',myhours:'اس ہفتے میرے گھنٹے',tfrom:'سے:',tto:'تک:',tgo:'راستہ',troute:'پورا راستہ',nohours:'ابھی کوئی گھنٹے نہیں۔',nohourssub:'شروع کرتے وقت حاضری لگائیں۔',inat:'آمد',outat:'روانگی',stillon:'ابھی ڈیوٹی پر',thisweek:'اس ہفتے آپ کی شرح پر',onjobs:'کاموں میں وقت',clockin:'حاضری لگائیں',clockout:'چھٹی',clockedin:'ڈیوٹی پر سے',notclocked:'حاضری نہیں',today:'آج',navigate:'راستہ دیکھیں',openmap:'نقشہ کھولیں',nolocation:'اس پراپرٹی کا مقام ابھی محفوظ نہیں',jobs:'کام',free:'فارغ',onjob:'کام پر',start:'کام شروع کریں',complete:'کام مکمل کریں',
  addphoto:'تصویر شامل کریں',problem:'مسئلہ بتائیں',nothing:'آج اور کچھ نہیں',alldone:'تمام کام مکمل ہیں۔',since:'سے',
  ticked:'مکمل',before:'پہلے',after:'بعد',photos:'تصاویر',access:'داخلہ',whatwrong:'کیا ہوا',send:'مینیجر کو بھیجیں',
  cancel:'منسوخ',priority:'ترجیح',low:'کم',med:'درمیانہ',high:'زیادہ',clean:'صفائی',startnote:'شروع کرنے پر وقت درج ہوتا ہے۔',
@@ -1183,7 +1197,7 @@ var T={
  inside_fridge:'فرج کے اندر',inside_oven:'اوون کے اندر',balcony:'بالکنی',skirting:'اسکرٹنگ',
  damage:'نقصان',missing:'گمشدہ چیز',broken:'ٹوٹا سامان',heavydirt:'زیادہ گندگی',noaccess:'اندر نہیں جا سکے',
  customer:'گاہک کا مسئلہ',nosupplies:'سامان ختم',other:'دیگر'},
- tl:{name:'Tagalog',dir:'ltr',coming:'Mga susunod',myhours:'Oras ko ngayong linggo',nohours:'Wala pang oras.',nohourssub:'Mag-clock in kapag nagsimula.',inat:'pasok',outat:'labas',stillon:'naka-clock in pa',thisweek:'Ngayong linggo sa rate mo',onjobs:'Oras sa trabaho',clockin:'Mag-clock in',clockout:'Mag-clock out',clockedin:'Naka-clock in mula',notclocked:'Hindi naka-clock in',today:'Ngayon',navigate:'Puntahan',openmap:'Buksan ang mapa',nolocation:'Wala pang lokasyon ang property na ito',jobs:'trabaho',free:'Bakante',onjob:'May trabaho',start:'Simulan',complete:'Tapusin',
+ tl:{name:'Tagalog',dir:'ltr',coming:'Mga susunod',myhours:'Oras ko ngayong linggo',tfrom:'Mula:',tto:'Papunta:',tgo:'direksyon',troute:'buong ruta',nohours:'Wala pang oras.',nohourssub:'Mag-clock in kapag nagsimula.',inat:'pasok',outat:'labas',stillon:'naka-clock in pa',thisweek:'Ngayong linggo sa rate mo',onjobs:'Oras sa trabaho',clockin:'Mag-clock in',clockout:'Mag-clock out',clockedin:'Naka-clock in mula',notclocked:'Hindi naka-clock in',today:'Ngayon',navigate:'Puntahan',openmap:'Buksan ang mapa',nolocation:'Wala pang lokasyon ang property na ito',jobs:'trabaho',free:'Bakante',onjob:'May trabaho',start:'Simulan',complete:'Tapusin',
  addphoto:'Magdagdag ng litrato',problem:'Mag-ulat ng problema',nothing:'Wala nang natitira',alldone:'Tapos na lahat.',since:'mula',
  ticked:'tapos',before:'bago',after:'pagkatapos',photos:'Litrato',access:'Pagpasok',whatwrong:'Ano ang nangyari',send:'Ipadala sa manager',
  cancel:'Kanselahin',priority:'Prayoridad',low:'Mababa',med:'Katamtaman',high:'Mataas',clean:'paglilinis',startnote:'Nakatala ang oras.',
@@ -1581,7 +1595,7 @@ function taskRow(x,forCleaner){
  (x.mode==='offers'&&x.status==='open'?'<span>'+taskOffers(x).length+' '+u('tk_bids')+
    (best?' · '+u('tk_from')+' '+aed(best.price):'')+'</span>':'')+
  (x.note?'<span>'+esc(x.note)+'</span>':'')+(c?'<span>'+esc(c.name)+'</span>':'')+
- (x.done?'<span>done '+hhmm(x.done)+'</span>':'')+'</div></div>'+
+ (x.done?'<span>done '+hhmm(x.done)+'</span>':'')+'</div>'+taskLegs(x)+'</div>'+
  (x.mode==='offers'&&x.status==='open'?
   (best?'<span class="mono" style="color:var(--money);font-size:12px">'+u('tk_from')+' '+aed(best.price)+'</span>':'')
   :'<span class="mono" style="color:var(--money);font-size:12px">'+aed(x.fee)+'</span>')+
@@ -2159,15 +2173,33 @@ function myShift(){
 }
 function clockIn(){
  if(myShift()){toast(u('sh_already'));return}
- shifts().unshift({id:'sh'+Date.now(),by:session.id,date:todayStr(),in:Date.now(),out:null});
- notify('clockin',{a:cleaner(session.id).name.split(' ')[0]});
- save();render();toast(u('sh_in'));
+ var d=T[lang]||T.en;
+ if(!navigator.geolocation){toast(d.nogps);return}
+ toast(d.gettingpos);
+ navigator.geolocation.getCurrentPosition(function(pos){
+  shifts().unshift({id:'sh'+Date.now(),by:session.id,date:todayStr(),in:Date.now(),out:null,
+   inAt:{lat:pos.coords.latitude,lng:pos.coords.longitude,acc:Math.round(pos.coords.accuracy||0)},
+   outAt:null});
+  notify('clockin',{a:cleaner(session.id).name.split(' ')[0]});
+  save();render();toast(u('sh_in'));
+ },function(err){
+  /* no location, no clock-in — the record has to mean something */
+  toast(d.needgps);
+ },{enableHighAccuracy:true,timeout:15000,maximumAge:0});
 }
 function clockOut(){
  var s2=myShift();if(!s2){toast(u('sh_notin'));return}
- s2.out=Date.now();
- notify('clockout',{a:cleaner(session.id).name.split(' ')[0],d:dur(s2.in,s2.out)});
- save();render();toast(u('sh_out')+' '+dur(s2.in,s2.out));
+ var d=T[lang]||T.en;
+ var finish=function(pos){
+  s2.out=Date.now();
+  if(pos)s2.outAt={lat:pos.coords.latitude,lng:pos.coords.longitude,acc:Math.round(pos.coords.accuracy||0)};
+  notify('clockout',{a:cleaner(session.id).name.split(' ')[0],d:dur(s2.in,s2.out)});
+  save();render();toast(u('sh_out')+' '+dur(s2.in,s2.out));
+ };
+ if(!navigator.geolocation){finish(null);return}
+ toast(d.gettingpos);
+ navigator.geolocation.getCurrentPosition(finish,function(){finish(null)},
+  {enableHighAccuracy:true,timeout:15000,maximumAge:0});
 }
 function shiftHours(cid,from){
  return shifts().filter(function(s2){return s2.by===cid&&s2.out&&(!from||s2.date>=from)})
@@ -2223,7 +2255,11 @@ function vKeys(){
   h+='<tr><td>'+esc(c.name)+'</td><td class="num mono">'+th.toFixed(1)+'</td>'+
    '<td class="num mono">'+wh.toFixed(1)+'</td>'+
    '<td class="num mono" style="color:var(--faint)">'+jh.toFixed(1)+'</td>'+
-   '<td>'+(open2?'<span class="st run">'+u('sh_working')+' '+hhmm(open2.in)+'</span>':'<span class="st">'+u('sh_notworking')+'</span>')+'</td></tr>';
+   '<td>'+(open2?'<span class="st run">'+u('sh_working')+' '+hhmm(open2.in)+'</span>'+
+     (open2.inAt?' <a class="wa" style="padding:2px 7px;font-size:10.5px" href="https://www.google.com/maps?q='+
+       open2.inAt.lat+','+open2.inAt.lng+'" target="_blank" rel="noopener">'+u('sh_where')+'</a>':
+       ' <span class="st" style="color:var(--faint)">'+u('sh_nopin')+'</span>')
+    :'<span class="st">'+u('sh_notworking')+'</span>')+'</td></tr>';
  });
  return h+'</table></div>';
 }
@@ -3543,7 +3579,8 @@ function vMyDay(){
  (extra?' · '+d.earned+' '+aed(extra):'')+'</div></div>'+
  '<span class="st'+(active?' run':'')+'" style="margin-'+(d.dir==='rtl'?'right':'left')+':auto">'+(active?d.onjob:d.free)+'</span></div>'+
  '<div style="padding:9px 14px;border-bottom:1px solid var(--line);display:flex;gap:7px;align-items:center">'+
- (myShift()?'<span class="st run" style="flex:1">'+d.clockedin+' '+hhmm(myShift().in)+' · '+dur(myShift().in,null)+'</span>'+
+ (myShift()?'<span class="st run" style="flex:1">'+d.clockedin+' '+hhmm(myShift().in)+' · '+dur(myShift().in,null)+
+   (myShift().inAt?' · '+ic('pin'):'')+'</span>'+
    '<button class="btn ghost" onclick="clockOut()">'+d.clockout+'</button>'
   :'<span class="st" style="flex:1">'+d.notclocked+'</span>'+
    '<button class="btn" onclick="clockIn()">'+d.clockin+'</button>')+'</div>';
@@ -3643,7 +3680,8 @@ function myHours(){
    var dt=day.reduce(function(a,x){return a+hrs(x.in,x.out||Date.now())},0);
    h+='<div class="row"><span class="dot'+(day.some(function(x){return !x.out})?' run':'')+'"></span>'+
     '<div class="grow"><div class="name">'+dayName(date)+'</div><div class="meta">'+
-    day.map(function(x){return '<span>'+d.inat+' '+hhmm(x.in)+' · '+(x.out?d.outat+' '+hhmm(x.out):d.stillon)+'</span>'}).join('')+
+    day.map(function(x){return '<span>'+d.inat+' '+hhmm(x.in)+
+      (x.inAt?' '+d.pinned:'')+' · '+(x.out?d.outat+' '+hhmm(x.out):d.stillon)+'</span>'}).join('')+
     '</div></div><span class="mono">'+dt.toFixed(1)+'h</span></div>';
   });
   h+='<div class="row"><div class="grow"><div class="name" style="font-weight:400">'+d.thisweek+'</div>'+
@@ -4649,7 +4687,62 @@ function viewOffers(id){open={type:'offers',task:id};render()}
 function pickTaskKind(v){taskKind=v;render()}
 var taskKind='bins', taskMode='fixed';
 function setTaskMode(m){taskMode=m;render()}
-function newTask(){taskKind='bins';taskMode='offers';open={type:'task'};render()}
+
+/* ---- tasks that move something from one place to another ---- */
+var taskPlace={from:null,to:null};
+function tpSet(which,r){taskPlace[which]=r;render()}
+function tpFind(which){
+ var el=document.getElementById('tp-'+which);
+ var q=((el&&el.value)||'').trim();
+ if(!q){toast(u('tp_type'));return}
+ toast(u('m_searching'));
+ geocode(q,function(r){
+  if(r)return tpSet(which,{name:q,lat:r.lat,lng:r.lng});
+  geocode(q+', '+(COUNTRIES[S().country]||{name:''}).name,function(r2){
+   if(!r2){tpSet(which,{name:q,lat:null,lng:null});toast(u('tp_saved_noloc'));return}
+   tpSet(which,{name:q,lat:r2.lat,lng:r2.lng});
+  });
+ });
+}
+function tpHere(which){
+ if(!navigator.geolocation){toast(u('m_nogeo'));return}
+ toast(u('m_gettingpos'));
+ navigator.geolocation.getCurrentPosition(function(pos){
+  var el=document.getElementById('tp-'+which);
+  tpSet(which,{name:((el&&el.value)||'').trim()||u('tp_hereis'),lat:pos.coords.latitude,lng:pos.coords.longitude});
+ },function(){toast(u('m_denied'))},{enableHighAccuracy:true,timeout:12000});
+}
+function tpClear(which){taskPlace[which]=null;render()}
+function tpBlock(which,label){
+ var v=taskPlace[which];
+ return '<div class="field"><label for="tp-'+which+'">'+label+
+  (v&&v.lat?' <span style="color:var(--run)">'+v.lat.toFixed(4)+', '+v.lng.toFixed(4)+'</span>':'')+'</label>'+
+  '<input id="tp-'+which+'" placeholder="'+u('tp_example')+'" value="'+esc(v?v.name:'')+'">'+
+  '<div style="display:flex;gap:5px;margin-top:6px;flex-wrap:wrap">'+
+  '<button class="btn ghost" style="font-size:11px" onclick="tpFind(\''+which+'\')">'+ic('pin')+u('m_find')+'</button>'+
+  '<button class="btn ghost" style="font-size:11px" onclick="tpHere(\''+which+'\')">'+ic('pin')+u('m_here')+'</button>'+
+  (v?'<button class="btn ghost" style="font-size:11px" onclick="tpClear(\''+which+'\')">'+u('m_clear')+'</button>':'')+
+  '</div></div>';
+}
+function taskRoute(x){
+ if(!x.from||!x.to||!x.from.lat||!x.to.lat)return null;
+ return 'https://www.google.com/maps/dir/?api=1&travelmode=driving&origin='+
+  x.from.lat+','+x.from.lng+'&destination='+x.to.lat+','+x.to.lng;
+}
+function taskLegs(x){
+ if(!x.from&&!x.to)return '';
+ var d=(session&&session.role==='cleaner')?(T[lang]||T.en):null;
+ var L=function(k,fallback){return d&&d[k]?d[k]:u(fallback)};
+ var h='<div style="font-size:11px;color:var(--muted);margin-top:5px">';
+ if(x.from)h+='<div>'+L('tfrom','tp_from')+' '+esc(x.from.name)+
+   (x.from.lat?' <a href="'+navLink(x.from)+'" target="_blank" rel="noopener" style="color:var(--run)">'+L('tgo','tp_go')+'</a>':'')+'</div>';
+ if(x.to)h+='<div>'+L('tto','tp_to')+' '+esc(x.to.name)+
+   (x.to.lat?' <a href="'+navLink(x.to)+'" target="_blank" rel="noopener" style="color:var(--run)">'+L('tgo','tp_go')+'</a>':'')+'</div>';
+ var r=taskRoute(x);
+ if(r)h+='<div><a href="'+r+'" target="_blank" rel="noopener" style="color:var(--run)">'+L('troute','tp_route')+'</a></div>';
+ return h+'</div>';
+}
+function newTask(){taskKind='bins';taskMode='offers';taskPlace={from:null,to:null};open={type:'task'};render()}
 function saveTask(){
  var prop=document.getElementById('t-prop').value.trim();
  if(!prop){toast(u('m_typeaddress'));return}
@@ -4662,6 +4755,7 @@ function saveTask(){
   type:taskKind==='custom'?'other':taskKind,custom:custom,
   mode:taskMode,fee:taskMode==='offers'?0:fee,offers:[],
   status:'open',by:null,at:Date.now(),done:null,photo:null,
+  from:taskPlace.from,to:taskPlace.to,
   note:(document.getElementById('t-note')||{}).value.trim()||''});
  notify('taskpost',{t:custom||def.name,p:prop});
  open=null;save();render();
@@ -4837,6 +4931,12 @@ function drawModal(){
    (taskKind==='custom'?'<div class="field"><label for="t-custom">'+u('tk_what')+'</label>'+
      '<input id="t-custom" placeholder="'+u('tk_example')+'"></div>':'')+
    '<div class="field"><label for="t-prop">'+u('f_property')+'</label><input id="t-prop"></div>'+
+   '<div style="border-top:1px solid var(--line);margin:11px 0;padding-top:11px">'+
+   '<div style="font-size:10.5px;color:var(--muted);margin-bottom:8px">'+u('tp_title')+'</div>'+
+   tpBlock('from',u('tp_pickup'))+tpBlock('to',u('tp_dropoff'))+
+   ((taskPlace.from&&taskPlace.from.lat&&taskPlace.to&&taskPlace.to.lat)?
+     '<iframe title="map" src="'+gEmbed(taskPlace.from,14)+'" style="width:100%;height:140px;border:1px solid var(--line2);border-radius:7px;display:block" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>':'')+
+   '</div>'+
    (session.role==='customer'?'':'<div class="field"><label for="t-cust">'+u('f_customer')+'</label><input id="t-cust"></div>')+
    '<div class="field"><label>'+u('tk_pricing')+'</label><div style="display:flex;gap:6px">'+
    '<button class="btn '+(taskMode==='fixed'?'':'ghost')+'" style="flex:1;font-size:11.5px" onclick="setTaskMode(\'fixed\')">'+u('tk_fixed')+'</button>'+
@@ -5363,7 +5463,7 @@ function render(){
  var _sc=document.querySelector('.wrap');var _y=_sc?_sc.scrollTop:0;
  root.innerHTML='<div class="app" dir="'+(session.role==='cleaner'?'ltr':uiDir())+'"><aside class="side"><div class="co"><b>'+esc(db.company)+'</b><span>Dubai</span></div>'+
  '<nav>'+nav+'</nav><div class="side-foot">'+esc(who)+'<br><button onclick="authSignOut()">'+u('b_signout')+'</button>'+
- '<div style="margin-top:6px;color:#3E4650;font-size:10px">build 35 \u00b7 tasks</div></div></aside>'+
+ '<div style="margin-top:6px;color:#3E4650;font-size:10px">build 37 \u00b7 pickup</div></div></aside>'+
  '<div class="main"><div class="top"><h2>'+u('title_'+tab)+'</h2><span class="date">'+dow+' · '+hhmm(Date.now())+'</span>'+
  '<div class="tools">'+langSel+bell+'</div></div>'+counts+
  (online?'':'<div class="offline">Offline — '+queued+' change'+(queued===1?'':'s')+' waiting.</div>')+
