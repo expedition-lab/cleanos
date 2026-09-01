@@ -1113,13 +1113,31 @@ var EXTRA_KEYS=['inside_fridge','inside_oven','balcony','skirting'];
 var PROB_KEYS=['damage','missing','broken','heavydirt','noaccess','customer','nosupplies','other'];
 var TASK_TYPES=[
  {id:'bins',name:'Bin run',fee:25,mins:10},
- {id:'parcel',name:'Collect parcel',fee:30,mins:15},
- {id:'heavy',name:'Carry heavy item up',fee:60,mins:25},
+ {id:'parcel',name:'Collect a parcel',fee:30,mins:15},
+ {id:'heavy',name:'Carry something heavy',fee:60,mins:25},
  {id:'car',name:'Bring the car round',fee:35,mins:15},
  {id:'grocery',name:'Grocery drop-off',fee:45,mins:30},
  {id:'laundry',name:'Laundry to the shop',fee:35,mins:20},
- {id:'water',name:'Change water bottle',fee:20,mins:10},
- {id:'wait',name:'Wait for a delivery',fee:55,mins:45}];
+ {id:'water',name:'Change the water bottle',fee:20,mins:10},
+ {id:'wait',name:'Wait for a delivery',fee:55,mins:45},
+ {id:'keys',name:'Drop off or collect keys',fee:30,mins:20},
+ {id:'plants',name:'Water the plants',fee:20,mins:10},
+ {id:'balcony',name:'Sweep the balcony or terrace',fee:35,mins:20},
+ {id:'windows',name:'Wash the windows',fee:70,mins:45},
+ {id:'fridge',name:'Clean inside the fridge',fee:50,mins:30},
+ {id:'oven',name:'Clean the oven',fee:65,mins:40},
+ {id:'beds',name:'Change the beds',fee:40,mins:25},
+ {id:'ironing',name:'Ironing',fee:45,mins:40},
+ {id:'dishes',name:'Wash up after guests',fee:30,mins:20},
+ {id:'restock',name:'Restock supplies at the property',fee:35,mins:25},
+ {id:'petrol',name:'Fuel or car wash',fee:40,mins:30},
+ {id:'pool',name:'Skim the pool',fee:45,mins:25},
+ {id:'garden',name:'Tidy the garden',fee:80,mins:60},
+ {id:'furniture',name:'Move furniture around',fee:70,mins:40},
+ {id:'dump',name:'Take things to the tip',fee:90,mins:60},
+ {id:'checkin',name:'Meet a guest at check-in',fee:60,mins:30},
+ {id:'inspect',name:'Check the property over',fee:45,mins:25},
+ {id:'pharmacy',name:'Pharmacy or shop run',fee:35,mins:25}];
 var T={
  en:{name:'English',dir:'ltr',myhours:'My hours this week',nohours:'No hours yet.',nohourssub:'Clock in when you start and they appear here.',inat:'in',outat:'out',stillon:'still on the clock',thisweek:'This week at your rate',onjobs:'Time on jobs',clockin:'Clock in',clockout:'Clock out',clockedin:'On the clock since',notclocked:'Not clocked in',coming:'Coming up',navigate:'Navigate there',openmap:'Open the map',nolocation:'No location saved for this property yet',today:'Today',jobs:'jobs',free:'Free',onjob:'On a job',start:'Start job',complete:'Complete job',
  addphoto:'Add photo',problem:'Report problem',nothing:'Nothing left today',alldone:'All your jobs are done.',since:'since',
@@ -1559,13 +1577,14 @@ function taskRow(x,forCleaner){
  '<div class="grow"><div class="name">'+esc(taskTitle(x))+
  (x.mode==='offers'&&x.status==='open'?'<span class="pill prem">'+u('tk_offers')+'</span>':'')+
  '<span style="color:var(--faint);font-weight:400">'+esc(x.prop)+'</span></div>'+
- '<div class="meta"><span class="mono">'+x.id+'</span>'+(x.custom?'':'<span>~'+ty.mins+' min</span>')+
+ '<div class="meta"><span class="id">'+x.id+'</span>'+((x.custom||x.mode==='offers')?'':'<span>~'+ty.mins+' min</span>')+
  (x.mode==='offers'&&x.status==='open'?'<span>'+taskOffers(x).length+' '+u('tk_bids')+
    (best?' · '+u('tk_from')+' '+aed(best.price):'')+'</span>':'')+
  (x.note?'<span>'+esc(x.note)+'</span>':'')+(c?'<span>'+esc(c.name)+'</span>':'')+
  (x.done?'<span>done '+hhmm(x.done)+'</span>':'')+'</div></div>'+
- '<span class="mono" style="color:var(--gold);font-size:12px">'+(x.mode==='offers'&&x.status==='open'?
-   (best?aed(best.price):u('tk_noprice')):aed(x.fee))+'</span>'+
+ (x.mode==='offers'&&x.status==='open'?
+  (best?'<span class="mono" style="color:var(--money);font-size:12px">'+u('tk_from')+' '+aed(best.price)+'</span>':'')
+  :'<span class="mono" style="color:var(--money);font-size:12px">'+aed(x.fee)+'</span>')+
  (forCleaner&&x.status==='open'?'<button class="btn gold" onclick="claimTask(\''+x.id+'\')">'+
    (x.mode==='offers'?(myOffer(x)?u('tk_changebid'):u('tk_bid')):t('claim'))+'</button>':'')+
  (!forCleaner&&x.status==='open'&&x.mode==='offers'&&taskOffers(x).length?
@@ -4630,7 +4649,7 @@ function viewOffers(id){open={type:'offers',task:id};render()}
 function pickTaskKind(v){taskKind=v;render()}
 var taskKind='bins', taskMode='fixed';
 function setTaskMode(m){taskMode=m;render()}
-function newTask(){taskKind='bins';taskMode='fixed';open={type:'task'};render()}
+function newTask(){taskKind='bins';taskMode='offers';open={type:'task'};render()}
 function saveTask(){
  var prop=document.getElementById('t-prop').value.trim();
  if(!prop){toast(u('m_typeaddress'));return}
@@ -4813,7 +4832,7 @@ function drawModal(){
   body='<div class="field"><label for="t-type">'+u('f_task')+'</label>'+
    '<select id="t-type" onchange="pickTaskKind(this.value)">'+
    TASK_TYPES.map(function(x){return '<option value="'+x.id+'"'+(taskKind===x.id?' selected':'')+'>'+
-     x.name+' — '+aed(x.fee)+' · ~'+x.mins+'m</option>'}).join('')+
+     x.name+'</option>'}).join('')+
    '<option value="custom"'+(taskKind==='custom'?' selected':'')+'>'+u('tk_custom')+'</option></select></div>'+
    (taskKind==='custom'?'<div class="field"><label for="t-custom">'+u('tk_what')+'</label>'+
      '<input id="t-custom" placeholder="'+u('tk_example')+'"></div>':'')+
@@ -5344,7 +5363,7 @@ function render(){
  var _sc=document.querySelector('.wrap');var _y=_sc?_sc.scrollTop:0;
  root.innerHTML='<div class="app" dir="'+(session.role==='cleaner'?'ltr':uiDir())+'"><aside class="side"><div class="co"><b>'+esc(db.company)+'</b><span>Dubai</span></div>'+
  '<nav>'+nav+'</nav><div class="side-foot">'+esc(who)+'<br><button onclick="authSignOut()">'+u('b_signout')+'</button>'+
- '<div style="margin-top:6px;color:#3E4650;font-size:10px">build 34 \u00b7 design</div></div></aside>'+
+ '<div style="margin-top:6px;color:#3E4650;font-size:10px">build 35 \u00b7 tasks</div></div></aside>'+
  '<div class="main"><div class="top"><h2>'+u('title_'+tab)+'</h2><span class="date">'+dow+' · '+hhmm(Date.now())+'</span>'+
  '<div class="tools">'+langSel+bell+'</div></div>'+counts+
  (online?'':'<div class="offline">Offline — '+queued+' change'+(queued===1?'':'s')+' waiting.</div>')+
