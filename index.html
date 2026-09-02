@@ -315,6 +315,24 @@ var TIERS={
    ------------------------------------------------------------ */
 
 var FALLBACK_EN={
+ ds_title:'Tonight\u2019s summary',ds_send:'Send to the office',ds_done:'Finished:',
+ ds_running:'Still running:',ds_problems:'Problems:',ds_booked:'Booked today:',ds_owed:'Outstanding:',
+ ds_tomorrow:'Tomorrow:',ds_unassigned:'with nobody assigned',ds_low:'Running low:',
+ ds_docs:'documents expiring within a month',ds_nophone:'Add an office number in Settings first.',
+ pf_share:'Send the proof',pf_job:'Job at',pf_arrived:'arrived',pf_left:'left',
+ pf_gps:'Checked in within',pf_items:'Checklist:',pf_photos:'Photos:',pf_rated:'Customer rated it',
+ wz_title:'Set up your company',wz_start:'Set up a new company',
+ wz_company:'Company name',wz_companyex:'Blue Bay Cleaning Ltd',
+ wz_note1:'This sets the currency, tax rate and week start for you.',
+ wz_crewnote:'One cleaner per line: name, phone, language.',
+ wz_crewex:'Marie Louis, 23057001122, en\nAhmed Hassan, 971502248871, ur',
+ wz_langs:'Languages: en, ar, hi, ur, tl',
+ wz_propnote:'One property per line: name, area, customer. Leave blank for now if you prefer.',
+ wz_propex:'Villa Cocos, Blue Bay, Ocean Villas Ltd\nApartment 3B, Flic en Flac,',
+ wz_needname:'What is the company called?',wz_needcrew:'Add at least one cleaner.',
+ wz_ready:'This clears the demo and starts your company. You can change anything afterwards.',
+ wz_next:'Next',wz_back:'Back',wz_finish:'Create it',wz_done:'Ready. Add your first job.',
+
  b_import:'Choose a CSV',
  pr_btn:'Print the day',pr_signed:'Signed',pr_blocked:'Your browser blocked the print window.',
  sp_title:'Suppliers',sp_items:'items',sp_low:'running low',sp_number:'Number',
@@ -703,6 +721,24 @@ var FALLBACK_EN={
 var U={
  en:{name:'English',dir:'ltr'},
  ar:{name:'العربية',dir:'rtl',
+  ds_title:'ملخّص اليوم',ds_send:'إرسال للمكتب',ds_done:'المنجزة:',
+  ds_running:'قيد التنفيذ:',ds_problems:'مشاكل:',ds_booked:'محجوز اليوم:',ds_owed:'مستحق:',
+  ds_tomorrow:'غداً:',ds_unassigned:'بدون إسناد',ds_low:'يوشك على النفاد:',
+  ds_docs:'وثائق تنتهي خلال شهر',ds_nophone:'أضف رقم المكتب في الإعدادات أولاً.',
+  pf_share:'إرسال الإثبات',pf_job:'المهمة في',pf_arrived:'الوصول',pf_left:'المغادرة',
+  pf_gps:'سُجّل الدخول ضمن',pf_items:'القائمة:',pf_photos:'الصور:',pf_rated:'تقييم العميل',
+  wz_title:'إعداد شركتك',wz_start:'إعداد شركة جديدة',
+  wz_company:'اسم الشركة',wz_companyex:'شركة التنظيف',
+  wz_note1:'يضبط العملة ونسبة الضريبة وبداية الأسبوع تلقائياً.',
+  wz_crewnote:'عامل في كل سطر: الاسم، الهاتف، اللغة.',
+  wz_crewex:'أحمد حسن، 971502248871، ur',
+  wz_langs:'اللغات: en, ar, hi, ur, tl',
+  wz_propnote:'عقار في كل سطر: الاسم، المنطقة، العميل.',
+  wz_propex:'شقة ٣ب، دبي مارينا، شركة العقارات',
+  wz_needname:'ما اسم الشركة؟',wz_needcrew:'أضف عاملاً واحداً على الأقل.',
+  wz_ready:'سيمسح العرض التجريبي ويبدأ شركتك. يمكنك تغيير كل شيء لاحقاً.',
+  wz_next:'التالي',wz_back:'رجوع',wz_finish:'إنشاء',wz_done:'جاهز. أضف أول مهمة.',
+
   b_import:'اختر ملف CSV',
   pr_btn:'طباعة اليوم',pr_signed:'التوقيع',pr_blocked:'المتصفح منع نافذة الطباعة.',
   sp_title:'الموردون',sp_items:'أصناف',sp_low:'يوشك على النفاد',sp_number:'الرقم',
@@ -1599,6 +1635,7 @@ function vOtp(){
 /* ---------------- login ---------------- */
 function vLogin(){
  var h='<div class="login"><div class="lbox"><div class="lhead"><h1>'+esc(db.company)+'</h1><p>'+u('l_operations')+'</p></div>'+
+ '<button class="btn ghost" style="width:100%;padding:12px;margin-bottom:7px" onclick="startWizard()">'+u('wz_start')+'</button>'+
  (authReady()?
   '<button class="btn" style="width:100%;padding:12px;margin-bottom:7px" onclick="googleSignIn()">'+u('au_google')+'</button>'+
   '<button class="btn ghost" style="width:100%;padding:12px;margin-bottom:14px" onclick="otpOpen()">'+u('au_phonebtn')+'</button>'+
@@ -3103,6 +3140,159 @@ function etaBar(j){
   '</div>';
 }
 
+
+/* ---- 1. the evening summary a manager reads without opening the app ---- */
+function daySummary(dstr){
+ var d=dstr||todayStr();
+ var js=db.jobs.filter(function(j){return jobDate(j)===d});
+ var done=js.filter(function(j){return j.status==='done'});
+ var probs=js.filter(function(j){return j.status==='problem'});
+ var running=js.filter(function(j){return j.status==='progress'});
+ var money=js.filter(function(j){return j.status!=='cancelled'}).reduce(function(a,j){return a+j.price},0);
+ var tom=addDays(d,1);
+ var tomJobs=db.jobs.filter(function(j){return jobDate(j)===tom&&j.status!=='cancelled'});
+ var unassigned=tomJobs.filter(function(j){return !j.cleaner});
+ var low=lowStock();
+ var owed=db.invoices.reduce(function(a,v){return a+Math.max(0,invDue(v))},0);
+ var L=[];
+ L.push(db.company+' — '+dayName(d));
+ L.push('');
+ L.push(u('ds_done')+' '+done.length+'/'+js.filter(function(j){return j.status!=='cancelled'}).length);
+ if(running.length)L.push(u('ds_running')+' '+running.length);
+ if(probs.length)L.push('⚠ '+u('ds_problems')+' '+probs.length);
+ L.push(u('ds_booked')+' '+aed(money));
+ if(owed>0.5)L.push(u('ds_owed')+' '+aed(owed));
+ L.push('');
+ L.push(u('ds_tomorrow')+' '+tomJobs.length+' '+u('c_jobs'));
+ if(unassigned.length)L.push('⚠ '+unassigned.length+' '+u('ds_unassigned'));
+ if(low.length)L.push('⚠ '+u('ds_low')+' '+low.map(function(x){return x.item}).join(', '));
+ var exp=expiringDocs().filter(function(x){return docDaysLeft(x)<=30});
+ if(exp.length)L.push('⚠ '+exp.length+' '+u('ds_docs'));
+ return L.join('\n');
+}
+function sendSummary(){
+ var to=S().officePhone;
+ if(!to){toast(u('ds_nophone'));return}
+ try{window.open(wa(to,daySummary()),'_blank')}catch(e){}
+ db.lastSummary=Date.now();save();
+}
+
+/* ---- 2. proof a manager can forward to their client ---- */
+function proofText(j){
+ var p=property(j.prop),cl=checklistFor(j);
+ var L=[db.company];
+ L.push(u('pf_job')+' '+j.prop);
+ L.push(dayName(jobDate(j))+(j.started?' · '+u('pf_arrived')+' '+hhmm(j.started):''));
+ if(j.finished)L.push(u('pf_left')+' '+hhmm(j.finished)+' ('+dur(j.started,j.finished)+')');
+ if(j.geo)L.push(u('pf_gps')+' '+j.geo.dist+'m');
+ L.push(u('pf_items')+' '+j.checked.length+'/'+cl.length);
+ var pa=photoAreas(j),keys=Object.keys(pa);
+ if(keys.length)L.push(u('pf_photos')+' '+keys.map(function(k){return (T.en[k]||k)+' '+pa[k]}).join(', '));
+ if(j.rating)L.push(u('pf_rated')+' '+j.rating+'/5');
+ return L.join('\n');
+}
+function shareProof(id){
+ var j=job(id);if(!j)return;
+ var cu=customerByName(j.customer);
+ var txt=proofText(j);
+ if(navigator.share){
+  navigator.share({title:db.company+' — '+j.prop,text:txt}).catch(function(){});
+  return;
+ }
+ if(cu&&cu.phone){try{window.open(wa(cu.phone,txt),'_blank')}catch(e){}return}
+ open={type:'link',link:txt};render();
+}
+
+/* ---- 3. a company can set itself up without me in the room ---- */
+var wiz=null;
+function startWizard(){
+ wiz={step:1,company:'',country:S().country||'AE',crew:[],props:[],cust:[]};
+ open={type:'wizard'};render();
+}
+function wizSet(k,v){if(wiz)wiz[k]=v}
+function wizNext(){
+ if(!wiz)return;
+ if(wiz.step===1){
+  var n=((document.getElementById('wz-name')||{}).value||'').trim();
+  if(!n){toast(u('wz_needname'));return}
+  wiz.company=n;
+  wiz.country=(document.getElementById('wz-country')||{}).value||'AE';
+ }
+ if(wiz.step===2){
+  var raw=((document.getElementById('wz-crew')||{}).value||'').trim();
+  wiz.crew=raw.split(/\n/).map(function(l){return l.trim()}).filter(Boolean).map(function(l){
+   var p=l.split(',').map(function(x){return x.trim()});
+   return {name:p[0],phone:(p[1]||'').replace(/[^0-9]/g,''),lang:(p[2]||'en').toLowerCase()};
+  });
+  if(!wiz.crew.length){toast(u('wz_needcrew'));return}
+ }
+ if(wiz.step===3){
+  var rp=((document.getElementById('wz-props')||{}).value||'').trim();
+  wiz.props=rp.split(/\n/).map(function(l){return l.trim()}).filter(Boolean).map(function(l){
+   var p=l.split(',').map(function(x){return x.trim()});
+   return {name:p[0],area:p[1]||'',customer:p[2]||''};
+  });
+ }
+ wiz.step++;
+ if(wiz.step>4)return wizFinish();
+ render();
+}
+function wizBack(){if(wiz&&wiz.step>1){wiz.step--;render()}}
+function wizFinish(){
+ db=emptyDb(wiz.company,wiz.country);
+ db.settings=settingsFor(wiz.country);
+ wiz.crew.forEach(function(c,i){
+  db.cleaners.push({id:'c'+(i+1),name:c.name,initials:c.name.split(' ').map(function(w){return w[0]}).join('').slice(0,2).toUpperCase(),
+   phone:c.phone,email:'',lang:(T[c.lang]?c.lang:'en'),rate:0,senior:i===0,off:[]});
+ });
+ var seenCu={};
+ wiz.props.forEach(function(p){
+  db.props.push({name:p.name,area:p.area,lat:null,lng:null,key:'',park:'',wifi:'—',alarm:'—',note:''});
+  if(p.customer&&!seenCu[p.customer]){
+   seenCu[p.customer]=1;
+   db.customers.push({id:'cu'+Date.now()+Math.floor(Math.random()*999),name:p.customer,contact:'',phone:'',email:''});
+  }
+ });
+ db.setup=false;
+ wiz=null;open=null;save();render();
+ toast(u('wz_done'));
+}
+function vWizard(){
+ var h='',st=wiz.step;
+ h+='<div style="display:flex;gap:5px;margin-bottom:14px">'+
+  [1,2,3,4].map(function(n){return '<div style="flex:1;height:3px;border-radius:2px;background:'+
+   (n<=st?'var(--run)':'var(--line2)')+'"></div>'}).join('')+'</div>';
+ if(st===1){
+  h+='<div class="field"><label for="wz-name">'+u('wz_company')+'</label>'+
+   '<input id="wz-name" value="'+esc(wiz.company)+'" placeholder="'+u('wz_companyex')+'"></div>'+
+   '<div class="field"><label for="wz-country">'+u('s_country')+'</label><select id="wz-country">'+
+   Object.keys(COUNTRIES).map(function(k){return '<option value="'+k+'"'+(wiz.country===k?' selected':'')+'>'+
+     COUNTRIES[k].name+' — '+COUNTRIES[k].cur+'</option>'}).join('')+'</select></div>'+
+   '<p style="font-size:11.5px;color:var(--faint);margin:0">'+u('wz_note1')+'</p>';
+ }
+ if(st===2){
+  h+='<p style="font-size:12px;color:var(--muted);margin:0 0 9px">'+u('wz_crewnote')+'</p>'+
+   '<div class="field"><textarea id="wz-crew" rows="6" placeholder="'+u('wz_crewex')+'">'+
+   esc(wiz.crew.map(function(c){return c.name+', '+c.phone+', '+c.lang}).join('\n'))+'</textarea></div>'+
+   '<p style="font-size:11px;color:var(--faint);margin:0">'+u('wz_langs')+'</p>';
+ }
+ if(st===3){
+  h+='<p style="font-size:12px;color:var(--muted);margin:0 0 9px">'+u('wz_propnote')+'</p>'+
+   '<div class="field"><textarea id="wz-props" rows="6" placeholder="'+u('wz_propex')+'">'+
+   esc(wiz.props.map(function(p){return p.name+', '+p.area+', '+p.customer}).join('\n'))+'</textarea></div>';
+ }
+ if(st===4){
+  h+='<div class="box" style="padding:13px">'+
+   '<div class="kv"><span>'+u('wz_company')+'</span><span>'+esc(wiz.company)+'</span></div>'+
+   '<div class="kv"><span>'+u('s_country')+'</span><span>'+esc((COUNTRIES[wiz.country]||{}).name||'')+
+   ' · '+esc((COUNTRIES[wiz.country]||{}).cur||'')+'</span></div>'+
+   '<div class="kv"><span>'+u('nav_team')+'</span><span>'+wiz.crew.length+'</span></div>'+
+   '<div class="kv"><span>'+u('nav_props')+'</span><span>'+wiz.props.length+'</span></div></div>'+
+   '<p style="font-size:11.5px;color:var(--muted);margin:11px 0 0">'+u('wz_ready')+'</p>';
+ }
+ return h;
+}
+
 /* ---------------- manager ---------------- */
 function vToday(){
  var h=db.setup?'':setupSteps();
@@ -3123,6 +3313,10 @@ function vToday(){
   h+='<div class="card"><div class="card-h">'+ic('zap')+'<h3>'+u('tasks_waiting')+'</h3><div class="right">'+
    '<button class="btn ghost" onclick="newTask()">'+u('b_posttask')+'</button></div></div>';
   openTasks().forEach(function(x){h+=taskRow(x,false)});h+='</div>'}
+ h+='<div class="card"><div class="card-h">'+ic('bell')+'<h3>'+u('ds_title')+'</h3><div class="right">'+
+  '<button class="btn" onclick="sendSummary()">'+ic('wa')+u('ds_send')+'</button></div></div>'+
+  '<pre style="margin:0;padding:12px 14px;white-space:pre-wrap;font-family:inherit;font-size:12px;color:var(--muted);line-height:1.6">'+
+  esc(daySummary())+'</pre></div>';
  if(backupOverdue()){
   h+='<div class="card alert"><div class="card-h">'+ic('alert')+'<h3 style="color:var(--late)">'+u('bu_title')+'</h3>'+
    '<div class="right"><button class="btn" onclick="backupNow()">'+u('bu_now')+'</button></div></div>'+
@@ -5628,6 +5822,12 @@ function drawModal(){
    '<div class="field"><label for="sh-link">'+u('sf_link')+'</label><input id="sh-link" placeholder="https://"></div>';
   foot='<button class="btn ghost" onclick="closeModal()">'+u('b_cancel')+'</button>'+
    '<button class="btn" onclick="saveSheet()">'+u('b_add')+'</button>'}
+ else if(open.type==='wizard'){
+  head=u('wz_title')+' · '+wiz.step+'/4';
+  body=vWizard();
+  foot=(wiz.step>1?'<button class="btn ghost" onclick="wizBack()">'+u('wz_back')+'</button>':
+    '<button class="btn ghost" onclick="closeModal()">'+u('b_cancel')+'</button>')+
+   '<button class="btn" onclick="wizNext()">'+(wiz.step===4?u('wz_finish'):u('wz_next'))+'</button>'}
  else if(open.type==='bug'){
   head=u('bg_title');
   body='<p style="font-size:12px;color:var(--muted);margin:0 0 10px">'+u('bg_help')+'</p>'+
@@ -5716,7 +5916,8 @@ function drawModal(){
      '<button class="btn ghost" onclick="closeDispute('+j.id+',\'rejected\')">'+u('q_rejected')+'</button></div>':'')+
    '</div>';
   }
-  foot=(j.status==='sched'?'<button class="btn ghost" onclick="editJob('+j.id+')">'+u('b_edit')+'</button>':'')+
+  foot=(j.finished?'<button class="btn" onclick="shareProof('+j.id+')">'+u('pf_share')+'</button>':'')+
+  (j.status==='sched'?'<button class="btn ghost" onclick="editJob('+j.id+')">'+u('b_edit')+'</button>':'')+
   (j.status!=='done'&&j.status!=='cancelled'?'<button class="btn ghost" onclick="reassign('+j.id+')">'+u('p_reassign')+'</button>':'')+
   (j.status!=='cancelled'&&j.status!=='done'?'<button class="btn ghost" onclick="cancelJob('+j.id+')">'+u('cx_cancel')+'</button>':'')+
   (j.status==='done'&&!j.disputed?'<button class="btn ghost" onclick="raiseDispute('+j.id+',\'\')">'+u('q_flag')+'</button>':'')+
@@ -5802,7 +6003,7 @@ function render(){
  var _sc=document.querySelector('.wrap');var _y=_sc?_sc.scrollTop:0;
  root.innerHTML='<div class="app" dir="'+(session.role==='cleaner'?'ltr':uiDir())+'"><aside class="side"><div class="co"><b>'+esc(db.company)+'</b><span>Dubai</span></div>'+
  '<nav>'+nav+'</nav><div class="side-foot">'+esc(who)+'<br><button onclick="authSignOut()">'+u('b_signout')+'</button>'+
- '<div style="margin-top:6px;color:#3E4650;font-size:10px">build 39 \u00b7 complete</div></div></aside>'+
+ '<div style="margin-top:6px;color:#3E4650;font-size:10px">build 40 \u00b7 growth</div></div></aside>'+
  '<div class="main"><div class="top"><h2>'+u('title_'+tab)+'</h2><span class="date">'+dow+' · '+hhmm(Date.now())+'</span>'+
  '<div class="tools">'+langSel+bell+'</div></div>'+counts+
  (online?'':'<div class="offline">Offline — '+queued+' change'+(queued===1?'':'s')+' waiting.</div>')+
