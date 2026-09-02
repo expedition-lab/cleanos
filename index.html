@@ -315,6 +315,34 @@ var TIERS={
    ------------------------------------------------------------ */
 
 var FALLBACK_EN={
+ b_import:'Choose a CSV',
+ pr_btn:'Print the day',pr_signed:'Signed',pr_blocked:'Your browser blocked the print window.',
+ sp_title:'Suppliers',sp_items:'items',sp_low:'running low',sp_number:'Number',
+ sp_nonumber:'no number saved',sp_send:'Order',sp_ask:'WhatsApp number for',
+ sp_saved:'Number saved.',sp_cleared:'Number removed.',sp_order:'Please can we order:',
+ eta_ask:'Tell the customer how long',eta_told:'Customer told:',eta_mins:'minutes',
+ eta_sent:'Customer told.',eta_line1:'About your clean at',eta_line2:'The cleaner will be there in about',
+ eta_line3:'We will message again on arrival.',e_eta:'{p} — customer told {m} minutes',
+
+ ed_title:'Change this job',ed_save:'Save the change',ed_saved:'Job updated.',
+ fd_title:'Find anything',fd_ph:'Property, customer, cleaner, invoice, job number',
+ fd_type:'Type at least two letters.',fd_typesub:'It searches jobs, tasks, customers, properties, staff and invoices.',
+ fd_nothing:'Nothing matches that.',fd_nothingsub:'Try part of a name or a job number.',
+ bu_title:'Nothing has been backed up for a week',
+ bu_note:'Everything is stored in this browser. If it is cleared, the data goes with it. Download a copy now, or turn on live sync.',
+ bu_now:'Download a backup',bu_export:'Backup everything',bu_last:'last saved',bu_never:'never saved out',
+ bu_done:'Backup downloaded.',bu_failed:'Could not create the file.',
+ bu_restore:'Restore from a backup',bu_restorenote:'replaces everything currently on this device',
+ bu_choose:'Choose a file',bu_confirm:'This replaces everything on this device. Continue?',
+ bu_restored:'Restored.',bu_badfile:'That is not a backup file.',
+ bg_title:'Something is wrong with the app',bg_btn:'Report it',bg_note:'goes straight to support on WhatsApp',
+ bg_help:'Say what you were doing and what happened. The screen you were on is included automatically.',
+ bg_what:'What went wrong',bg_send:'Send it',bg_sent:'Opening WhatsApp.',bg_need:'Say what happened.',
+ bg_subject:'Problem with the cleaning app:',bg_ctx:'Your company name, the screen and the build number are attached.',
+ ic_title:'Import customers',ic_note:'a CSV with name, contact, phone, email',
+ ic_added:'customers added',ic_skipped:'already there',
+ e_changed:'{p} changed',
+
  tp_title:'Is anything being moved',tp_pickup:'Pick up from',tp_dropoff:'Take it to',
  tp_example:'Gold Souk, entrance 3',tp_from:'From:',tp_to:'To:',tp_go:'directions',
  tp_route:'the whole route',tp_type:'Type a place first.',tp_hereis:'Where I am now',
@@ -675,6 +703,34 @@ var FALLBACK_EN={
 var U={
  en:{name:'English',dir:'ltr'},
  ar:{name:'العربية',dir:'rtl',
+  b_import:'اختر ملف CSV',
+  pr_btn:'طباعة اليوم',pr_signed:'التوقيع',pr_blocked:'المتصفح منع نافذة الطباعة.',
+  sp_title:'الموردون',sp_items:'أصناف',sp_low:'يوشك على النفاد',sp_number:'الرقم',
+  sp_nonumber:'لا يوجد رقم',sp_send:'اطلب',sp_ask:'رقم واتساب لـ',
+  sp_saved:'حُفظ الرقم.',sp_cleared:'أُزيل الرقم.',sp_order:'نرجو طلب:',
+  eta_ask:'أخبر العميل بالمدة',eta_told:'أُبلغ العميل:',eta_mins:'دقيقة',
+  eta_sent:'أُبلغ العميل.',eta_line1:'بخصوص التنظيف في',eta_line2:'سيصل العامل خلال حوالي',
+  eta_line3:'سنراسلك عند الوصول.',e_eta:'{p} — أُبلغ العميل بـ {m} دقيقة',
+
+  ed_title:'تعديل المهمة',ed_save:'حفظ التعديل',ed_saved:'حُدّثت المهمة.',
+  fd_title:'ابحث عن أي شيء',fd_ph:'عقار، عميل، عامل، فاتورة، رقم مهمة',
+  fd_type:'اكتب حرفين على الأقل.',fd_typesub:'يبحث في المهام والعملاء والعقارات والموظفين والفواتير.',
+  fd_nothing:'لا نتائج.',fd_nothingsub:'جرّب جزءاً من الاسم أو رقم المهمة.',
+  bu_title:'لم تُحفظ نسخة احتياطية منذ أسبوع',
+  bu_note:'كل شيء محفوظ في هذا المتصفح. إذا مُسح، تُفقد البيانات. نزّل نسخة الآن أو فعّل المزامنة.',
+  bu_now:'تنزيل نسخة احتياطية',bu_export:'نسخ كل البيانات',bu_last:'آخر حفظ',bu_never:'لم تُحفظ أبداً',
+  bu_done:'نُزّلت النسخة.',bu_failed:'تعذّر إنشاء الملف.',
+  bu_restore:'استعادة من نسخة',bu_restorenote:'يستبدل كل ما على هذا الجهاز',
+  bu_choose:'اختر ملفاً',bu_confirm:'سيستبدل كل شيء على هذا الجهاز. متابعة؟',
+  bu_restored:'تمت الاستعادة.',bu_badfile:'هذا ليس ملف نسخة احتياطية.',
+  bg_title:'هناك خطأ في التطبيق',bg_btn:'أبلغ عنه',bg_note:'يصل مباشرة للدعم على واتساب',
+  bg_help:'اكتب ماذا كنت تفعل وماذا حدث. تُرفق الشاشة تلقائياً.',
+  bg_what:'ما الذي حدث',bg_send:'إرسال',bg_sent:'يُفتح واتساب.',bg_need:'اكتب ما حدث.',
+  bg_subject:'مشكلة في تطبيق التنظيف:',bg_ctx:'اسم الشركة والشاشة ورقم الإصدار مرفقة.',
+  ic_title:'استيراد العملاء',ic_note:'ملف CSV فيه الاسم وجهة الاتصال والهاتف والبريد',
+  ic_added:'عملاء أُضيفوا',ic_skipped:'موجودون بالفعل',
+  e_changed:'تغيّرت {p}',
+
   tp_title:'هل هناك ما يُنقل',tp_pickup:'الاستلام من',tp_dropoff:'التسليم إلى',
   tp_example:'سوق الذهب، المدخل ٣',tp_from:'من:',tp_to:'إلى:',tp_go:'الاتجاهات',
   tp_route:'المسار كاملاً',tp_type:'اكتب المكان أولاً.',tp_hereis:'موقعي الآن',
@@ -1287,7 +1343,7 @@ function save(){
 function load(){
  try{
   var d=localStorage.getItem(KEY);if(d)db=JSON.parse(d);
-  var p=localStorage.getItem(PKEY);if(p)photos=JSON.parse(p);
+  var p=localStorage.getItem(PKEY);if(p)photos=safeParse(p,{});
  }catch(e){}
  return Promise.resolve();
 }
@@ -1639,6 +1695,7 @@ function vSchedule(){
   '<button class="btn ghost" onclick="calShift(-1)">&larr;</button>'+
   '<button class="btn ghost" onclick="calToday()">'+u('cal_today')+'</button>'+
   '<button class="btn ghost" onclick="calShift(1)">&rarr;</button>'+
+  '<button class="btn ghost" onclick="printDay(\''+sel+'\')">'+u('pr_btn')+'</button>'+
   '<button class="btn" onclick="newJobOn(\''+sel+'\')">'+u('b_addjob')+'</button></div></div>'+
   '<div style="display:flex;gap:5px;padding:11px 13px;overflow-x:auto">';
  days.forEach(function(d){
@@ -2805,6 +2862,247 @@ function vSafety(){
  return h+'</div>';
 }
 
+
+/* ---- 1. a damaged saved record must not take the whole app down ---- */
+function safeParse(raw,fallback){
+ try{var v=JSON.parse(raw);return (v&&typeof v==='object')?v:fallback}
+ catch(e){return fallback}
+}
+
+/* ---- 2. editing a job after it exists ---- */
+function editJob(id){
+ var j=job(id);if(!j)return;
+ tierPick=j.tier||'standard';
+ jobForm={prop:j.prop,cust:j.customer,serv:j.service,cleaner:j.cleaner,time:j.time,
+  price:Math.round(j.price/(TIERS[j.tier||'standard'].mult)),tier:j.tier||'standard',
+  from:null,lat:null,lng:null,date:jobDate(j),team:(j.team||[]).slice(),editing:id};
+ var p=property(j.prop);
+ if(p&&p.lat){jobForm.lat=p.lat;jobForm.lng=p.lng}
+ open={type:'job'};render();
+}
+function applyEdit(){
+ var f=jobForm,j=job(f.editing);if(!j)return;
+ var base=parseInt(f.price||'150',10)||150;
+ var before=j.time+j.date+j.cleaner;
+ j.prop=(f.prop||j.prop).trim();j.customer=(f.cust||'').trim()||j.customer;
+ j.service=f.serv||j.service;j.tier=tierPick||j.tier;
+ j.cleaner=f.cleaner||null;j.team=(f.team||[]).slice();
+ j.time=(f.time||'').trim()||j.time;j.date=f.date||jobDate(j);
+ j.price=Math.round(base*TIERS[j.tier].mult);
+ if(before!==j.time+j.date+j.cleaner)notify('changed',{p:j.prop});
+ jobForm=null;open=null;save();render();toast(u('ed_saved'));
+}
+
+/* ---- 3. search across everything ---- */
+var findQ='';
+function setFind(v){findQ=v;render()}
+function clearFind(){findQ='';render()}
+function findAll(){
+ var q=(findQ||'').trim().toLowerCase();
+ if(q.length<2)return null;
+ var hit=function(x){return String(x||'').toLowerCase().indexOf(q)>-1};
+ return {
+  jobs:db.jobs.filter(function(j){return hit(j.prop)||hit(j.customer)||hit(j.service)||hit(String(j.id))}).slice(0,8),
+  props:db.props.filter(function(p){return hit(p.name)||hit(p.area)||hit(p.key)}).slice(0,6),
+  customers:customers().filter(function(c){return hit(c.name)||hit(c.contact)||hit(c.phone)}).slice(0,6),
+  crew:crew().filter(function(c){return hit(c.name)||hit(c.phone)}).slice(0,6),
+  invoices:db.invoices.filter(function(v){return hit(v.id)||hit(v.customer)}).slice(0,5),
+  tasks:db.tasks.filter(function(x){return hit(taskTitle(x))||hit(x.prop)}).slice(0,5)
+ };
+}
+function vFind(){
+ var r=findAll();
+ var h='<div class="card"><div class="card-h">'+ic('list')+'<h3>'+u('fd_title')+'</h3>'+
+  '<div class="right"><button class="btn ghost" onclick="clearFind()">'+u('b_close')+'</button></div></div>'+
+  '<div style="padding:11px 13px"><input id="fd-q" placeholder="'+u('fd_ph')+'" value="'+esc(findQ)+'" oninput="setFind(this.value)"></div>';
+ if(!r)return h+'<div class="empty"><b>'+u('fd_type')+'</b>'+u('fd_typesub')+'</div></div>';
+ var total=r.jobs.length+r.props.length+r.customers.length+r.crew.length+r.invoices.length+r.tasks.length;
+ if(!total)return h+'<div class="empty"><b>'+u('fd_nothing')+'</b>'+u('fd_nothingsub')+'</div></div>';
+ h+='</div>';
+ if(r.jobs.length){h+='<div class="card"><div class="card-h"><h3>'+u('nav_jobs')+'</h3></div>';
+  r.jobs.forEach(function(j){h+=jobRow(j)});h+='</div>'}
+ if(r.tasks.length){h+='<div class="card"><div class="card-h"><h3>'+u('nav_tasks')+'</h3></div>';
+  r.tasks.forEach(function(x){h+=taskRow(x)});h+='</div>'}
+ if(r.customers.length){h+='<div class="card"><div class="card-h"><h3>'+u('cu_title')+'</h3></div>';
+  r.customers.forEach(function(c){h+='<div class="row"><div class="av">'+esc(c.name.slice(0,2))+'</div>'+
+   '<div class="grow"><div class="name">'+esc(c.name)+'</div><div class="meta">'+
+   (c.contact?'<span>'+esc(c.contact)+'</span>':'')+'<span>'+custJobs(c.name).length+' '+u('c_jobs')+'</span></div></div>'+
+   (c.phone?'<a class="wa" href="'+wa(c.phone,db.company)+'" target="_blank" rel="noopener">'+ic('wa')+'</a>':'')+'</div>'});
+  h+='</div>'}
+ if(r.props.length){h+='<div class="card"><div class="card-h"><h3>'+u('nav_props')+'</h3></div>';
+  r.props.forEach(function(p){h+='<div class="row"><span class="dot"></span><div class="grow">'+
+   '<div class="name">'+esc(p.name)+'</div><div class="meta"><span>'+esc(p.area||'')+'</span>'+
+   (p.key?'<span>'+esc(p.key)+'</span>':'')+'</div></div>'+
+   (p.lat?'<a class="wa" href="'+navLink(p)+'" target="_blank" rel="noopener">'+ic('pin')+'</a>':'')+'</div>'});
+  h+='</div>'}
+ if(r.crew.length){h+='<div class="card"><div class="card-h"><h3>'+u('nav_team')+'</h3></div>';
+  r.crew.forEach(function(c){h+='<div class="row"><div class="av">'+c.initials+'</div><div class="grow">'+
+   '<div class="name">'+esc(c.name)+'</div><div class="meta"><span>'+ratingOf(c).toFixed(2)+'★</span></div></div>'+
+   '<a class="wa" href="'+wa(c.phone,db.company)+'" target="_blank" rel="noopener">'+ic('wa')+'</a></div>'});
+  h+='</div>'}
+ if(r.invoices.length){h+='<div class="card"><div class="card-h"><h3>'+u('nav_invoices')+'</h3></div>';
+  r.invoices.forEach(function(v){h+='<div class="row"><span class="dot'+(invDue(v)>0.5?' gold':'')+'"></span>'+
+   '<div class="grow"><div class="name">'+v.id+'<span style="color:var(--faint);font-weight:400">'+esc(v.customer)+'</span></div>'+
+   '<div class="meta"><span>'+aed(invTotal(v))+'</span></div></div>'+
+   '<span class="mono">'+aed(invDue(v))+'</span></div>'});
+  h+='</div>'}
+ return h;
+}
+
+/* ---- 4. a nudge when nothing has been backed up in a while ---- */
+function lastBackup(){try{return parseInt(localStorage.getItem('cleanos:backup')||'0',10)}catch(e){return 0}}
+function markBackup(){try{localStorage.setItem('cleanos:backup',String(Date.now()))}catch(e){}}
+function backupOverdue(){
+ if(cloud.on)return false;              /* synced to the cloud, no nudge needed */
+ var last=lastBackup();
+ if(!last)return db.jobs.length>12;     /* leave a brand new setup alone */
+ return Date.now()-last>7*86400000;
+}
+function backupNow(){
+ var payload={exported:new Date().toISOString(),company:db.company,data:db,photos:photos};
+ try{
+  var b=new Blob([JSON.stringify(payload)],{type:'application/json'});
+  var url=URL.createObjectURL(b),a2=document.createElement('a');
+  a2.href=url;a2.download='backup-'+todayStr()+'.json';
+  document.body.appendChild(a2);a2.click();document.body.removeChild(a2);
+  setTimeout(function(){URL.revokeObjectURL(url)},1500);
+  markBackup();render();toast(u('bu_done'));
+ }catch(e){toast(u('bu_failed'))}
+}
+function restoreAll(ev){
+ var f=ev.target.files&&ev.target.files[0];if(!f)return;
+ var rd=new FileReader();
+ rd.onload=function(){
+  var p=safeParse(rd.result,null);
+  if(!p||!p.data||!p.data.jobs){toast(u('bu_badfile'));return}
+  if(!confirm(u('bu_confirm')))return;
+  db=p.data;photos=p.photos||{};
+  save();render();toast(u('bu_restored'));
+ };
+ rd.readAsText(f);
+}
+
+/* ---- 5. telling us something is broken ---- */
+function reportBug(){open={type:'bug'};render()}
+function sendBug(){
+ var what=((document.getElementById('bg-what')||{}).value||'').trim();
+ if(!what){toast(u('bg_need'));return}
+ var ctx=[db.company,'build 38',session?session.role:'-',tab,uiLang,
+  db.jobs.length+' jobs',navigator.onLine?'online':'offline'].join(' · ');
+ var msg=u('bg_subject')+'\n'+what+'\n\n---\n'+ctx;
+ var to=S().supportPhone||'23054960101';
+ open=null;render();
+ try{window.open(wa(to,msg),'_blank')}catch(e){}
+ toast(u('bg_sent'));
+}
+
+/* ---- 6. bringing customers in from a spreadsheet ---- */
+function importCustomers(ev){
+ var f=ev.target.files&&ev.target.files[0];if(!f)return;
+ var rd=new FileReader();
+ rd.onload=function(){
+  var lines=String(rd.result).split(/\r?\n/).filter(function(l){return l.trim()});
+  var added=0,skipped=0;
+  lines.forEach(function(l,i){
+   var c=l.split(',').map(function(x){return x.trim().replace(/^"|"$/g,'')});
+   if(i===0&&/name/i.test(c[0]))return;
+   if(!c[0])return;
+   if(customerByName(c[0])){skipped++;return}
+   customers().push({id:'cu'+Date.now()+i,name:c[0],contact:c[1]||'',
+    phone:(c[2]||'').replace(/[^0-9]/g,''),email:c[3]||''});
+   added++;
+  });
+  save();render();
+  toast(added+' '+u('ic_added')+(skipped?' · '+skipped+' '+u('ic_skipped'):''));
+ };
+ rd.readAsText(f);
+}
+
+
+/* ---- the day on paper: what a manager pins up or hands over ---- */
+function printDay(dstr){
+ var d=dstr||calFor(),list=jobsOn(d).filter(function(j){return j.status!=='cancelled'})
+  .sort(function(a,b){return a.time.localeCompare(b.time)});
+ var rows=list.map(function(j){
+  var p=property(j.prop),c=j.cleaner?cleaner(j.cleaner):null;
+  return '<tr><td>'+j.time+'</td><td><b>'+esc(j.prop)+'</b>'+(p&&p.area?'<br><span class="s">'+esc(p.area)+'</span>':'')+'</td>'+
+   '<td>'+esc(j.customer)+'</td><td>'+esc(j.service)+'<br><span class="s">'+TIERS[j.tier||'standard'].name+'</span></td>'+
+   '<td>'+(c?esc(c.name):'—')+((j.team&&j.team.length)?'<br><span class="s">+'+j.team.map(function(x){return esc(cleaner(x).name.split(' ')[0])}).join(', ')+'</span>':'')+'</td>'+
+   '<td>'+(p&&p.key?esc(p.key):'—')+'</td><td class="r">'+aed(j.price)+'</td>'+
+   '<td class="sig"></td></tr>';
+ }).join('');
+ var total=list.reduce(function(a,j){return a+j.price},0);
+ var w=window.open('','_blank');
+ if(!w){toast(u('pr_blocked'));return}
+ w.document.write('<!doctype html><meta charset="utf-8"><title>'+esc(db.company)+' — '+dayName(d)+'</title>'+
+  '<style>body{font:12px -apple-system,system-ui,sans-serif;color:#111;margin:26px}'+
+  'h1{font-size:17px;margin:0 0 2px}.sub{color:#666;font-size:12px;margin-bottom:16px}'+
+  'table{width:100%;border-collapse:collapse}th{text-align:left;font-size:10px;text-transform:uppercase;'+
+  'letter-spacing:.04em;color:#666;border-bottom:1.5px solid #111;padding:6px 7px}'+
+  'td{border-bottom:1px solid #ddd;padding:8px 7px;vertical-align:top}'+
+  '.s{color:#777;font-size:10.5px}.r{text-align:right}.sig{width:88px;border-bottom:1px solid #ddd}'+
+  'tfoot td{font-weight:600;border-top:1.5px solid #111;border-bottom:0}'+
+  '@media print{body{margin:12mm}}</style>'+
+  '<h1>'+esc(db.company)+'</h1><div class="sub">'+dayName(d)+' · '+d+' · '+list.length+' '+u('c_jobs')+'</div>'+
+  '<table><thead><tr><th>'+u('f_time')+'</th><th>'+u('f_property')+'</th><th>'+u('h_customer')+'</th>'+
+  '<th>'+u('f_service')+'</th><th>'+u('h_cleaner')+'</th><th>'+u('f_key')+'</th><th class="r">'+u('h_price')+'</th>'+
+  '<th>'+u('pr_signed')+'</th></tr></thead><tbody>'+rows+'</tbody>'+
+  '<tfoot><tr><td colspan="6">'+u('h_total')+'</td><td class="r">'+aed(total)+'</td><td></td></tr></tfoot></table>');
+ w.document.close();
+ setTimeout(function(){try{w.print()}catch(e){}},350);
+}
+
+/* ---- who to call when something runs out ---- */
+function suppliers(){
+ var m={};
+ stock().forEach(function(it){
+  if(!it.supplier)return;
+  m[it.supplier]=m[it.supplier]||{name:it.supplier,phone:it.supplierPhone||'',items:[]};
+  m[it.supplier].items.push(it);
+  if(it.supplierPhone)m[it.supplier].phone=it.supplierPhone;
+ });
+ return Object.keys(m).map(function(k){return m[k]});
+}
+function setSupplierPhone(name){
+ var v=prompt(u('sp_ask')+' '+name);
+ if(v===null)return;
+ var p=String(v).replace(/[^0-9]/g,'');
+ stock().forEach(function(it){if(it.supplier===name)it.supplierPhone=p});
+ save();render();toast(p?u('sp_saved'):u('sp_cleared'));
+}
+function orderText(sup){
+ var low=sup.items.filter(function(it){return it.qty<it.min});
+ var lines=(low.length?low:sup.items).map(function(it){
+  return '• '+it.item+' × '+(it.qty<it.min?suggestQty(it):1)});
+ return db.company+'\n'+u('sp_order')+'\n'+lines.join('\n');
+}
+
+/* ---- telling the customer when the cleaner will actually arrive ---- */
+function etaText(j,mins){
+ var p=property(j.prop);
+ return db.company+'\n'+u('eta_line1')+' '+esc(j.prop)+'\n'+
+  u('eta_line2')+' '+mins+' '+u('eta_mins')+'\n'+
+  (j.cleaner?u('rm_cleaner')+' '+cleaner(j.cleaner).name+'\n':'')+
+  u('eta_line3');
+}
+function sendEta(id,mins){
+ var j=job(id);if(!j)return;
+ j.eta={mins:mins,at:Date.now()};
+ var cu=customerByName(j.customer);
+ notify('eta',{p:j.prop,m:mins});
+ save();render();
+ if(cu&&cu.phone){try{window.open(wa(cu.phone,etaText(j,mins)),'_blank')}catch(e){}}
+ toast(u('eta_sent'));
+}
+function etaBar(j){
+ if(j.status!=='sched')return '';
+ return '<div style="display:flex;gap:5px;align-items:center;padding:9px 13px;border-top:1px solid var(--line)">'+
+  '<span style="font-size:11px;color:var(--muted);flex:1">'+
+  (j.eta?u('eta_told')+' '+j.eta.mins+' '+u('eta_mins')+' ('+hhmm(j.eta.at)+')':u('eta_ask'))+'</span>'+
+  [15,30,60].map(function(m){return '<button class="btn ghost" style="font-size:11px" onclick="sendEta('+j.id+','+m+')">'+m+'m</button>'}).join('')+
+  '</div>';
+}
+
 /* ---------------- manager ---------------- */
 function vToday(){
  var h=db.setup?'':setupSteps();
@@ -2825,6 +3123,11 @@ function vToday(){
   h+='<div class="card"><div class="card-h">'+ic('zap')+'<h3>'+u('tasks_waiting')+'</h3><div class="right">'+
    '<button class="btn ghost" onclick="newTask()">'+u('b_posttask')+'</button></div></div>';
   openTasks().forEach(function(x){h+=taskRow(x,false)});h+='</div>'}
+ if(backupOverdue()){
+  h+='<div class="card alert"><div class="card-h">'+ic('alert')+'<h3 style="color:var(--late)">'+u('bu_title')+'</h3>'+
+   '<div class="right"><button class="btn" onclick="backupNow()">'+u('bu_now')+'</button></div></div>'+
+   '<div style="padding:11px 13px;font-size:12px;color:var(--muted)">'+u('bu_note')+'</div></div>';
+ }
  if(openJobs().length){
   h+='<div class="card"><div class="card-h">'+ic('zap')+'<h3 style="color:var(--gold)">'+u('p_open')+'</h3>'+
    '<div class="right"><span style="font-size:11px;color:var(--faint)">'+u('p_waiting')+'</span></div></div>';
@@ -2974,6 +3277,20 @@ function vStock(){
  });
  h+='</table></div>';
 
+ var sup=suppliers();
+ if(sup.length){
+  h+='<div class="card"><div class="card-h">'+ic('users')+'<h3>'+u('sp_title')+'</h3></div>';
+  sup.forEach(function(x){
+   var low=x.items.filter(function(it){return it.qty<it.min});
+   h+='<div class="row"><span class="dot'+(low.length?' prob':'')+'"></span><div class="grow">'+
+    '<div class="name">'+esc(x.name)+(low.length?'<span class="pill" style="color:var(--stop);border-color:#4A2226">'+low.length+' '+u('sp_low')+'</span>':'')+'</div>'+
+    '<div class="meta"><span>'+x.items.length+' '+u('sp_items')+'</span>'+
+    (x.phone?'<span>'+esc(x.phone)+'</span>':'<span style="color:var(--late)">'+u('sp_nonumber')+'</span>')+'</div></div>'+
+    '<button class="btn ghost" onclick="setSupplierPhone(\''+jarg(x.name)+'\')">'+u('sp_number')+'</button>'+
+    (x.phone?'<a class="wa" href="'+wa(x.phone,orderText(x))+'" target="_blank" rel="noopener">'+ic('wa')+u('sp_send')+'</a>':'')+'</div>';
+  });
+  h+='</div>';
+ }
  if(orders().length){
   h+='<div class="card"><div class="card-h">'+ic('receipt')+'<h3>'+u('inv_orders')+'</h3></div>';
   orders().forEach(function(o){
@@ -4269,6 +4586,18 @@ function vSettings(){
  '<button class="btn red" onclick="eraseAll()">'+u('b_delete')+'</button></div></div>';
 
  h+='<div class="card alert"><div class="card-h"><h3 style="color:var(--red)">'+u('demo_controls')+'</h3></div>'+
+ '<div class="row"><div class="grow"><div class="name">'+u('bu_export')+'</div>'+
+ '<div class="meta"><span>'+(lastBackup()?u('bu_last')+' '+dayName(ymd(new Date(lastBackup()))):u('bu_never'))+'</span></div></div>'+
+ '<button class="btn" onclick="backupNow()">'+u('bu_now')+'</button></div>'+
+ '<div class="row"><div class="grow"><div class="name">'+u('bu_restore')+'</div>'+
+ '<div class="meta"><span>'+u('bu_restorenote')+'</span></div></div>'+
+ '<label class="btn ghost file-btn">'+u('bu_choose')+'<input type="file" accept="application/json,.json" onchange="restoreAll(event)"></label></div>'+
+ '<div class="row"><div class="grow"><div class="name">'+u('ic_title')+'</div>'+
+ '<div class="meta"><span>'+u('ic_note')+'</span></div></div>'+
+ '<label class="btn ghost file-btn">'+u('b_import')+'<input type="file" accept=".csv,text/csv" onchange="importCustomers(event)"></label></div>'+
+ '<div class="row"><div class="grow"><div class="name">'+u('bg_title')+'</div>'+
+ '<div class="meta"><span>'+u('bg_note')+'</span></div></div>'+
+ '<button class="btn ghost" onclick="reportBug()">'+u('bg_btn')+'</button></div>'+
  '<div class="row"><div class="grow"><div class="name">'+u('ar_title')+'</div>'+
  '<div class="meta"><span>'+u('ar_note')+'</span></div></div>'+
  '<button class="btn ghost" onclick="archiveOld()">'+u('ar_btn')+'</button></div>'+
@@ -4861,7 +5190,7 @@ function drawModal(){
   '<div class="field"><label for="pb-pri">'+d.priority+'</label><select id="pb-pri">'+
   '<option value="Low">'+d.low+'</option><option value="Medium" selected>'+d.med+'</option><option value="High">'+d.high+'</option></select></div>';
   foot='<button class="btn ghost" onclick="closeModal()">'+d.cancel+'</button><button class="btn red" onclick="saveProblem()">'+d.send+'</button>'}
- else if(open.type==='job'){head=u('m_schedjob');
+ else if(open.type==='job'){head=jobForm.editing?u('ed_title'):u('m_schedjob');
   var names=db.props.map(function(p){return p.name});
   var known=names.indexOf(jobForm.prop)>-1;
   body='<div class="field"><label for="j-prop">'+u('f_property')+'</label>'+
@@ -4921,7 +5250,7 @@ function drawModal(){
       :'<p style="font-size:11px;color:var(--faint);margin:0">'+u('m_pinhint')+'</p>')+
    '</div>';
   foot='<button class="btn ghost" onclick="closeModal()">'+u('b_cancel')+'</button>'+
-   '<button class="btn" onclick="saveJob()">'+u('b_schedule')+'</button>'}
+   '<button class="btn" onclick="'+(jobForm.editing?'applyEdit()':'saveJob()')+'">'+(jobForm.editing?u('ed_save'):u('b_schedule'))+'</button>'}
  else if(open.type==='task'){head=u('m_task');
   body='<div class="field"><label for="t-type">'+u('f_task')+'</label>'+
    '<select id="t-type" onchange="pickTaskKind(this.value)">'+
@@ -5299,6 +5628,13 @@ function drawModal(){
    '<div class="field"><label for="sh-link">'+u('sf_link')+'</label><input id="sh-link" placeholder="https://"></div>';
   foot='<button class="btn ghost" onclick="closeModal()">'+u('b_cancel')+'</button>'+
    '<button class="btn" onclick="saveSheet()">'+u('b_add')+'</button>'}
+ else if(open.type==='bug'){
+  head=u('bg_title');
+  body='<p style="font-size:12px;color:var(--muted);margin:0 0 10px">'+u('bg_help')+'</p>'+
+   '<div class="field"><label for="bg-what">'+u('bg_what')+'</label><textarea id="bg-what" rows="4"></textarea></div>'+
+   '<p style="font-size:11px;color:var(--faint);margin:0">'+u('bg_ctx')+'</p>';
+  foot='<button class="btn ghost" onclick="closeModal()">'+u('b_cancel')+'</button>'+
+   '<button class="btn" onclick="sendBug()">'+u('bg_send')+'</button>'}
  else if(open.type==='cancel'){
   var j=job(open.job),pol=cancelPolicy(j),fee=Math.round(j.price*pol.pct/100);
   head=u('cx_title')+' · '+esc(j.prop);
@@ -5363,6 +5699,7 @@ function drawModal(){
    iss.forEach(function(x){body+='<div class="kv"><span>'+esc(T.en[x.type])+'</span><span>'+esc(x.note)+'</span></div>'})}
   var rep='Cleaning report — '+j.prop+' ('+j.time+'). '+(j.finished?'Finished '+hhmm(j.finished)+', '+dur(j.started,j.finished)+' on site, ':'')+
    j.checked.length+'/'+cl.length+' items, '+ps.length+' photos.';
+  body+=etaBar(j);
   var pa=photoAreas(j),areaLine=Object.keys(pa).map(function(k){return T.en[k]+' '+pa[k]}).join(' · ');
   if(areaLine)body+='<p style="font-size:11px;color:var(--faint);margin:6px 0 0">'+esc(areaLine)+'</p>';
   if(j.rework)body+='<div class="kv"><span>'+u('q_rework')+'</span><span>'+u('q_of')+' '+j.rework+'</span></div>';
@@ -5379,7 +5716,8 @@ function drawModal(){
      '<button class="btn ghost" onclick="closeDispute('+j.id+',\'rejected\')">'+u('q_rejected')+'</button></div>':'')+
    '</div>';
   }
-  foot=(j.status!=='done'&&j.status!=='cancelled'?'<button class="btn ghost" onclick="reassign('+j.id+')">'+u('p_reassign')+'</button>':'')+
+  foot=(j.status==='sched'?'<button class="btn ghost" onclick="editJob('+j.id+')">'+u('b_edit')+'</button>':'')+
+  (j.status!=='done'&&j.status!=='cancelled'?'<button class="btn ghost" onclick="reassign('+j.id+')">'+u('p_reassign')+'</button>':'')+
   (j.status!=='cancelled'&&j.status!=='done'?'<button class="btn ghost" onclick="cancelJob('+j.id+')">'+u('cx_cancel')+'</button>':'')+
   (j.status==='done'&&!j.disputed?'<button class="btn ghost" onclick="raiseDispute('+j.id+',\'\')">'+u('q_flag')+'</button>':'')+
   '<button class="btn ghost" onclick="duplicateJob('+j.id+')">'+u('j_dup')+'</button>'+
@@ -5441,6 +5779,7 @@ function render(){
  var bell='';
  if(session.role==='manager'){var un=unread();
   bell='<button class="btn ghost" onclick="go(\'feed\')" style="padding:5px 9px">'+ic('bell')+(un?' '+un:'')+'</button>'+
+   '<button class="btn ghost" onclick="go(\'find\')" style="padding:5px 9px" title="'+u('fd_title')+'">'+ic('list')+'</button>'+
    '<button class="btn ghost" onclick="go(\'settings\')" style="padding:5px 9px;font-size:11px;'+
    (cloud.on?'color:var(--teal);border-color:#1E4433':'')+'">'+(cloud.on?'&#9679; '+u('cl_live'):u('cl_offline'))+'</button>'}
  var counts='';
@@ -5454,7 +5793,7 @@ function render(){
   (openIssues().length?'<span class="bad"><b>'+openIssues().length+'</b>'+u('c_problems')+'</span>':'')+
   '<span style="margin-left:auto" class="mono">'+aed(L.reduce(function(s,j){return s+j.price},0)+taskRev)+' '+u('c_booked')+'</span></div>'}
  var body='';
- if(tab==='today')body=vToday();else if(tab==='pool')body=vPool();else if(tab==='sales')body=vSales();else if(tab==='schedule')body=vSchedule();else if(tab==='chat')body=vChat();else if(tab==='map')body=vMap();else if(tab==='tasks')body=vTasks();else if(tab==='jobs')body=vJobs();
+ if(tab==='today')body=vToday();else if(tab==='pool')body=vPool();else if(tab==='find')body=vFind();else if(tab==='sales')body=vSales();else if(tab==='schedule')body=vSchedule();else if(tab==='chat')body=vChat();else if(tab==='map')body=vMap();else if(tab==='tasks')body=vTasks();else if(tab==='jobs')body=vJobs();
  else if(tab==='routes')body=vRoutes();else if(tab==='contracts')body=vContracts();else if(tab==='props')body=vProps();else if(tab==='keys')body=vKeys();else if(tab==='customers')body=vCustomers();
  else if(tab==='team')body=vTeam();else if(tab==='avail')body=vAvailability();else if(tab==='people')body=vPeople();else if(tab==='safety')body=vSafety();else if(tab==='issues')body=vIssues();else if(tab==='stock')body=vStock();
  else if(tab==='invoices')body=vInvoices();else if(tab==='money')body=vMoney();else if(tab==='metrics')body=vMetrics();else if(tab==='feed')body=vFeed();else if(tab==='myday')body=vMyDay();
@@ -5463,7 +5802,7 @@ function render(){
  var _sc=document.querySelector('.wrap');var _y=_sc?_sc.scrollTop:0;
  root.innerHTML='<div class="app" dir="'+(session.role==='cleaner'?'ltr':uiDir())+'"><aside class="side"><div class="co"><b>'+esc(db.company)+'</b><span>Dubai</span></div>'+
  '<nav>'+nav+'</nav><div class="side-foot">'+esc(who)+'<br><button onclick="authSignOut()">'+u('b_signout')+'</button>'+
- '<div style="margin-top:6px;color:#3E4650;font-size:10px">build 37 \u00b7 pickup</div></div></aside>'+
+ '<div style="margin-top:6px;color:#3E4650;font-size:10px">build 39 \u00b7 complete</div></div></aside>'+
  '<div class="main"><div class="top"><h2>'+u('title_'+tab)+'</h2><span class="date">'+dow+' · '+hhmm(Date.now())+'</span>'+
  '<div class="tools">'+langSel+bell+'</div></div>'+counts+
  (online?'':'<div class="offline">Offline — '+queued+' change'+(queued===1?'':'s')+' waiting.</div>')+
