@@ -7,6 +7,22 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>Sparkle Facilities — operations</title>
 <style>
+/* ---------- the numbers a manager scans first ----------
+   These were falling to one per row: the grid rule only existed
+   inside the phone media queries, so on a laptop each card took
+   the full width. A dashboard you have to scroll is not a dashboard. */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));
+ gap:8px;margin-bottom:12px;align-items:stretch}
+.stats .stat{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+ padding:10px 12px;min-width:0}
+.stats .stat .n{font-size:18px;line-height:1.15;letter-spacing:-.02em;font-weight:600;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stats .stat .l{font-size:10.5px;color:var(--muted);margin-top:3px;line-height:1.3}
+.stats .stat div:last-child{font-size:9.5px;color:var(--faint);line-height:1.3}
+
+/* the bar rows on Metrics were also taller than they needed to be */
+.card .barrow{padding:6px 13px}
+
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;500&display=swap');
 :root{
  /* graphite base — read at night in an office, and in a dim stairwell */
@@ -4490,21 +4506,21 @@ function stats(){
 }
 function bar(label,val,max,colour,right){
  var pct=max?Math.max(2,Math.round(val/max*100)):0;
- return '<div style="padding:7px 13px;border-bottom:1px solid var(--line)">'+
-  '<div style="display:flex;font-size:12px;margin-bottom:5px"><span>'+label+'</span>'+
+ return '<div style="padding:6px 13px;border-bottom:1px solid var(--line)">'+
+  '<div style="display:flex;font-size:11.5px;margin-bottom:4px"><span>'+label+'</span>'+
   '<span class="mono" style="margin-'+(uiDir()==='rtl'?'right':'left')+':auto;color:var(--muted)">'+(right||val)+'</span></div>'+
   '<div style="height:6px;background:var(--line2);border-radius:3px;overflow:hidden">'+
   '<div style="height:100%;width:'+pct+'%;background:'+(colour||'var(--teal)')+'"></div></div></div>';
 }
 function kpi(label,value,note,colour){
- return '<div class="stat" style="background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:12px 13px">'+
-  '<div class="n mono" style="font-size:21px;'+(colour?'color:'+colour:'')+'">'+value+'</div>'+
+ return '<div class="stat">'+
+  '<div class="n mono"'+(colour?' style="color:'+colour+'"':'')+'>'+value+'</div>'+
   '<div class="l">'+label+'</div>'+
   (note?'<div style="font-size:10.5px;color:var(--faint);margin-top:3px">'+note+'</div>':'')+'</div>';
 }
 function vMetrics(){
  var m=stats();
- var h='<div class="stats" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">'+
+ var h='<div class="stats">'+
   kpi(u('k_revenue'),aed(m.booked+m.taskRev+m.cxFees),u('k_revnote'))+
   kpi(u('k_mrr'),aed(m.mrr),u('k_mrrnote'),'var(--teal)')+
   kpi(u('k_completion'),m.completion+'%',m.done+' '+u('c_done')+' / '+m.jobs)+
@@ -6606,7 +6622,7 @@ function render(){
  var _sc=document.querySelector('.wrap');var _y=_sc?_sc.scrollTop:0;
  root.innerHTML='<div class="app" dir="'+(session.role==='cleaner'?'ltr':uiDir())+'"><aside class="side"><div class="co"><b>'+esc(db.company)+'</b><span>Dubai</span></div>'+
  '<nav>'+nav+'</nav><div class="side-foot">'+esc(who)+'<br><button onclick="authSignOut()">'+u('b_signout')+'</button>'+
- '<div style="margin-top:6px;color:#3E4650;font-size:10px">build 43 \u00b7 wired</div></div></aside>'+
+ '<div style="margin-top:6px;color:#3E4650;font-size:10px">build 44 \u00b7 layout</div></div></aside>'+
  '<div class="main"><div class="top"><h2>'+u('title_'+tab)+'</h2><span class="date">'+dow+' · '+hhmm(Date.now())+'</span>'+
  '<div class="tools">'+langSel+bell+'</div></div>'+counts+
  (online?'':'<div class="offline">Offline — '+queued+' change'+(queued===1?'':'s')+' waiting.</div>')+
