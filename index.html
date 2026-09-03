@@ -331,6 +331,16 @@ var TIERS={
    ------------------------------------------------------------ */
 
 var FALLBACK_EN={
+ ro_title:'Driving between jobs',ro_stops:'stops',ro_save:'save',ro_fix:'Reorder the day',
+ ro_good:'already in a sensible order',ro_none:'Nothing to route.',
+ ro_nonesub:'Assign some jobs and pin the properties on the map first.',
+ ro_nopin:'not on the map',ro_total:'All cleaners today',ro_driving:'total driving between stops',
+ ro_done:'Reordered. Saved about',ro_toofew:'Needs at least three stops to be worth reordering.',
+ ro_look:'Look at it',ro_note:'The stops are in a longer order than they need to be. Reordering keeps the same time slots but cuts the driving.',
+ e_route:'{a} route reordered, {k} km saved',
+
+ k_skipped:'left running, not counted',
+
  pn_notyet:'not posted today',
 
  mb_title:'People and access',mb_active:'people with access',mb_none:'nobody set up yet',
@@ -771,6 +781,16 @@ var FALLBACK_EN={
 var U={
  en:{name:'English',dir:'ltr'},
  ar:{name:'العربية',dir:'rtl',
+  ro_title:'القيادة بين المهام',ro_stops:'محطات',ro_save:'توفير',ro_fix:'إعادة ترتيب اليوم',
+  ro_good:'الترتيب جيد بالفعل',ro_none:'لا يوجد ما يُرتَّب.',
+  ro_nonesub:'أسند بعض المهام وثبّت العقارات على الخريطة أولاً.',
+  ro_nopin:'غير مثبتة على الخريطة',ro_total:'كل العمال اليوم',ro_driving:'إجمالي القيادة بين المحطات',
+  ro_done:'أُعيد الترتيب. وُفّر حوالي',ro_toofew:'يحتاج ثلاث محطات على الأقل.',
+  ro_look:'اعرضه',ro_note:'ترتيب المحطات أطول مما يلزم. إعادة الترتيب تحافظ على المواعيد وتقلل القيادة.',
+  e_route:'أُعيد ترتيب مسار {a}، وُفّر {k} كم',
+
+  k_skipped:'تُركت مفتوحة ولم تُحتسب',
+
   pn_notyet:'لم تُنشر اليوم',
 
   mb_title:'الأشخاص والصلاحيات',mb_active:'أشخاص لديهم صلاحية',mb_none:'لا أحد بعد',
@@ -3409,14 +3429,14 @@ function undoLast(){
 }
 
 /* ---- 5. work done with no signal has to survive ---- */
-function pending(){db.pendingOps=db.pendingOps||[];return db.pendingOps}
+function queuedOps(){db.pendingOps=db.pendingOps||[];return db.pendingOps}
 function queueOp(kind,detail){
- pending().push({at:Date.now(),kind:kind,detail:detail});
- if(pending().length>200)db.pendingOps=pending().slice(-200);
+ queuedOps().push({at:Date.now(),kind:kind,detail:detail});
+ if(queuedOps().length>200)db.pendingOps=queuedOps().slice(-200);
 }
 function flushQueue(){
  if(!online)return 0;
- var n=pending().length;
+ var n=queuedOps().length;
  if(!n)return 0;
  /* the data is already in db; the queue exists so a reconnect forces one clean push */
  db.pendingOps=[];
@@ -3828,6 +3848,111 @@ function photoStats(){
  return {onDevice:n,kb:Math.round(local/1024),total:total,inCloud:up};
 }
 
+
+/* ============================================================
+   Route optimisation.
+   Competitors either lack this entirely or put it on plans at
+   $119-$299 a month. It is also the one change that pays for
+   itself: fewer kilometres between stops means more jobs in
+   the same day.
+   ============================================================ */
+function haversine(a,b){
+ if(!a||!b||a.lat==null||b.lat==null)return 0;
+ var R=6371,dLat=(b.lat-a.lat)*Math.PI/180,dLng=(b.lng-a.lng)*Math.PI/180;
+ var la1=a.lat*Math.PI/180,la2=b.lat*Math.PI/180;
+ var x=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.sin(dLng/2)*Math.sin(dLng/2)*Math.cos(la1)*Math.cos(la2);
+ return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
+}
+function jobPoint(j){var p=property(j.prop);return (p&&p.lat!=null)?{lat:p.lat,lng:p.lng}:null}
+function routeLength(list){
+ var km=0;
+ for(var i=1;i<list.length;i++)km+=haversine(jobPoint(list[i-1]),jobPoint(list[i]));
+ return km;
+}
+/* nearest stop first, then untangle any crossings */
+function optimiseOrder(list){
+ var pts=list.filter(jobPoint),noloc=list.filter(function(j){return !jobPoint(j)});
+ if(pts.length<3)return pts.concat(noloc);
+ var out=[pts[0]],rest=pts.slice(1);
+ while(rest.length){
+  var last=out[out.length-1],bi=0,bd=Infinity;
+  rest.forEach(function(j,i){var d=haversine(jobPoint(last),jobPoint(j));if(d<bd){bd=d;bi=i}});
+  out.push(rest.splice(bi,1)[0]);
+ }
+ /* 2-opt: reverse any segment that shortens the whole run */
+ var improved=true,guard=0;
+ while(improved&&guard<40){
+  improved=false;guard++;
+  for(var i=1;i<out.length-1;i++){
+   for(var k=i+1;k<out.length;k++){
+    var before=routeLength(out);
+    var trial=out.slice(0,i).concat(out.slice(i,k+1).reverse(),out.slice(k+1));
+    if(routeLength(trial)<before-0.01){out=trial;improved=true}
+   }
+  }
+ }
+ return out.concat(noloc);
+}
+function routeFor(cid,dstr){
+ return db.jobs.filter(function(j){
+  return teamOf(j).indexOf(cid)>-1&&jobDate(j)===(dstr||todayStr())&&j.status!=='cancelled';
+ }).sort(function(a,b){return a.time.localeCompare(b.time)});
+}
+function routeSaving(cid,dstr){
+ var cur=routeFor(cid,dstr);
+ if(cur.length<3)return null;
+ var now=routeLength(cur),best=routeLength(optimiseOrder(cur));
+ if(now<=best+0.05)return null;
+ return {now:now,best:best,km:now-best,mins:Math.round((now-best)/28*60),
+  pct:Math.round((now-best)/now*100)};
+}
+/* reorder the day by moving the times, keeping the same slots */
+function applyRoute(cid,dstr){
+ var d=dstr||todayStr(),cur=routeFor(cid,d);
+ if(cur.length<3){toast(u('ro_toofew'));return}
+ var slots=cur.map(function(j){return j.time}).sort();
+ var order=optimiseOrder(cur);
+ var before=routeLength(cur);
+ snapshot(u('ro_title'));
+ order.forEach(function(j,i){j.time=slots[i]});
+ var after=routeLength(routeFor(cid,d));
+ notify('route',{a:cleaner(cid).name.split(' ')[0],k:Math.round(before-after)});
+ save();render();
+ toast(u('ro_done')+' '+(before-after).toFixed(1)+' km');
+}
+function vRoutePlan(){
+ var d=calFor();
+ var h='<div class="card"><div class="card-h">'+ic('pin')+'<h3>'+u('ro_title')+'</h3><div class="right">'+
+  '<span style="font-size:11px;color:var(--faint)">'+dayName(d)+'</span></div></div>';
+ var any=false,totalKm=0,totalSave=0;
+ crew().forEach(function(c){
+  var list=routeFor(c.id,d);
+  if(!list.length)return;
+  any=true;
+  var km=routeLength(list),sv=routeSaving(c.id,d);
+  totalKm+=km;if(sv)totalSave+=sv.km;
+  var placed=list.filter(jobPoint).length;
+  h+='<div class="row"><div class="av">'+c.initials+'</div><div class="grow">'+
+   '<div class="name">'+esc(c.name)+
+   (sv?'<span class="pill prem">'+u('ro_save')+' '+sv.km.toFixed(1)+' km</span>':'')+'</div>'+
+   '<div class="meta"><span>'+list.length+' '+u('ro_stops')+'</span>'+
+   '<span>'+km.toFixed(1)+' km</span>'+
+   (placed<list.length?'<span style="color:var(--late)">'+(list.length-placed)+' '+u('ro_nopin')+'</span>':'')+
+   '<span>'+list.map(function(j){return j.time}).join(' → ')+'</span></div></div>'+
+   (sv?'<span class="mono" style="color:var(--done);font-size:11.5px">-'+sv.mins+' min</span>'+
+     '<button class="btn" onclick="applyRoute(\''+c.id+'\',\''+d+'\')">'+u('ro_fix')+'</button>'
+    :'<span class="st">'+u('ro_good')+'</span>')+
+   (gRoute(c.id)?'<a class="wa" href="'+gRoute(c.id)+'" target="_blank" rel="noopener">'+ic('pin')+'</a>':'')+
+   '</div>';
+ });
+ if(!any)return h+'<div class="empty"><b>'+u('ro_none')+'</b>'+u('ro_nonesub')+'</div></div>';
+ h+='<div class="row"><div class="grow"><div class="name" style="font-weight:400">'+u('ro_total')+'</div>'+
+  '<div class="meta"><span>'+u('ro_driving')+'</span></div></div>'+
+  '<span class="mono">'+totalKm.toFixed(1)+' km</span>'+
+  (totalSave>0.1?'<span class="mono" style="color:var(--done)">-'+totalSave.toFixed(1)+' km</span>':'')+'</div>';
+ return h+'</div>';
+}
+
 /* ---------------- manager ---------------- */
 function vToday(){
  var h=db.setup?'':setupSteps();
@@ -3848,6 +3973,15 @@ function vToday(){
   h+='<div class="card"><div class="card-h">'+ic('zap')+'<h3>'+u('tasks_waiting')+'</h3><div class="right">'+
    '<button class="btn ghost" onclick="newTask()">'+u('b_posttask')+'</button></div></div>';
   openTasks().forEach(function(x){h+=taskRow(x,false)});h+='</div>'}
+ var savings=crew().map(function(c){return routeSaving(c.id,todayStr())}).filter(Boolean);
+ if(savings.length){
+  var km=savings.reduce(function(a,x){return a+x.km},0);
+  var mins=savings.reduce(function(a,x){return a+x.mins},0);
+  h+='<div class="card"><div class="card-h">'+ic('pin')+'<h3>'+u('ro_title')+'</h3><div class="right">'+
+   '<span style="font-size:11px;color:var(--faint)">'+km.toFixed(1)+' km · '+mins+' min</span>'+
+   '<button class="btn" onclick="go(\'routes\')">'+u('ro_look')+'</button></div></div>'+
+   '<div style="padding:10px 13px;font-size:12px;color:var(--muted)">'+u('ro_note')+'</div></div>';
+ }
  if(canUndo()){
   h+='<div class="card" style="border-color:#3A3320"><div class="card-h">'+ic('clock')+
    '<h3 style="color:var(--late)">'+u('un_title')+'</h3><div class="right">'+
@@ -4475,7 +4609,13 @@ function stats(){
  var rework=js.filter(function(j){return j.rework});
  var withPhotos=done.filter(function(j){return (j.photos||[]).length>=TIERS[j.tier||'standard'].photos});
  var onTime=done.filter(function(j){return j.started&&j.started<=todayAt(j.time)+15*MIN});
- var mins=done.reduce(function(a,j){return a+(j.finished&&j.started?(j.finished-j.started)/MIN:0)},0);
+ /* a job left running all night is a data-entry mistake, not a 14-hour clean */
+ var timed=done.filter(function(j){
+  if(!j.started||!j.finished)return false;
+  var m=(j.finished-j.started)/MIN;return m>0&&m<=600;
+ });
+ var mins=timed.reduce(function(a,j){return a+(j.finished-j.started)/MIN},0);
+ var skipped=done.length-timed.length;
  var booked=live.reduce(function(a,j){return a+j.price},0);
  var taskRev=db.tasks.filter(function(x){return x.status==='done'}).reduce(function(a,x){return a+x.fee},0);
  var cxFees=cancelled.reduce(function(a,j){return a+((j.cancel&&j.cancel.fee)||0)},0);
@@ -4492,7 +4632,7 @@ function stats(){
   jobs:live.length,done:done.length,cancelled:cancelled.length,
   completion:live.length?Math.round(done.length/live.length*100):0,
   onTime:done.length?Math.round(onTime.length/done.length*100):0,
-  avgMins:done.length?Math.round(mins/done.length):0,
+  avgMins:timed.length?Math.round(mins/timed.length):0,skippedLong:skipped,
   photoOk:done.length?Math.round(withPhotos.length/done.length*100):0,
   disputes:disputed.length,disputeRate:done.length?Math.round(disputed.length/done.length*100):0,
   rework:rework.length,
@@ -4525,7 +4665,7 @@ function vMetrics(){
   kpi(u('k_mrr'),aed(m.mrr),u('k_mrrnote'),'var(--teal)')+
   kpi(u('k_completion'),m.completion+'%',m.done+' '+u('c_done')+' / '+m.jobs)+
   kpi(u('k_ontime'),m.onTime+'%',u('k_ontimenote'),m.onTime<85?'var(--red)':'')+
-  kpi(u('k_avgtime'),m.avgMins+'m',u('k_avgnote'))+
+  kpi(u('k_avgtime'),m.avgMins+'m',m.skippedLong?m.skippedLong+' '+u('k_skipped'):u('k_avgnote'))+
   kpi(u('k_disputes'),m.disputeRate+'%',m.disputes+' '+u('k_of')+' '+m.done,m.disputeRate>5?'var(--red)':'')+
   kpi(u('pf_profit'),aed(m.profit),u('pf_after'),m.profit<0?'var(--red)':'var(--teal)')+
   kpi(u('pf_margin'),m.margin+'%',u('pf_marginnote'),m.margin<20?'var(--amber)':'')+
@@ -6614,7 +6754,7 @@ function render(){
   '<span style="margin-left:auto" class="mono">'+aed(L.reduce(function(s,j){return s+j.price},0)+taskRev)+' '+u('c_booked')+'</span></div>'}
  var body='';
  if(tab==='today')body=vToday();else if(tab==='pool')body=vPool();else if(tab==='find')body=vFind();else if(tab==='sales')body=vSales();else if(tab==='schedule')body=vSchedule();else if(tab==='chat')body=vChat();else if(tab==='map')body=vMap();else if(tab==='tasks')body=vTasks();else if(tab==='jobs')body=bulkBar()+vJobs();
- else if(tab==='routes')body=vRoutes();else if(tab==='contracts')body=vContracts();else if(tab==='props')body=vProps();else if(tab==='keys')body=vKeys();else if(tab==='customers')body=(openCu?vCustomer():vCustomers());
+ else if(tab==='routes')body=vRoutePlan()+vRoutes();else if(tab==='contracts')body=vContracts();else if(tab==='props')body=vProps();else if(tab==='keys')body=vKeys();else if(tab==='customers')body=(openCu?vCustomer():vCustomers());
  else if(tab==='team')body=vTeam()+vLeaderboard();else if(tab==='avail')body=vAvailability();else if(tab==='people')body=vPeople();else if(tab==='safety')body=vSafety();else if(tab==='issues')body=vIssues();else if(tab==='stock')body=vStock();
  else if(tab==='invoices')body=vInvoices();else if(tab==='money')body=vMoney();else if(tab==='metrics')body=vMetrics();else if(tab==='feed')body=vFeed();else if(tab==='myday')body=vMyDay();
  else if(tab==='supplies')body=vSupplies();else if(tab==='ctasks')body=vCleanerTasks();else if(tab==='mine')body=vMine();else if(tab==='portal')body=vPortal();else if(tab==='settings')body=vSettings();
@@ -6622,7 +6762,7 @@ function render(){
  var _sc=document.querySelector('.wrap');var _y=_sc?_sc.scrollTop:0;
  root.innerHTML='<div class="app" dir="'+(session.role==='cleaner'?'ltr':uiDir())+'"><aside class="side"><div class="co"><b>'+esc(db.company)+'</b><span>Dubai</span></div>'+
  '<nav>'+nav+'</nav><div class="side-foot">'+esc(who)+'<br><button onclick="authSignOut()">'+u('b_signout')+'</button>'+
- '<div style="margin-top:6px;color:#3E4650;font-size:10px">build 44 \u00b7 layout</div></div></aside>'+
+ '<div style="margin-top:6px;color:#3E4650;font-size:10px">build 46 \u00b7 routes</div></div></aside>'+
  '<div class="main"><div class="top"><h2>'+u('title_'+tab)+'</h2><span class="date">'+dow+' · '+hhmm(Date.now())+'</span>'+
  '<div class="tools">'+langSel+bell+'</div></div>'+counts+
  (online?'':'<div class="offline">Offline — '+queued+' change'+(queued===1?'':'s')+' waiting.</div>')+
