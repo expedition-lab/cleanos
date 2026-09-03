@@ -331,6 +331,17 @@ var TIERS={
    ------------------------------------------------------------ */
 
 var FALLBACK_EN={
+ mt_signin:'Sign in to your company',mt_signinsub:'Use the company id and the code your office gave you.',
+ mt_yourcode:'Your personal code',mt_enter:'Sign in',mt_needboth:'Both the company id and your code, please.',
+ mt_asknote:'Each person has their own code. It is not shared with anyone else in the company.',
+ mt_device:'This device',mt_setupfor:'set up for',mt_nows:'not linked to a company yet',
+ mt_switch:'Switch company',mt_switchask:'This clears everything for the current company from this device. Continue?',
+ mt_switched:'Cleared. Sign in to another company.',
+ mt_wrongws:'That code belongs to a different company.',
+ mt_hidelist:'Hide the team list',mt_showlist:'Show the team list',
+ mt_listshown:'team listed on this device',mt_listhidden:'team hidden on this device',
+ mt_hidden:'Sign in with your own code. The team is not listed on this device.',
+
  ro_title:'Driving between jobs',ro_stops:'stops',ro_save:'save',ro_fix:'Reorder the day',
  ro_good:'already in a sensible order',ro_none:'Nothing to route.',
  ro_nonesub:'Assign some jobs and pin the properties on the map first.',
@@ -781,6 +792,17 @@ var FALLBACK_EN={
 var U={
  en:{name:'English',dir:'ltr'},
  ar:{name:'العربية',dir:'rtl',
+  mt_signin:'الدخول إلى شركتك',mt_signinsub:'استخدم معرّف الشركة والرمز الذي أعطاك إياه المكتب.',
+  mt_yourcode:'رمزك الشخصي',mt_enter:'دخول',mt_needboth:'أدخل معرّف الشركة ورمزك.',
+  mt_asknote:'لكل شخص رمزه الخاص، ولا يُشارك مع أحد.',
+  mt_device:'هذا الجهاز',mt_setupfor:'مضبوط لـ',mt_nows:'غير مرتبط بشركة بعد',
+  mt_switch:'تغيير الشركة',mt_switchask:'سيمسح كل بيانات الشركة الحالية من هذا الجهاز. متابعة؟',
+  mt_switched:'تم المسح. سجّل الدخول لشركة أخرى.',
+  mt_wrongws:'هذا الرمز يخص شركة أخرى.',
+  mt_hidelist:'إخفاء قائمة الفريق',mt_showlist:'إظهار قائمة الفريق',
+  mt_listshown:'الفريق ظاهر على هذا الجهاز',mt_listhidden:'الفريق مخفي على هذا الجهاز',
+  mt_hidden:'سجّل الدخول برمزك الخاص. قائمة الفريق مخفية على هذا الجهاز.',
+
   ro_title:'القيادة بين المهام',ro_stops:'محطات',ro_save:'توفير',ro_fix:'إعادة ترتيب اليوم',
   ro_good:'الترتيب جيد بالفعل',ro_none:'لا يوجد ما يُرتَّب.',
   ro_nonesub:'أسند بعض المهام وثبّت العقارات على الخريطة أولاً.',
@@ -1473,17 +1495,17 @@ function seed(){return{
 var db=seed(),photos={},session=null,tab='today',lang='en',open=null,probPick=null,dayPick=[],online=true,queued=0,starPick=0,tierPick='standard',geoAsk=false;
 
 function save(){
- if(!online){queued++;queueOp('save',null);try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){}return}
- try{localStorage.setItem(KEY,JSON.stringify(db))}
+ if(!online){queued++;queueOp('save',null);try{localStorage.setItem(dataKey(),JSON.stringify(db))}catch(e){}return}
+ try{localStorage.setItem(dataKey(),JSON.stringify(db))}
  catch(e){toast(u('st_full'))}
- try{localStorage.setItem(PKEY,JSON.stringify(photos))}
+ try{localStorage.setItem(photoKey(),JSON.stringify(photos))}
  catch(e){toast(u('st_photofull'))}
  if(cloud.on)cloudPush(true);
 }
 function load(){
  try{
-  var d=localStorage.getItem(KEY);if(d)db=JSON.parse(d);
-  var p=localStorage.getItem(PKEY);if(p)photos=safeParse(p,{});
+  var d=localStorage.getItem(dataKey());if(d)db=JSON.parse(d);
+  var p=localStorage.getItem(photoKey());if(p)photos=safeParse(p,{});
  }catch(e){}
  return Promise.resolve();
 }
@@ -1736,23 +1758,113 @@ function vOtp(){
  return h+'</div></div></div>';
 }
 
+
+/* ============================================================
+   One company must never see another.
+   Three separate problems, fixed together:
+     a. storage was shared, so two companies on one browser mixed
+     b. the sign-in screen listed the whole team before anyone
+        had identified themselves
+     c. nothing checked that a token belonged to this company
+   ============================================================ */
+var WS_KEY='cleanos:ws';
+function currentWs(){
+ try{return localStorage.getItem(WS_KEY)||''}catch(e){return ''}
+}
+function setCurrentWs(id){
+ try{localStorage.setItem(WS_KEY,id||'')}catch(e){}
+}
+/* every company gets its own drawer, so nothing bleeds across */
+function dataKey(){var w=currentWs();return w?('cleanos:v4:'+w):'cleanos:v4'}
+function photoKey(){var w=currentWs();return w?('cleanos:ph:'+w):'cleanos:photos'}
+
+/* switching company clears everything belonging to the old one */
+function switchCompany(){
+ if(!confirm(u('mt_switchask')))return;
+ session=null;memberToken='';photos={};photoIndex={};
+ try{
+  localStorage.removeItem('cleanos:token2');
+  localStorage.removeItem('cleanos:cloud');
+  localStorage.removeItem('cleanos:user');
+  localStorage.removeItem(WS_KEY);
+ }catch(e){}
+ cloud={url:'',key:'',ws:'',secret:'',on:false,rev:0,status:'off',busy:false,pending:false,timer:null};
+ db=seed();
+ render();toast(u('mt_switched'));
+}
+/* a token is only good for the company it was issued to */
+function verifyWorkspace(cb){
+ if(!cloud.on||!memberToken){cb&&cb(true);return}
+ whoAmI(function(m){
+  if(!m){toast(u('tk_bad'));signOut();cb&&cb(false);return}
+  if(cloud.ws&&m.workspace_id&&m.workspace_id!==cloud.ws){
+   /* the link belongs to a different company than this device is set up for */
+   toast(u('mt_wrongws'));signOut();cb&&cb(false);return;
+  }
+  cb&&cb(true);
+ });
+}
+/* the office may hide the team list on a shared or public device */
+function showTeamOnDevice(){
+ try{return localStorage.getItem('cleanos:showteam')!=='0'}catch(e){return true}
+}
+function toggleTeamList(){
+ try{localStorage.setItem('cleanos:showteam',showTeamOnDevice()?'0':'1')}catch(e){}
+ render();toast(showTeamOnDevice()?u('mt_listshown'):u('mt_listhidden'));
+}
+var codeEntry=false, codeWs='';
+function openCodeEntry(){codeEntry=true;render()}
+function closeCodeEntry(){codeEntry=false;render()}
+function enterCompany(){
+ var w=((document.getElementById('cd-ws')||{}).value||'').trim();
+ var t=((document.getElementById('cd-token')||{}).value||'').trim();
+ if(!w||!t){toast(u('mt_needboth'));return}
+ cloud.ws=w;saveToken(t);setCurrentWs(w);cloudSaveCfg();
+ codeEntry=false;
+ signInWithToken();
+}
+function vCodeEntry(){
+ return '<div class="login"><div class="lbox"><div class="lhead"><h1>'+u('mt_signin')+'</h1>'+
+  '<p>'+u('mt_signinsub')+'</p></div>'+
+  '<div class="box" style="padding:14px">'+
+  '<div class="field"><label for="cd-ws">'+u('cl_ws')+'</label><input id="cd-ws" placeholder="gulfshine"></div>'+
+  '<div class="field"><label for="cd-token">'+u('mt_yourcode')+'</label><input id="cd-token" type="password"></div>'+
+  '<button class="btn big" onclick="enterCompany()">'+u('mt_enter')+'</button>'+
+  '<button class="btn ghost big" style="margin-top:8px" onclick="closeCodeEntry()">'+u('b_cancel')+'</button>'+
+  '<p style="font-size:11px;color:var(--faint);margin:11px 0 0">'+u('mt_asknote')+'</p>'+
+  '</div></div></div>';
+}
+
 /* ---------------- login ---------------- */
 function vLogin(){
  var h='<div class="login"><div class="lbox"><div class="lhead"><h1>'+esc(db.company)+'</h1><p>'+u('l_operations')+'</p></div>'+
+ '<button class="btn" style="width:100%;padding:12px;margin-bottom:7px" onclick="openCodeEntry()">'+u('mt_signin')+'</button>'+
  '<button class="btn ghost" style="width:100%;padding:12px;margin-bottom:7px" onclick="startWizard()">'+u('wz_start')+'</button>'+
  (authReady()?
   '<button class="btn" style="width:100%;padding:12px;margin-bottom:7px" onclick="googleSignIn()">'+u('au_google')+'</button>'+
   '<button class="btn ghost" style="width:100%;padding:12px;margin-bottom:14px" onclick="otpOpen()">'+u('au_phonebtn')+'</button>'+
   '<div style="font-size:11px;color:var(--faint);margin-bottom:7px">'+u('au_ordevice')+'</div>'
   :'')+
- '<button class="who" onclick="signIn(\'manager\',null)"><div class="av">LM</div><div><div style="font-weight:500">Layla Mansour</div>'+
- '<div style="font-size:11px;color:var(--faint)">'+u('l_opsmanager')+'</div></div><span class="r">'+u('l_manager')+'</span></button>';
- for(var i=0;i<crew().length;i++){var c=crew()[i];
-  h+='<button class="who" onclick="askPin(\'cleaner\',\''+c.id+'\')"><div class="av">'+c.initials+'</div><div>'+
-  '<div style="font-weight:500">'+esc(c.name)+(c.senior?' <span class="pill prem">Senior</span>':'')+'</div>'+
-  '<div style="font-size:11px;color:var(--faint)">app in '+(T[c.lang]||T.en).name+'</div></div><span class="r">'+ratingOf(c).toFixed(2)+'★</span></button>'}
- h+='<button class="who" onclick="signIn(\'customer\',null)"><div class="av">MH</div><div><div style="font-weight:500">Marina Heights Tower</div>'+
- '<div style="font-size:11px;color:var(--faint)">'+u('l_customer')+'</div></div><span class="r">'+u('l_portal')+'</span></button></div></div>';return h}
+ (showTeamOnDevice()?'':'<div class="box" style="padding:13px;font-size:12px;color:var(--muted)">'+
+   u('mt_hidden')+'</div>')+
+ '';
+ /* the team is only listed on a device the office has trusted */
+ if(showTeamOnDevice()){
+  h+='<button class="who" onclick="askPin(\'manager\',null)"><div class="av">'+
+   esc((db.company||'  ').slice(0,2).toUpperCase())+'</div><div><div style="font-weight:500">'+u('l_manager')+'</div>'+
+   '<div style="font-size:11px;color:var(--faint)">'+u('l_opsmanager')+'</div></div><span class="r">'+u('l_manager')+'</span></button>';
+  for(var i=0;i<crew().length;i++){var c=crew()[i];
+   h+='<button class="who" onclick="askPin(\'cleaner\',\''+c.id+'\')"><div class="av">'+c.initials+'</div><div>'+
+   '<div style="font-weight:500">'+esc(c.name)+(c.senior?' <span class="pill prem">Senior</span>':'')+'</div>'+
+   '<div style="font-size:11px;color:var(--faint)">app in '+(T[c.lang]||T.en).name+'</div></div><span class="r">'+ratingOf(c).toFixed(2)+'★</span></button>'}
+  customers().forEach(function(cu){
+   h+='<button class="who" onclick="askPin(\'customer\',\''+cu.id+'\')"><div class="av">'+
+    esc(cu.name.split(' ').map(function(w){return w[0]}).join('').slice(0,2))+'</div><div>'+
+    '<div style="font-weight:500">'+esc(cu.name)+'</div>'+
+    '<div style="font-size:11px;color:var(--faint)">'+u('l_customer')+'</div></div><span class="r">'+u('l_portal')+'</span></button>';
+  });
+ }
+ return h+'</div></div>'}
 function signIn(r,id){session={role:r,id:id};thread=null;draft='';
  if(r==='cleaner'){lang=cleaner(id).lang;tab='myday'}else if(r==='customer'){lang='en';tab='portal'}else{lang='en';tab='today'}render()}
 function signOut(){session=null;open=null;thread=null;draft='';render()}
@@ -3440,7 +3552,7 @@ function flushQueue(){
  if(!n)return 0;
  /* the data is already in db; the queue exists so a reconnect forces one clean push */
  db.pendingOps=[];
- try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){}
+ try{localStorage.setItem(dataKey(),JSON.stringify(db))}catch(e){}
  if(cloud.on)cloudPushNow(true);
  render();
  if(n)toast(n+' '+u('q_synced'));
@@ -3462,7 +3574,7 @@ function evictSyncedPhotos(){
  Object.keys(photos).forEach(function(id){
   if(!keep[id]){freed+=String(photos[id]||'').length;delete photos[id]}
  });
- try{localStorage.setItem(PKEY,JSON.stringify(photos))}catch(e){}
+ try{localStorage.setItem(photoKey(),JSON.stringify(photos))}catch(e){}
  render();
  toast(Math.round(freed/1024)+u('ph_freed'));
 }
@@ -3749,7 +3861,7 @@ function readMemberLink(){
  try{
   var o=JSON.parse(atob(decodeURIComponent(m[1])));
   cloud.url=o.u;cloud.key=o.k;cloud.ws=o.w;cloud.on=true;cloud.status='on';
-  cloudSaveCfg();saveToken(o.t);
+  setCurrentWs(o.w);cloudSaveCfg();saveToken(o.t);
   if(history.replaceState)history.replaceState(null,'',location.pathname);
   return true;
  }catch(e){return false}
@@ -3820,7 +3932,7 @@ function fetchPhoto(id,cb){
  .then(function(r){return r.json()})
  .then(function(rows){
    if(rows&&rows[0]){photos[id]=rows[0].data;markInCloud(id);
-    try{localStorage.setItem(PKEY,JSON.stringify(photos))}catch(e){}
+    try{localStorage.setItem(photoKey(),JSON.stringify(photos))}catch(e){}
     render();cb&&cb(rows[0].data)}
    else cb&&cb(null);
  }).catch(function(){cb&&cb(null)});
@@ -3836,7 +3948,7 @@ function freeSpace(){
   if(!photoInCloud(id)){skipped++;return}   /* never drop what is not safely uploaded */
   freed+=String(photos[id]||'').length;delete photos[id];
  });
- try{localStorage.setItem(PKEY,JSON.stringify(photos))}catch(e){}
+ try{localStorage.setItem(photoKey(),JSON.stringify(photos))}catch(e){}
  render();
  toast(Math.round(freed/1024)+u('ph_freed')+(skipped?' · '+skipped+' '+u('ph_kept'):''));
 }
@@ -5243,7 +5355,7 @@ function cloudDisconnect(){
 }
 function cloudApply(remote){
  db=remote.data;cloud.rev=remote.rev;cloudSaveCfg();
- try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){}
+ try{localStorage.setItem(dataKey(),JSON.stringify(db))}catch(e){}
  cloudFetchPhotos();
  render();
 }
@@ -5304,7 +5416,7 @@ function cloudFetchPhotos(){
  .then(function(rows){
    if(!rows||!rows.length)return;
    rows.forEach(function(r2){photos[r2.id]=r2.data});
-   try{localStorage.setItem(PKEY,JSON.stringify(photos))}catch(e){}
+   try{localStorage.setItem(photoKey(),JSON.stringify(photos))}catch(e){}
    render();
  }).catch(function(){});
 }
@@ -5483,6 +5595,11 @@ function vSettings(){
  '<button class="btn red" onclick="eraseAll()">'+u('b_delete')+'</button></div></div>';
 
  h+='<div class="card alert"><div class="card-h"><h3 style="color:var(--red)">'+u('demo_controls')+'</h3></div>'+
+ '<div class="row"><div class="grow"><div class="name">'+u('mt_device')+'</div>'+
+ '<div class="meta"><span>'+(currentWs()?u('mt_setupfor')+' '+esc(currentWs()):u('mt_nows'))+'</span>'+
+ '<span>'+(showTeamOnDevice()?u('mt_listshown'):u('mt_listhidden'))+'</span></div></div>'+
+ '<button class="btn ghost" onclick="toggleTeamList()">'+(showTeamOnDevice()?u('mt_hidelist'):u('mt_showlist'))+'</button>'+
+ '<button class="btn ghost" onclick="switchCompany()">'+u('mt_switch')+'</button></div>'+
  '<div class="row"><div class="grow"><div class="name">'+u('mb_title')+'</div>'+
  '<div class="meta"><span>'+(cloud.on?(memberList.length?memberList.filter(function(m){return m.active}).length+' '+u('mb_active'):u('mb_none')):u('mb_needcloud'))+'</span></div></div>'+
  (cloud.on?'<button class="btn ghost" onclick="loadMembers()">'+u('mb_load')+'</button>'+
@@ -6708,6 +6825,7 @@ function render(){
   '<h1>'+esc(db.company)+'</h1><p>'+u('pb_thanks')+'</p></div>'+
   '<div class="box" style="padding:16px;font-size:13px;color:var(--muted)">'+u('pb_thankssub')+'</div></div></div>';return}
  if(publicBooking){root.innerHTML=vPublicBook();return}
+ if(codeEntry){root.innerHTML=vCodeEntry();return}
  if(otpPhase){root.innerHTML=vOtp();return}
  if(authUser&&!session){root.innerHTML=vAuthPending();return}
  if(pinFor){root.innerHTML=vPin();return}
@@ -6762,7 +6880,7 @@ function render(){
  var _sc=document.querySelector('.wrap');var _y=_sc?_sc.scrollTop:0;
  root.innerHTML='<div class="app" dir="'+(session.role==='cleaner'?'ltr':uiDir())+'"><aside class="side"><div class="co"><b>'+esc(db.company)+'</b><span>Dubai</span></div>'+
  '<nav>'+nav+'</nav><div class="side-foot">'+esc(who)+'<br><button onclick="authSignOut()">'+u('b_signout')+'</button>'+
- '<div style="margin-top:6px;color:#3E4650;font-size:10px">build 46 \u00b7 routes</div></div></aside>'+
+ '<div style="margin-top:6px;color:#3E4650;font-size:10px">build 47 \u00b7 tenants</div></div></aside>'+
  '<div class="main"><div class="top"><h2>'+u('title_'+tab)+'</h2><span class="date">'+dow+' · '+hhmm(Date.now())+'</span>'+
  '<div class="tools">'+langSel+bell+'</div></div>'+counts+
  (online?'':'<div class="offline">Offline — '+queued+' change'+(queued===1?'':'s')+' waiting.</div>')+
@@ -6785,7 +6903,7 @@ var booking=readBookingLink();
 var cameBack=readAuthRedirect();
 Promise.resolve(load()).then(function(){if(db&&db.settings&&db.settings.uiLang&&U[db.settings.uiLang])uiLang=db.settings.uiLang;
  if(cloud.on&&cloud.url&&cloud.secret){cloud.status='on';cloudPoll();cloudFetchPhotos()}
- if(viaToken)signInWithToken();
+ if(viaToken){signInWithToken();verifyWorkspace()}
  if(authUser&&!cameBack)matchAndEnter();
  if(invited&&pendingRole){
    if(pendingRole==='cleaner'&&pendingId)askPin('cleaner',pendingId);
