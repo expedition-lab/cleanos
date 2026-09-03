@@ -315,6 +315,8 @@ var TIERS={
    ------------------------------------------------------------ */
 
 var FALLBACK_EN={
+ pn_notyet:'not posted today',
+
  mb_title:'People and access',mb_active:'people with access',mb_none:'nobody set up yet',
  mb_load:'Refresh',mb_seed:'Create access for everyone',mb_made:'people given their own access',
  mb_allthere:'Everyone already has access.',mb_added:'Added.',mb_failed:'The database refused that.',
@@ -753,6 +755,8 @@ var FALLBACK_EN={
 var U={
  en:{name:'English',dir:'ltr'},
  ar:{name:'العربية',dir:'rtl',
+  pn_notyet:'لم تُنشر اليوم',
+
   mb_title:'الأشخاص والصلاحيات',mb_active:'أشخاص لديهم صلاحية',mb_none:'لا أحد بعد',
   mb_load:'تحديث',mb_seed:'إنشاء صلاحيات للجميع',mb_made:'أشخاص حصلوا على صلاحياتهم',
   mb_allthere:'الجميع لديهم صلاحيات.',mb_added:'أُضيف.',mb_failed:'رفضت قاعدة البيانات ذلك.',
@@ -3865,11 +3869,29 @@ function vTasks(){
  var earned=db.tasks.filter(function(x){return x.status==='done'}).reduce(function(s,x){return s+x.fee},0);
  var h='<div class="card"><div class="card-h">'+ic('zap')+'<h3>'+u('quick_tasks')+'</h3><div class="right">'+
  '<span style="font-size:11.5px;color:var(--faint)">Small paid jobs between cleans · '+aed(earned)+' earned today</span>'+
+ '<button class="btn ghost" onclick="addPlan()">'+u('pn_add')+'</button>'+
+ (taskPlans().length?'<button class="btn ghost" onclick="runPlans()">'+u('pn_run')+'</button>':'')+
  '<button class="btn" onclick="newTask()">'+u('b_posttask')+'</button></div></div>';
- if(!db.tasks.length)return h+'<div class="empty"><b>'+u('e_noposts')+'</b>Bin runs, parcels, heavy lifts.</div></div>';
+ if(!db.tasks.length)h+='<div class="empty"><b>'+u('e_noposts')+'</b>Bin runs, parcels, heavy lifts.</div>';
  var ord={open:0,taken:1,done:2};
  db.tasks.slice().sort(function(a,b){return ord[a.status]-ord[b.status]||b.at-a.at}).forEach(function(x){h+=taskRow(x,false)});
- h+='</div><div class="card"><div class="card-h"><h3>'+u('what_charge')+'</h3></div><table>'+
+ h+='</div>';
+ if(taskPlans().length){
+  h+='<div class="card"><div class="card-h">'+ic('repeat')+'<h3>'+u('pn_title')+'</h3><div class="right">'+
+   '<button class="btn" onclick="runPlans()">'+u('pn_run')+'</button></div></div>';
+  taskPlans().forEach(function(p){
+   h+='<div class="row"><span class="dot run"></span><div class="grow">'+
+    '<div class="name">'+esc(p.custom||taskType(p.type).name)+
+    '<span style="color:var(--faint);font-weight:400">'+esc(p.prop)+'</span></div>'+
+    '<div class="meta"><span>'+p.days.map(function(d){return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d]}).join(' ')+'</span>'+
+    '<span>'+(p.fee?aed(p.fee):u('tk_askprice'))+'</span>'+
+    (p.last?'<span>'+u('pn_last')+' '+p.last+'</span>':'<span style="color:var(--late)">'+u('pn_notyet')+'</span>')+
+    '</div></div>'+
+    '<button class="btn ghost" onclick="removePlan(\''+p.id+'\')">'+u('b_remove')+'</button></div>';
+  });
+  h+='</div>';
+ }
+ h+='<div class="card"><div class="card-h"><h3>'+u('what_charge')+'</h3></div><table>'+
  '<tr><th>'+u('h_task')+'</th><th class="num">'+u('h_fee')+'</th><th class="num">'+u('h_minutes')+'</th><th class="num">'+u('h_perhour')+'</th></tr>';
  TASK_TYPES.forEach(function(ty){h+='<tr><td>'+ty.name+'</td><td class="num mono">'+aed(ty.fee)+'</td>'+
   '<td class="num mono" style="color:var(--faint)">'+ty.mins+'</td>'+
@@ -6584,7 +6606,7 @@ function render(){
  var _sc=document.querySelector('.wrap');var _y=_sc?_sc.scrollTop:0;
  root.innerHTML='<div class="app" dir="'+(session.role==='cleaner'?'ltr':uiDir())+'"><aside class="side"><div class="co"><b>'+esc(db.company)+'</b><span>Dubai</span></div>'+
  '<nav>'+nav+'</nav><div class="side-foot">'+esc(who)+'<br><button onclick="authSignOut()">'+u('b_signout')+'</button>'+
- '<div style="margin-top:6px;color:#3E4650;font-size:10px">build 42 \u00b7 access</div></div></aside>'+
+ '<div style="margin-top:6px;color:#3E4650;font-size:10px">build 43 \u00b7 wired</div></div></aside>'+
  '<div class="main"><div class="top"><h2>'+u('title_'+tab)+'</h2><span class="date">'+dow+' · '+hhmm(Date.now())+'</span>'+
  '<div class="tools">'+langSel+bell+'</div></div>'+counts+
  (online?'':'<div class="offline">Offline — '+queued+' change'+(queued===1?'':'s')+' waiting.</div>')+
