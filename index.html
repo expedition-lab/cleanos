@@ -315,6 +315,16 @@ var TIERS={
    ------------------------------------------------------------ */
 
 var FALLBACK_EN={
+ mb_title:'People and access',mb_active:'people with access',mb_none:'nobody set up yet',
+ mb_load:'Refresh',mb_seed:'Create access for everyone',mb_made:'people given their own access',
+ mb_allthere:'Everyone already has access.',mb_added:'Added.',mb_failed:'The database refused that.',
+ mb_needcloud:'Turn on live sync first.',mb_loaded:'people loaded',mb_link:'Their link',
+ mb_revoke:'Revoke',mb_confirm:'They will lose access immediately. Continue?',
+ mb_revoked:'Access revoked.',mb_off:'revoked',
+ tk_bad:'That link is no longer valid. Ask for a new one.',
+ ph_title:'Photograph storage',ph_ondevice:'on this device',ph_incloud:'safely in the database',
+ ph_free:'Free up space',ph_kept:'kept because they are not uploaded yet',
+
  un_title:'You can undo the last change',un_btn:'Undo',un_done:'Undone:',
  un_nothing:'Nothing to undo.',un_failed:'Could not undo that.',
  q_synced:'changes made offline are now saved',
@@ -743,6 +753,16 @@ var FALLBACK_EN={
 var U={
  en:{name:'English',dir:'ltr'},
  ar:{name:'العربية',dir:'rtl',
+  mb_title:'الأشخاص والصلاحيات',mb_active:'أشخاص لديهم صلاحية',mb_none:'لا أحد بعد',
+  mb_load:'تحديث',mb_seed:'إنشاء صلاحيات للجميع',mb_made:'أشخاص حصلوا على صلاحياتهم',
+  mb_allthere:'الجميع لديهم صلاحيات.',mb_added:'أُضيف.',mb_failed:'رفضت قاعدة البيانات ذلك.',
+  mb_needcloud:'فعّل المزامنة أولاً.',mb_loaded:'أشخاص تم تحميلهم',mb_link:'رابطه',
+  mb_revoke:'إلغاء',mb_confirm:'سيفقد الصلاحية فوراً. متابعة؟',
+  mb_revoked:'أُلغيت الصلاحية.',mb_off:'ملغاة',
+  tk_bad:'هذا الرابط لم يعد صالحاً. اطلب رابطاً جديداً.',
+  ph_title:'تخزين الصور',ph_ondevice:'على هذا الجهاز',ph_incloud:'محفوظة في قاعدة البيانات',
+  ph_free:'تحرير مساحة',ph_kept:'مُبقاة لأنها لم تُرفع بعد',
+
   un_title:'يمكنك التراجع عن آخر تغيير',un_btn:'تراجع',un_done:'تم التراجع:',
   un_nothing:'لا يوجد ما يُتراجع عنه.',un_failed:'تعذّر التراجع.',
   q_synced:'حُفظت التغييرات التي تمت دون اتصال',
@@ -3641,6 +3661,153 @@ function exportLedger(){
  downloadCsv(rows,'ledger-'+todayStr()+'.csv');
 }
 
+
+/* ============================================================
+   6 & 7. Per-person tokens, and photographs that live in the
+   database rather than on the phone.
+   ============================================================ */
+var memberToken='';
+function loadToken(){try{memberToken=localStorage.getItem('cleanos:token2')||''}catch(e){}}
+function saveToken(t){memberToken=t||'';try{localStorage.setItem('cleanos:token2',memberToken)}catch(e){}}
+function haveToken(){return !!memberToken}
+
+/* every request identifies the person, not just the company */
+function memberHeaders(extra){
+ var h={'apikey':cloud.key,'Authorization':'Bearer '+cloud.key,'Content-Type':'application/json'};
+ if(memberToken)h['x-member-token']=memberToken;
+ if(cloud.secret)h['x-workspace-secret']=cloud.secret;
+ if(extra)for(var k in extra)h[k]=extra[k];
+ return h;
+}
+/* the database tells us who this token belongs to */
+function whoAmI(cb){
+ if(!cloud.on||!memberToken){cb&&cb(null);return}
+ fetch(cloudBase()+'/members?select=person_id,role,name,workspace_id&token=eq.'+encodeURIComponent(memberToken),
+  {headers:memberHeaders()})
+ .then(function(r){return r.json()})
+ .then(function(rows){cb&&cb(rows&&rows[0]?rows[0]:null)})
+ .catch(function(){cb&&cb(null)});
+}
+function signInWithToken(){
+ whoAmI(function(m){
+  if(!m){toast(u('tk_bad'));return}
+  cloud.ws=m.workspace_id;cloudSaveCfg();
+  if(m.role==='manager')signIn('manager',null);
+  else if(m.role==='cleaner')signIn('cleaner',m.person_id);
+  else signIn('customer',m.person_id);
+  toast(u('au_welcome')+' '+(m.name||''));
+ });
+}
+/* the manager hands out one link per person, each with that person's token */
+function memberLink(token){
+ return location.origin+location.pathname+'#m='+encodeURIComponent(btoa(JSON.stringify({
+  u:cloud.url,k:cloud.key,w:cloud.ws,t:token})));
+}
+function readMemberLink(){
+ var m=(location.hash||'').match(/m=([^&]+)/);
+ if(!m)return false;
+ try{
+  var o=JSON.parse(atob(decodeURIComponent(m[1])));
+  cloud.url=o.u;cloud.key=o.k;cloud.ws=o.w;cloud.on=true;cloud.status='on';
+  cloudSaveCfg();saveToken(o.t);
+  if(history.replaceState)history.replaceState(null,'',location.pathname);
+  return true;
+ }catch(e){return false}
+}
+var memberList=[];
+function loadMembers(){
+ if(!cloud.on){toast(u('mb_needcloud'));return}
+ fetch(cloudBase()+'/members?select=token,person_id,role,name,active&workspace_id=eq.'+encodeURIComponent(cloud.ws),
+  {headers:memberHeaders()})
+ .then(function(r){return r.json()})
+ .then(function(rows){memberList=rows||[];render();toast(memberList.length+' '+u('mb_loaded'))})
+ .catch(function(e){toast(u('mb_failed'))});
+}
+function addMember(personId,role,name){
+ if(!cloud.on){toast(u('mb_needcloud'));return}
+ fetch(cloudBase()+'/members',
+  {method:'POST',headers:memberHeaders({'Prefer':'return=representation'}),
+   body:JSON.stringify({workspace_id:cloud.ws,person_id:personId,role:role,name:name})})
+ .then(function(r){return r.json()})
+ .then(function(rows){if(rows&&rows[0])memberList.unshift(rows[0]);render();toast(u('mb_added'))})
+ .catch(function(){toast(u('mb_failed'))});
+}
+function revokeMember(token){
+ if(!confirm(u('mb_confirm')))return;
+ fetch(cloudBase()+'/members?token=eq.'+encodeURIComponent(token),
+  {method:'PATCH',headers:memberHeaders(),body:JSON.stringify({active:false})})
+ .then(function(){memberList.forEach(function(m){if(m.token===token)m.active=false});render();toast(u('mb_revoked'))})
+ .catch(function(){toast(u('mb_failed'))});
+}
+function seedMembers(){
+ if(!cloud.on){toast(u('mb_needcloud'));return}
+ var want=[{id:'office',role:'manager',name:db.company}];
+ crew().forEach(function(c){want.push({id:c.id,role:'cleaner',name:c.name})});
+ customers().forEach(function(c){want.push({id:c.id,role:'customer',name:c.name})});
+ var have={};memberList.forEach(function(m){have[m.person_id]=1});
+ var todo=want.filter(function(w){return !have[w.id]});
+ if(!todo.length){toast(u('mb_allthere'));return}
+ var done=0;
+ todo.forEach(function(w){
+  fetch(cloudBase()+'/members',
+   {method:'POST',headers:memberHeaders({'Prefer':'return=representation'}),
+    body:JSON.stringify({workspace_id:cloud.ws,person_id:w.id,role:w.role,name:w.name})})
+  .then(function(r){return r.json()})
+  .then(function(rows){if(rows&&rows[0])memberList.push(rows[0]);done++;
+   if(done===todo.length){render();toast(done+' '+u('mb_made'))}})
+  .catch(function(){done++});
+ });
+}
+
+/* ---- photographs stored in the database, fetched only when looked at ---- */
+function photoInCloud(id){return !!(photoIndex&&photoIndex[id])}
+var photoIndex={};
+function markInCloud(id){photoIndex[id]=1;try{localStorage.setItem('cleanos:phidx',JSON.stringify(photoIndex))}catch(e){}}
+function loadPhotoIndex(){try{photoIndex=safeParse(localStorage.getItem('cleanos:phidx')||'{}',{})}catch(e){photoIndex={}}}
+function uploadPhoto(id,data,jobId,area){
+ if(!cloud.on)return;
+ fetch(cloudBase()+'/workspace_photos',
+  {method:'POST',headers:memberHeaders({'Prefer':'resolution=merge-duplicates'}),
+   body:JSON.stringify({id:id,workspace_id:cloud.ws,job_id:String(jobId||''),area:area||'',
+    taken_by:(session&&session.id)||'office',data:data})})
+ .then(function(r){if(r.ok)markInCloud(id)})
+ .catch(function(){});
+}
+function fetchPhoto(id,cb){
+ if(photos[id])return cb&&cb(photos[id]);
+ if(!cloud.on)return cb&&cb(null);
+ fetch(cloudBase()+'/workspace_photos?select=data&id=eq.'+encodeURIComponent(id),{headers:memberHeaders()})
+ .then(function(r){return r.json()})
+ .then(function(rows){
+   if(rows&&rows[0]){photos[id]=rows[0].data;markInCloud(id);
+    try{localStorage.setItem(PKEY,JSON.stringify(photos))}catch(e){}
+    render();cb&&cb(rows[0].data)}
+   else cb&&cb(null);
+ }).catch(function(){cb&&cb(null)});
+}
+function freeSpace(){
+ if(!cloud.on){toast(u('ph_needcloud'));return}
+ var keep={},freed=0,skipped=0;
+ db.jobs.forEach(function(j){
+  if(jobDate(j)>=addDays(todayStr(),-2))(j.photos||[]).forEach(function(p){keep[p.id]=1});
+ });
+ Object.keys(photos).forEach(function(id){
+  if(keep[id])return;
+  if(!photoInCloud(id)){skipped++;return}   /* never drop what is not safely uploaded */
+  freed+=String(photos[id]||'').length;delete photos[id];
+ });
+ try{localStorage.setItem(PKEY,JSON.stringify(photos))}catch(e){}
+ render();
+ toast(Math.round(freed/1024)+u('ph_freed')+(skipped?' · '+skipped+' '+u('ph_kept'):''));
+}
+function photoStats(){
+ var local=0,n=0;
+ for(var k in photos){local+=String(photos[k]||'').length;n++}
+ var total=0;db.jobs.forEach(function(j){total+=(j.photos||[]).length});
+ var up=0;for(var k2 in photoIndex)up++;
+ return {onDevice:n,kb:Math.round(local/1024),total:total,inCloud:up};
+}
+
 /* ---------------- manager ---------------- */
 function vToday(){
  var h=db.setup?'':setupSteps();
@@ -5138,6 +5305,22 @@ function vSettings(){
  '<button class="btn red" onclick="eraseAll()">'+u('b_delete')+'</button></div></div>';
 
  h+='<div class="card alert"><div class="card-h"><h3 style="color:var(--red)">'+u('demo_controls')+'</h3></div>'+
+ '<div class="row"><div class="grow"><div class="name">'+u('mb_title')+'</div>'+
+ '<div class="meta"><span>'+(cloud.on?(memberList.length?memberList.filter(function(m){return m.active}).length+' '+u('mb_active'):u('mb_none')):u('mb_needcloud'))+'</span></div></div>'+
+ (cloud.on?'<button class="btn ghost" onclick="loadMembers()">'+u('mb_load')+'</button>'+
+   '<button class="btn" onclick="seedMembers()">'+u('mb_seed')+'</button>':'')+'</div>'+
+ (memberList.length?memberList.map(function(m){
+   return '<div class="row"><span class="dot'+(m.active?' run':' prob')+'"></span><div class="grow">'+
+    '<div class="name">'+esc(m.name||m.person_id)+'<span class="pill">'+esc(m.role)+'</span>'+
+    (m.active?'':'<span class="pill" style="color:var(--stop);border-color:#4A2226">'+u('mb_off')+'</span>')+'</div>'+
+    '<div class="meta"><span class="id">'+esc(m.person_id)+'</span></div></div>'+
+    (m.active?'<button class="btn ghost" onclick="copyMemberLink(\''+m.token+'\')">'+u('mb_link')+'</button>'+
+      '<button class="btn ghost" onclick="revokeMember(\''+m.token+'\')">'+u('mb_revoke')+'</button>':'')+'</div>'
+  }).join(''):'')+
+ '<div class="row"><div class="grow"><div class="name">'+u('ph_title')+'</div>'+
+ '<div class="meta"><span>'+photoStats().onDevice+' '+u('ph_ondevice')+' · '+photoStats().kb+' KB</span>'+
+ '<span>'+photoStats().inCloud+' '+u('ph_incloud')+'</span></div></div>'+
+ (cloud.on?'<button class="btn ghost" onclick="freeSpace()">'+u('ph_free')+'</button>':'')+'</div>'+
  '<div class="row"><div class="grow"><div class="name">'+u('bu_export')+'</div>'+
  '<div class="meta"><span>'+(lastBackup()?u('bu_last')+' '+dayName(ymd(new Date(lastBackup()))):u('bu_never'))+'</span></div></div>'+
  '<button class="btn" onclick="backupNow()">'+u('bu_now')+'</button></div>'+
@@ -5219,6 +5402,11 @@ function inviteRows(){
    '</div>';
  });
  return h;
+}
+function copyMemberLink(token){
+ var l=memberLink(token);
+ try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(l);toast(u('a_copied'))}
+  else{open={type:'link',link:l};render()}}catch(e){open={type:'link',link:l};render()}
 }
 function copyInvite(role,id){
  var link=inviteLink(role,id||null);
@@ -5357,7 +5545,7 @@ function shoot(ev,id){var f=ev.target.files&&ev.target.files[0];if(!f)return;var
    cv.width=Math.round(img.width*sc);cv.height=Math.round(img.height*sc);
    cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
    var data;try{data=cv.toDataURL('image/jpeg',0.55)}catch(err){data=e.target.result}
-   var pid='ph'+Date.now()+Math.floor(Math.random()*999);photos[pid]=data;cloudPushPhoto(pid,data);
+   var pid='ph'+Date.now()+Math.floor(Math.random()*999);photos[pid]=data;uploadPhoto(pid,data,j.id,shotArea);
    j.photos=j.photos||[];
    j.photos.push({id:pid,kind:j.checked.length>=checklistFor(j).length/2?'after':'before',at:Date.now(),area:shotArea});
    save();render();toast('Photo stamped '+hhmm(Date.now()))};
@@ -6396,7 +6584,7 @@ function render(){
  var _sc=document.querySelector('.wrap');var _y=_sc?_sc.scrollTop:0;
  root.innerHTML='<div class="app" dir="'+(session.role==='cleaner'?'ltr':uiDir())+'"><aside class="side"><div class="co"><b>'+esc(db.company)+'</b><span>Dubai</span></div>'+
  '<nav>'+nav+'</nav><div class="side-foot">'+esc(who)+'<br><button onclick="authSignOut()">'+u('b_signout')+'</button>'+
- '<div style="margin-top:6px;color:#3E4650;font-size:10px">build 41 \u00b7 fifteen</div></div></aside>'+
+ '<div style="margin-top:6px;color:#3E4650;font-size:10px">build 42 \u00b7 access</div></div></aside>'+
  '<div class="main"><div class="top"><h2>'+u('title_'+tab)+'</h2><span class="date">'+dow+' · '+hhmm(Date.now())+'</span>'+
  '<div class="tools">'+langSel+bell+'</div></div>'+counts+
  (online?'':'<div class="offline">Offline — '+queued+' change'+(queued===1?'':'s')+' waiting.</div>')+
@@ -6410,12 +6598,16 @@ if(typeof window!=='undefined'&&window.addEventListener){
  window.addEventListener('offline',function(){online=false;render()});
  if(typeof navigator!=='undefined'&&navigator.onLine===false)online=false}
 cloudLoadCfg();
+loadToken();
+loadPhotoIndex();
 loadAuthUser();
 var invited=readInvite();
+var viaToken=readMemberLink();
 var booking=readBookingLink();
 var cameBack=readAuthRedirect();
 Promise.resolve(load()).then(function(){if(db&&db.settings&&db.settings.uiLang&&U[db.settings.uiLang])uiLang=db.settings.uiLang;
  if(cloud.on&&cloud.url&&cloud.secret){cloud.status='on';cloudPoll();cloudFetchPhotos()}
+ if(viaToken)signInWithToken();
  if(authUser&&!cameBack)matchAndEnter();
  if(invited&&pendingRole){
    if(pendingRole==='cleaner'&&pendingId)askPin('cleaner',pendingId);
