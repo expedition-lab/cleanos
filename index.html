@@ -7,6 +7,23 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>Sparkle Facilities — operations</title>
 <style>
+/* A full-width panel for the sign-in, setup and code screens.
+   These were using .box, which is the 17px checklist tick — the whole
+   form was being squeezed into a square. */
+.panel{width:100%;background:var(--panel);border:1px solid var(--line);
+ border-radius:var(--r);padding:15px;box-shadow:var(--sh)}
+.panel .field label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px}
+.panel .field{margin-bottom:11px}
+.panel .btn{width:auto}
+.setup-steps{display:flex;gap:5px;margin-bottom:14px}
+.setup-steps i{flex:1;height:3px;border-radius:2px;background:var(--line2);display:block}
+.setup-steps i.on{background:var(--run)}
+.setup-foot{display:flex;gap:8px;margin-top:14px}
+.setup-foot .btn{flex:1;padding:12px;justify-content:center}
+.setup-foot .btn.wide{flex:2}
+/* labels everywhere should sit above their field, not flow inline */
+.field label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px}
+
 /* ---------- the numbers a manager scans first ----------
    These were falling to one per row: the grid rule only existed
    inside the phone media queries, so on a laptop each card took
@@ -1753,14 +1770,14 @@ function matchAndEnter(){
 function vAuthPending(){
  return '<div class="login"><div class="lbox"><div class="lhead"><h1>'+u('au_notlinked')+'</h1>'+
   '<p>'+esc(authUser.email||authUser.phone)+'</p></div>'+
-  '<div class="box" style="padding:14px;font-size:12.5px;color:var(--muted)">'+u('au_asklinked')+'</div>'+
+  '<div class="panel" style="font-size:12.5px;color:var(--muted)">'+u('au_asklinked')+'</div>'+
   '<button class="btn ghost" style="width:100%;margin-top:12px;padding:12px" onclick="authSignOut()">'+u('b_signout')+'</button>'+
   '</div></div>';
 }
 function vOtp(){
  var h='<div class="login"><div class="lbox"><div class="lhead"><h1>'+u('au_phone')+'</h1>'+
   '<p>'+(otpPhase==='code'?u('au_entercode')+' '+esc(otpPhone):u('au_enterphone'))+'</p></div>'+
-  '<div class="box" style="padding:14px">';
+  '<div class="panel">';
  if(otpPhase==='phone'){
   h+='<input placeholder="+971 50 000 0000" value="'+esc(otpPhone)+'" oninput="otpSet(\'phone\',this.value)">'+
    '<button class="btn" style="width:100%;margin-top:10px;padding:12px" onclick="otpStart()">'+u('au_sendcode')+'</button>';
@@ -1844,7 +1861,7 @@ function enterCompany(){
 function vCodeEntry(){
  return '<div class="login"><div class="lbox"><div class="lhead"><h1>'+u('mt_signin')+'</h1>'+
   '<p>'+u('mt_signinsub')+'</p></div>'+
-  '<div class="box" style="padding:14px">'+
+  '<div class="panel">'+
   '<div class="field"><label for="cd-ws">'+u('cl_ws')+'</label><input id="cd-ws" placeholder="gulfshine"></div>'+
   '<div class="field"><label for="cd-token">'+u('mt_yourcode')+'</label><input id="cd-token" type="password"></div>'+
   '<button class="btn big" onclick="enterCompany()">'+u('mt_enter')+'</button>'+
@@ -2759,7 +2776,7 @@ var publicBooking=false;
 function vPublicBook(){
  return '<div class="login"><div class="lbox"><div class="lhead"><h1>'+esc(db.company)+'</h1>'+
   '<p>'+u('pb_title')+'</p></div>'+
-  '<div class="box" style="padding:14px">'+
+  '<div class="panel">'+
   '<div class="field"><label for="pb-name">'+u('pb_name')+'</label><input id="pb-name"></div>'+
   '<div class="field"><label for="pb-phone">'+u('f_whatsapp')+'</label><input id="pb-phone"></div>'+
   '<div class="field"><label for="pb-prop">'+u('pb_where')+'</label><input id="pb-prop"></div>'+
@@ -3512,9 +3529,8 @@ function wizFinish(){
 }
 function vWizard(){
  var h='',st=wiz.step;
- h+='<div style="display:flex;gap:5px;margin-bottom:14px">'+
-  [1,2,3,4].map(function(n){return '<div style="flex:1;height:3px;border-radius:2px;background:'+
-   (n<=st?'var(--run)':'var(--line2)')+'"></div>'}).join('')+'</div>';
+ h+='<div class="setup-steps">'+
+  [1,2,3,4].map(function(n){return '<i class="'+(n<=st?'on':'')+'"></i>'}).join('')+'</div>';
  if(st===1){
   h+='<div class="field"><label for="wz-name">'+u('wz_company')+'</label>'+
    '<input id="wz-name" value="'+esc(wiz.company)+'" placeholder="'+u('wz_companyex')+'"></div>'+
@@ -3535,7 +3551,7 @@ function vWizard(){
    esc(wiz.props.map(function(p){return p.name+', '+p.area+', '+p.customer}).join('\n'))+'</textarea></div>';
  }
  if(st===4){
-  h+='<div class="box" style="padding:13px">'+
+  h+='<div class="panel">'+
    '<div class="kv"><span>'+u('wz_company')+'</span><span>'+esc(wiz.company)+'</span></div>'+
    '<div class="kv"><span>'+u('s_country')+'</span><span>'+esc((COUNTRIES[wiz.country]||{}).name||'')+
    ' · '+esc((COUNTRIES[wiz.country]||{}).cur||'')+'</span></div>'+
@@ -6890,19 +6906,19 @@ function render(){
  var root=document.getElementById('root');
  if(publicBooking==='done'){root.innerHTML='<div class="login"><div class="lbox"><div class="lhead">'+
   '<h1>'+esc(db.company)+'</h1><p>'+u('pb_thanks')+'</p></div>'+
-  '<div class="box" style="padding:16px;font-size:13px;color:var(--muted)">'+u('pb_thankssub')+'</div></div></div>';return}
+  '<div class="panel" style="font-size:13px;color:var(--muted)">'+u('pb_thankssub')+'</div></div></div>';return}
  if(publicBooking){root.innerHTML=vPublicBook();return}
  if(codeEntry){root.innerHTML=vCodeEntry();return}
  /* the wizard is reached from the sign-in screen, so it has to be a full
     screen of its own — a modal is never drawn while nobody is signed in */
  if(wiz){
-  root.innerHTML='<div class="login"><div class="lbox">'+
+  root.innerHTML='<div class="login"><div class="lbox" style="max-width:460px">'+
    '<div class="lhead"><h1>'+u('wz_title')+'</h1><p>'+u('wz_step')+' '+wiz.step+' / 4</p></div>'+
-   '<div class="box" style="padding:15px">'+vWizard()+'</div>'+
-   '<div style="display:flex;gap:7px;margin-top:12px">'+
-   (wiz.step>1?'<button class="btn ghost" style="flex:1;padding:12px" onclick="wizBack()">'+u('wz_back')+'</button>'
-     :'<button class="btn ghost" style="flex:1;padding:12px" onclick="wizCancel()">'+u('b_cancel')+'</button>')+
-   '<button class="btn" style="flex:2;padding:12px" onclick="wizNext()">'+
+   '<div class="panel">'+vWizard()+'</div>'+
+   '<div class="setup-foot">'+
+   (wiz.step>1?'<button class="btn ghost" onclick="wizBack()">'+u('wz_back')+'</button>'
+     :'<button class="btn ghost" onclick="wizCancel()">'+u('b_cancel')+'</button>')+
+   '<button class="btn wide" onclick="wizNext()">'+
    (wiz.step===4?u('wz_finish'):u('wz_next'))+'</button></div></div></div>';
   return;
  }
@@ -6960,7 +6976,7 @@ function render(){
  var _sc=document.querySelector('.wrap');var _y=_sc?_sc.scrollTop:0;
  root.innerHTML='<div class="app" dir="'+(session.role==='cleaner'?'ltr':uiDir())+'"><aside class="side"><div class="co"><b>'+esc(db.company)+'</b><span>Dubai</span></div>'+
  '<nav>'+nav+'</nav><div class="side-foot">'+esc(who)+'<br><button onclick="authSignOut()">'+u('b_signout')+'</button>'+
- '<div style="margin-top:6px;color:#3E4650;font-size:10px">build 50 \u00b7 sync</div></div></aside>'+
+ '<div style="margin-top:6px;color:#3E4650;font-size:10px">build 51 \u00b7 setupfix</div></div></aside>'+
  '<div class="main"><div class="top"><h2>'+u('title_'+tab)+'</h2><span class="date">'+dow+' · '+hhmm(Date.now())+'</span>'+
  '<div class="tools">'+langSel+bell+'</div></div>'+counts+
  (online?'':'<div class="offline">Offline — '+queued+' change'+(queued===1?'':'s')+' waiting.</div>')+
