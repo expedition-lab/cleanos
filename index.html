@@ -331,6 +331,13 @@ var TIERS={
    ------------------------------------------------------------ */
 
 var FALLBACK_EN={
+ wz_step:'Step',
+
+ mt_apptitle:'Cleaning operations',
+ mt_privacy:'Nobody is listed here. Sign in with the code your office gave you, or open the link they sent you.',
+ mt_warnlist:'This will list every cleaner and customer on this device\u2019s sign-in screen, to anyone who opens it. Only do this on a device you control. Continue?',
+ l_cleaner:'Cleaner',
+
  mt_signin:'Sign in to your company',mt_signinsub:'Use the company id and the code your office gave you.',
  mt_yourcode:'Your personal code',mt_enter:'Sign in',mt_needboth:'Both the company id and your code, please.',
  mt_asknote:'Each person has their own code. It is not shared with anyone else in the company.',
@@ -792,6 +799,13 @@ var FALLBACK_EN={
 var U={
  en:{name:'English',dir:'ltr'},
  ar:{name:'العربية',dir:'rtl',
+  wz_step:'خطوة',
+
+  mt_apptitle:'إدارة عمليات التنظيف',
+  mt_privacy:'لا تُعرض أي أسماء هنا. سجّل الدخول بالرمز الذي أعطاك إياه المكتب، أو افتح الرابط المُرسل إليك.',
+  mt_warnlist:'سيعرض هذا كل العمال والعملاء على شاشة الدخول لأي شخص يفتح الجهاز. افعل ذلك فقط على جهاز تتحكم به. متابعة؟',
+  l_cleaner:'عامل',
+
   mt_signin:'الدخول إلى شركتك',mt_signinsub:'استخدم معرّف الشركة والرمز الذي أعطاك إياه المكتب.',
   mt_yourcode:'رمزك الشخصي',mt_enter:'دخول',mt_needboth:'أدخل معرّف الشركة ورمزك.',
   mt_asknote:'لكل شخص رمزه الخاص، ولا يُشارك مع أحد.',
@@ -1806,10 +1820,14 @@ function verifyWorkspace(cb){
 }
 /* the office may hide the team list on a shared or public device */
 function showTeamOnDevice(){
- try{return localStorage.getItem('cleanos:showteam')!=='0'}catch(e){return true}
+ /* Nobody is listed unless the office deliberately turns it on for this
+    device. A sign-in screen must never advertise who works here. */
+ try{return localStorage.getItem('cleanos:showteam')==='1'}catch(e){return false}
 }
 function toggleTeamList(){
- try{localStorage.setItem('cleanos:showteam',showTeamOnDevice()?'0':'1')}catch(e){}
+ var on=showTeamOnDevice();
+ if(!on&&!confirm(u('mt_warnlist')))return;
+ try{localStorage.setItem('cleanos:showteam',on?'0':'1')}catch(e){}
  render();toast(showTeamOnDevice()?u('mt_listshown'):u('mt_listhidden'));
 }
 var codeEntry=false, codeWs='';
@@ -1837,34 +1855,41 @@ function vCodeEntry(){
 
 /* ---------------- login ---------------- */
 function vLogin(){
- var h='<div class="login"><div class="lbox"><div class="lhead"><h1>'+esc(db.company)+'</h1><p>'+u('l_operations')+'</p></div>'+
- '<button class="btn" style="width:100%;padding:12px;margin-bottom:7px" onclick="openCodeEntry()">'+u('mt_signin')+'</button>'+
- '<button class="btn ghost" style="width:100%;padding:12px;margin-bottom:7px" onclick="startWizard()">'+u('wz_start')+'</button>'+
- (authReady()?
-  '<button class="btn" style="width:100%;padding:12px;margin-bottom:7px" onclick="googleSignIn()">'+u('au_google')+'</button>'+
-  '<button class="btn ghost" style="width:100%;padding:12px;margin-bottom:14px" onclick="otpOpen()">'+u('au_phonebtn')+'</button>'+
-  '<div style="font-size:11px;color:var(--faint);margin-bottom:7px">'+u('au_ordevice')+'</div>'
-  :'')+
- (showTeamOnDevice()?'':'<div class="box" style="padding:13px;font-size:12px;color:var(--muted)">'+
-   u('mt_hidden')+'</div>')+
- '';
- /* the team is only listed on a device the office has trusted */
- if(showTeamOnDevice()){
-  h+='<button class="who" onclick="askPin(\'manager\',null)"><div class="av">'+
+ var named=showTeamOnDevice();
+ var h='<div class="login"><div class="lbox">'+
+  '<div class="lhead"><h1>'+esc(named?db.company:u('mt_apptitle'))+'</h1>'+
+  '<p>'+u('l_operations')+'</p></div>'+
+  '<button class="btn" style="width:100%;padding:13px;margin-bottom:7px" onclick="openCodeEntry()">'+u('mt_signin')+'</button>'+
+  (authReady()?
+   '<button class="btn ghost" style="width:100%;padding:12px;margin-bottom:7px" onclick="googleSignIn()">'+u('au_google')+'</button>'+
+   '<button class="btn ghost" style="width:100%;padding:12px;margin-bottom:7px" onclick="otpOpen()">'+u('au_phonebtn')+'</button>'
+   :'')+
+  '<button class="btn ghost" style="width:100%;padding:12px" onclick="startWizard()">'+u('wz_start')+'</button>'+
+  '<p style="font-size:11px;color:var(--faint);margin:13px 0 0;text-align:center;line-height:1.5">'+
+   u('mt_privacy')+'</p>';
+ /* Only a device the office has deliberately marked as trusted lists people. */
+ if(named){
+  h+='<div style="font-size:11px;color:var(--faint);margin:16px 0 7px">'+u('au_ordevice')+'</div>'+
+   '<button class="who" onclick="askPin(\'manager\',null)"><div class="av">'+
    esc((db.company||'  ').slice(0,2).toUpperCase())+'</div><div><div style="font-weight:500">'+u('l_manager')+'</div>'+
-   '<div style="font-size:11px;color:var(--faint)">'+u('l_opsmanager')+'</div></div><span class="r">'+u('l_manager')+'</span></button>';
-  for(var i=0;i<crew().length;i++){var c=crew()[i];
+   '<div style="font-size:11px;color:var(--faint)">'+u('l_opsmanager')+'</div></div>'+
+   '<span class="r">'+u('l_manager')+'</span></button>';
+  crew().forEach(function(c){
    h+='<button class="who" onclick="askPin(\'cleaner\',\''+c.id+'\')"><div class="av">'+c.initials+'</div><div>'+
-   '<div style="font-weight:500">'+esc(c.name)+(c.senior?' <span class="pill prem">Senior</span>':'')+'</div>'+
-   '<div style="font-size:11px;color:var(--faint)">app in '+(T[c.lang]||T.en).name+'</div></div><span class="r">'+ratingOf(c).toFixed(2)+'★</span></button>'}
+    '<div style="font-weight:500">'+esc(c.name)+'</div>'+
+    '<div style="font-size:11px;color:var(--faint)">'+(T[c.lang]||T.en).name+'</div></div>'+
+    '<span class="r">'+u('l_cleaner')+'</span></button>';
+  });
   customers().forEach(function(cu){
    h+='<button class="who" onclick="askPin(\'customer\',\''+cu.id+'\')"><div class="av">'+
     esc(cu.name.split(' ').map(function(w){return w[0]}).join('').slice(0,2))+'</div><div>'+
     '<div style="font-weight:500">'+esc(cu.name)+'</div>'+
-    '<div style="font-size:11px;color:var(--faint)">'+u('l_customer')+'</div></div><span class="r">'+u('l_portal')+'</span></button>';
+    '<div style="font-size:11px;color:var(--faint)">'+u('l_customer')+'</div></div>'+
+    '<span class="r">'+u('l_portal')+'</span></button>';
   });
  }
- return h+'</div></div>'}
+ return h+'</div></div>';
+}
 function signIn(r,id){session={role:r,id:id};thread=null;draft='';
  if(r==='cleaner'){lang=cleaner(id).lang;tab='myday'}else if(r==='customer'){lang='en';tab='portal'}else{lang='en';tab='today'}render()}
 function signOut(){session=null;open=null;thread=null;draft='';render()}
@@ -2499,7 +2524,7 @@ function clockIn(){
    inAt:{lat:pos.coords.latitude,lng:pos.coords.longitude,acc:Math.round(pos.coords.accuracy||0)},
    outAt:null});
   notify('clockin',{a:cleaner(session.id).name.split(' ')[0]});
-  save();render();toast(u('sh_in'));
+  save();pushNow();render();toast(u('sh_in'));
  },function(err){
   /* no location, no clock-in — the record has to mean something */
   toast(d.needgps);
@@ -2512,7 +2537,7 @@ function clockOut(){
   s2.out=Date.now();
   if(pos)s2.outAt={lat:pos.coords.latitude,lng:pos.coords.longitude,acc:Math.round(pos.coords.accuracy||0)};
   notify('clockout',{a:cleaner(session.id).name.split(' ')[0],d:dur(s2.in,s2.out)});
-  save();render();toast(u('sh_out')+' '+dur(s2.in,s2.out));
+  save();pushNow();render();toast(u('sh_out')+' '+dur(s2.in,s2.out));
  };
  if(!navigator.geolocation){finish(null);return}
  toast(d.gettingpos);
@@ -3433,8 +3458,8 @@ function shareProof(id){
 /* ---- 3. a company can set itself up without me in the room ---- */
 var wiz=null;
 function startWizard(){
- wiz={step:1,company:'',country:S().country||'AE',crew:[],props:[],cust:[]};
- open={type:'wizard'};render();
+ wiz={step:1,company:'',country:(S()&&S().country)||'AE',crew:[],props:[],cust:[]};
+ open=null;render();
 }
 function wizSet(k,v){if(wiz)wiz[k]=v}
 function wizNext(){
@@ -3464,6 +3489,7 @@ function wizNext(){
  if(wiz.step>4)return wizFinish();
  render();
 }
+function wizCancel(){wiz=null;open=null;render()}
 function wizBack(){if(wiz&&wiz.step>1){wiz.step--;render()}}
 function wizFinish(){
  db=emptyDb(wiz.company,wiz.country);
@@ -3928,7 +3954,7 @@ function uploadPhoto(id,data,jobId,area){
 function fetchPhoto(id,cb){
  if(photos[id])return cb&&cb(photos[id]);
  if(!cloud.on)return cb&&cb(null);
- fetch(cloudBase()+'/workspace_photos?select=data&id=eq.'+encodeURIComponent(id),{headers:memberHeaders()})
+ fetch(cloudBase()+'/workspace_photos?select=data&workspace_id=eq.'+encodeURIComponent(cloud.ws)+'&id=eq.'+encodeURIComponent(id),{headers:memberHeaders()})
  .then(function(r){return r.json()})
  .then(function(rows){
    if(rows&&rows[0]){photos[id]=rows[0].data;markInCloud(id);
@@ -4063,6 +4089,47 @@ function vRoutePlan(){
   '<span class="mono">'+totalKm.toFixed(1)+' km</span>'+
   (totalSave>0.1?'<span class="mono" style="color:var(--done)">-'+totalSave.toFixed(1)+' km</span>':'')+'</div>';
  return h+'</div>';
+}
+
+
+/* how often to look for changes: fast while work is happening, slow when
+   the app is sitting in a back tab. Polling every 8 seconds all day is
+   both too slow to feel live and too heavy on a cleaner's data. */
+var lastTouch=Date.now();
+function touched(){lastTouch=Date.now()}
+function pollGap(){
+ if(typeof document!=='undefined'&&document.hidden)return 60000;   /* back tab */
+ var busy=db.jobs&&db.jobs.some(function(j){return j.status==='progress'});
+ var active=Date.now()-lastTouch<120000;
+ if(busy&&active)return 2500;    /* someone is mid-job and watching */
+ if(busy||active)return 6000;
+ return 20000;                    /* nothing happening */
+}
+function cloudPollAdaptive(){
+ if(cloud.timer)clearTimeout(cloud.timer);
+ var tick=function(){
+  if(!cloud.on){cloud.timer=null;return}
+  if(cloud.busy||open){cloud.timer=setTimeout(tick,pollGap());return}
+  fetch(cloudBase()+'/workspaces?id=eq.'+encodeURIComponent(cloud.ws)+'&select=rev',
+   {headers:memberHeaders()})
+  .then(function(r){return r.json()})
+  .then(function(rows){
+    if(rows&&rows[0]&&rows[0].rev>cloud.rev){
+     return fetch(cloudBase()+'/workspaces?id=eq.'+encodeURIComponent(cloud.ws)+'&select=rev,data',
+      {headers:memberHeaders()})
+      .then(function(r){return r.json()})
+      .then(function(full){if(full&&full[0])cloudApply(full[0])});
+    }
+  }).catch(function(){})
+  .then(function(){cloud.timer=setTimeout(tick,pollGap())});
+ };
+ cloud.timer=setTimeout(tick,pollGap());
+}
+/* things everyone else needs to see immediately go straight up */
+function pushNow(){
+ if(!cloud.on)return;
+ if(pushTimer){clearTimeout(pushTimer);pushTimer=null}
+ cloudPushNow(true);
 }
 
 /* ---------------- manager ---------------- */
@@ -5147,7 +5214,7 @@ function claimJob(id){
  if(TIERS[j.tier||'standard'].requiresSenior&&!c.senior){toast(u('p_seniorsonly'));return}
  j.cleaner=session.id;
  notify('claimed',{a:c.name.split(' ')[0],p:j.prop});
- save();render();toast(u('p_claimed'));
+ save();pushNow();render();toast(u('p_claimed'));
 }
 function reassign(id){open={type:'assign',job:id};render()}
 function doAssign(v){
@@ -5342,7 +5409,7 @@ function cloudConnect(){
      if(confirm(u('cl_pullask'))){cloudApply(remote)}
      else{cloud.rev=remote.rev;cloudPush(true)}
    } else cloudPush(true);
-   cloudPoll();
+   cloudPollAdaptive();
    toast(u('cl_connected'));
    render();
  })
@@ -5410,7 +5477,7 @@ function cloudFetchPhotos(){
  db.jobs.forEach(function(j){(j.photos||[]).forEach(function(p){if(!photos[p.id])need.push(p.id)})});
  if(!need.length)return;
  need=need.slice(0,40);
- fetch(cloudBase()+'/workspace_photos?id=in.('+need.map(encodeURIComponent).join(',')+')&select=id,data',
+ fetch(cloudBase()+'/workspace_photos?workspace_id=eq.'+encodeURIComponent(cloud.ws)+'&id=in.('+need.map(encodeURIComponent).join(',')+')&select=id,data',
   {headers:cloudHeaders()})
  .then(function(r){return r.json()})
  .then(function(rows){
@@ -5454,7 +5521,7 @@ function raiseDispute(id,reason){
  db.issues.unshift({id:db.seqIssue++,job:j.id,prop:j.prop,by:j.cleaner,type:'customer',
   note:(reason||u('q_notright')),at:Date.now(),priority:'High',open:true,photo:null});
  notify('dispute',{p:j.prop});
- save();render();toast(u('q_raised'));
+ save();pushNow();render();toast(u('q_raised'));
 }
 function customerDispute(id){
  var why=prompt(u('q_whatwrong'));
@@ -5469,7 +5536,7 @@ function bookRework(id){
   rating:0,signed:false,onWay:null,geo:null,rework:j.id});
  if(j.disputed)j.disputed.state='rework';
  notify('rework',{p:j.prop});
- open=null;save();render();toast(u('q_reworked'));
+ open=null;save();pushNow();render();toast(u('q_reworked'));
 }
 function closeDispute(id,outcome){
  var j=job(id);if(!j||!j.disputed)return;
@@ -5807,7 +5874,7 @@ function skipSetup(){db.setup=true;save();render();toast('Hidden. Find everythin
 
 /* ---------------- actions ---------------- */
 function onWay(id){var j=job(id);if(!j)return;j.onWay=Date.now();
- notify('onway',{a:cleaner(j.cleaner).name.split(' ')[0],p:j.prop});save();render();
+ notify('onway',{a:cleaner(j.cleaner).name.split(' ')[0],p:j.prop});save();pushNow();render();
  toast('Customer told you are on the way.')}
 function startJob(id){
  var j=job(id);if(!j)return;var p=property(j.prop);
@@ -5815,7 +5882,7 @@ function startJob(id){
   j.status='progress';j.started=Date.now();
   if(dist!==null)j.geo={dist:dist,at:Date.now()};
   notify('checkin',{a:cleaner(j.cleaner).name.split(' ')[0],p:j.prop+(dist!==null?' ('+dist+'m)':'')});
-  save();render();toast(dist!==null?'Checked in, '+dist+'m from the property.':'Checked in without location.')}
+  save();pushNow();render();toast(dist!==null?'Checked in, '+dist+'m from the property.':'Checked in without location.')}
  if(typeof navigator!=='undefined'&&navigator.geolocation&&p){
   navigator.geolocation.getCurrentPosition(
    function(pos){begin(metres(pos.coords.latitude,pos.coords.longitude,p.lat,p.lng))},
@@ -5832,7 +5899,7 @@ function completeJob(id){var j=job(id);if(!j)return;
  j.status='done';j.finished=Date.now();
  consumeFor(j);
  notify('done',{a:cleaner(j.cleaner).name.split(' ')[0],p:j.prop,d:dur(j.started,j.finished)});
- save();render();toast(u('st_completed'))}
+ save();pushNow();render();toast(u('st_completed'))}
 function shoot(ev,id){var f=ev.target.files&&ev.target.files[0];if(!f)return;var j=job(id);if(!j)return;
  var rd=new FileReader();
  rd.onload=function(e){var img=new Image();
@@ -5854,7 +5921,7 @@ function saveProblem(){if(!probPick){toast(t('whatwrong'));return}
   at:Date.now(),priority:document.getElementById('pb-pri').value,open:true,photo:null});
  if(probPick==='noaccess'||probPick==='damage')j.status='problem';
  notify('problem',{a:cleaner(j.cleaner).name.split(' ')[0],t:t(probPick),p:j.prop});
- open=null;save();render();toast(u('st_sent'))}
+ open=null;save();pushNow();render();toast(u('st_sent'))}
 function resolve(id){db.issues.forEach(function(i){if(i.id===id){i.open=false;
  var j=job(i.job);if(j&&j.status==='problem')j.status='progress'}});save();render();toast(u('st_closed'))}
 function restock(item){db.stock.forEach(function(s){if(s.item===item)s.qty+=20});
@@ -6019,7 +6086,7 @@ function signOff(id){var j=job(id);if(!j)return;
  j.rating=starPick;j.signed=true;
  if(j.cleaner){db.ratings=db.ratings||{};db.ratings[j.cleaner]=(db.ratings[j.cleaner]||[]).concat([starPick])}
  notify('signoff',{p:j.prop,r:starPick});
- starPick=0;save();render();toast(u('st_signed'))}
+ starPick=0;save();pushNow();render();toast(u('st_signed'))}
 
 /* ---- quick tasks: any kind of task, and cleaners can name their price ---- */
 function taskTitle(x){return x.custom||taskType(x.type).name}
@@ -6038,7 +6105,7 @@ function saveOffer(){
  if(mine){mine.price=p;mine.note=document.getElementById('of-note').value.trim();mine.at=Date.now()}
  else x.offers.push({by:session.id,price:p,note:document.getElementById('of-note').value.trim(),at:Date.now()});
  notify('offer',{a:cleaner(session.id).name.split(' ')[0],t:taskTitle(x),m:aed(p)});
- open=null;save();render();toast(u('of_sent'));
+ open=null;save();pushNow();render();toast(u('of_sent'));
 }
 function acceptOffer(taskId,cleanerId){
  var x=task(taskId);if(!x)return;
@@ -6046,7 +6113,7 @@ function acceptOffer(taskId,cleanerId){
  if(!o)return;
  x.status='taken';x.by=cleanerId;x.fee=o.price;x.agreed=Date.now();
  notify('taskclaim',{a:cleaner(cleanerId).name.split(' ')[0],t:taskTitle(x),p:x.prop});
- open=null;save();render();toast(u('of_accepted')+' '+aed(o.price));
+ open=null;save();pushNow();render();toast(u('of_accepted')+' '+aed(o.price));
 }
 function viewOffers(id){open={type:'offers',task:id};render()}
 function pickTaskKind(v){taskKind=v;render()}
@@ -6130,10 +6197,10 @@ function claimTask(id){var x=task(id);if(!x)return;
  if(x.mode==='offers'){makeOffer(id);return}
  x.status='taken';x.by=session.id;
  notify('taskclaim',{a:cleaner(session.id).name.split(' ')[0],t:taskType(x.type).name,p:x.prop});
- save();render();toast(u('st_yours'))}
+ save();pushNow();render();toast(u('st_yours'))}
 function finishTask(id){var x=task(id);if(!x)return;x.status='done';x.done=Date.now();
  notify('taskdone',{t:taskType(x.type).name,p:x.prop,m:aed(x.fee)});
- save();render();toast('Done. '+aed(x.fee*0.6)+' added to your pay.')}
+ save();pushNow();render();toast('Done. '+aed(x.fee*0.6)+' added to your pay.')}
 function takePayment(id){open={type:'pay',inv:id};render()}
 function savePayment(){
  if(!managerOnly())return;var v=null;db.invoices.forEach(function(x){if(x.id===open.inv)v=x});if(!v)return;
@@ -6199,7 +6266,7 @@ function exportCsv(){
   document.body.appendChild(a);a.click();document.body.removeChild(a);
   setTimeout(function(){URL.revokeObjectURL(u)},1500);toast(u('st_exported'))}
  catch(e){open={type:'csv',csv:csv};render()}}
-function closeModal(){open=null;render()}
+function closeModal(){open=null;if(wiz)wiz=null;render()}
 function setLang(l){lang=l;render()}
 function toast(m){var o=document.querySelector('.toast');if(o)o.remove();
  var e=document.createElement('div');e.className='toast';e.textContent=m;
@@ -6826,6 +6893,19 @@ function render(){
   '<div class="box" style="padding:16px;font-size:13px;color:var(--muted)">'+u('pb_thankssub')+'</div></div></div>';return}
  if(publicBooking){root.innerHTML=vPublicBook();return}
  if(codeEntry){root.innerHTML=vCodeEntry();return}
+ /* the wizard is reached from the sign-in screen, so it has to be a full
+    screen of its own — a modal is never drawn while nobody is signed in */
+ if(wiz){
+  root.innerHTML='<div class="login"><div class="lbox">'+
+   '<div class="lhead"><h1>'+u('wz_title')+'</h1><p>'+u('wz_step')+' '+wiz.step+' / 4</p></div>'+
+   '<div class="box" style="padding:15px">'+vWizard()+'</div>'+
+   '<div style="display:flex;gap:7px;margin-top:12px">'+
+   (wiz.step>1?'<button class="btn ghost" style="flex:1;padding:12px" onclick="wizBack()">'+u('wz_back')+'</button>'
+     :'<button class="btn ghost" style="flex:1;padding:12px" onclick="wizCancel()">'+u('b_cancel')+'</button>')+
+   '<button class="btn" style="flex:2;padding:12px" onclick="wizNext()">'+
+   (wiz.step===4?u('wz_finish'):u('wz_next'))+'</button></div></div></div>';
+  return;
+ }
  if(otpPhase){root.innerHTML=vOtp();return}
  if(authUser&&!session){root.innerHTML=vAuthPending();return}
  if(pinFor){root.innerHTML=vPin();return}
@@ -6880,7 +6960,7 @@ function render(){
  var _sc=document.querySelector('.wrap');var _y=_sc?_sc.scrollTop:0;
  root.innerHTML='<div class="app" dir="'+(session.role==='cleaner'?'ltr':uiDir())+'"><aside class="side"><div class="co"><b>'+esc(db.company)+'</b><span>Dubai</span></div>'+
  '<nav>'+nav+'</nav><div class="side-foot">'+esc(who)+'<br><button onclick="authSignOut()">'+u('b_signout')+'</button>'+
- '<div style="margin-top:6px;color:#3E4650;font-size:10px">build 47 \u00b7 tenants</div></div></aside>'+
+ '<div style="margin-top:6px;color:#3E4650;font-size:10px">build 50 \u00b7 sync</div></div></aside>'+
  '<div class="main"><div class="top"><h2>'+u('title_'+tab)+'</h2><span class="date">'+dow+' · '+hhmm(Date.now())+'</span>'+
  '<div class="tools">'+langSel+bell+'</div></div>'+counts+
  (online?'':'<div class="offline">Offline — '+queued+' change'+(queued===1?'':'s')+' waiting.</div>')+
@@ -6902,7 +6982,7 @@ var viaToken=readMemberLink();
 var booking=readBookingLink();
 var cameBack=readAuthRedirect();
 Promise.resolve(load()).then(function(){if(db&&db.settings&&db.settings.uiLang&&U[db.settings.uiLang])uiLang=db.settings.uiLang;
- if(cloud.on&&cloud.url&&cloud.secret){cloud.status='on';cloudPoll();cloudFetchPhotos()}
+ if(cloud.on&&cloud.url&&cloud.secret){cloud.status='on';cloudPollAdaptive();cloudFetchPhotos()}
  if(viaToken){signInWithToken();verifyWorkspace()}
  if(authUser&&!cameBack)matchAndEnter();
  if(invited&&pendingRole){
