@@ -348,6 +348,27 @@ var TIERS={
    ------------------------------------------------------------ */
 
 var FALLBACK_EN={
+ am_trade:'What it covers',am_anytrade:'Any work',
+
+ nav_assets:'Units & contracts',title_assets:'Units & contracts',
+ as_title:'Units on site',as_add:'Add a unit',as_units:'units',as_none:'No units logged.',
+ as_nonesub:'Log each air conditioner, water heater or machine you look after. Then the app tells you when each one is due.',
+ as_kind:'Type',as_where:'Which one',as_whereex:'Living room split, bedroom 2',
+ as_make:'Make',as_model:'Model',as_serial:'Serial number',as_installed:'Installed',
+ as_serviceevery:'Service every (months)',as_last:'last serviced',as_never:'never serviced',
+ as_months:'months',as_every:'every',as_visits:'visits',as_need:'Property and a name, please.',
+ as_added:'Unit logged.',as_note:'Setting the last service date starts the clock. Leave it empty if it has never been done.',
+ as_due:'Units due for service',as_plan:'Raise the visits',as_planned:'visits raised',
+ as_alreadyplanned:'Those properties already have a visit booked.',as_nonedue:'Nothing due yet.',
+ as_overdue:'days overdue',as_in:'in',as_onthisjob:'Which units were serviced',
+ am_title:'Annual contracts',am_add:'New contract',am_none:'No contracts.',
+ am_nonesub:'The Dubai model: the customer pays once a year for an agreed number of visits.',
+ am_from:'From',am_to:'To',am_visits:'Visits included',am_value:'Contract value',
+ am_covers:'What it covers',am_coversex:'6 splits, filters and gas included',
+ am_visitsused:'visits used',am_left:'left',am_exhausted:'contract used up',
+ am_end:'End it',am_added:'Contract added.',am_needcust:'Which customer?',
+ am_note:'Every finished job for this customer inside the dates counts as one visit.',
+
  td_title:'What work you do',td_note:'this sets the services and the checklists',
  td_which:'Which trade',td_now:'Now set up for',td_keepone:'Keep at least one trade.',
 
@@ -363,7 +384,7 @@ var FALLBACK_EN={
  mt_apptitle:'Cleaning operations',
  mt_privacy:'Nobody is listed here. Sign in with the code your office gave you, or open the link they sent you.',
  mt_warnlist:'This will list every cleaner and customer on this device\u2019s sign-in screen, to anyone who opens it. Only do this on a device you control. Continue?',
- l_cleaner:'Cleaner',
+ 
 
  mt_signin:'Sign in to your company',mt_signinsub:'Use the company id and the code your office gave you.',
  mt_yourcode:'Your personal code',mt_enter:'Sign in',mt_needboth:'Both the company id and your code, please.',
@@ -826,6 +847,27 @@ var FALLBACK_EN={
 var U={
  en:{name:'English',dir:'ltr'},
  ar:{name:'العربية',dir:'rtl',
+  am_trade:'ما يغطيه',am_anytrade:'أي عمل',
+
+  nav_assets:'الوحدات والعقود',title_assets:'الوحدات والعقود',
+  as_title:'الوحدات في الموقع',as_add:'إضافة وحدة',as_units:'وحدات',as_none:'لا توجد وحدات مسجلة.',
+  as_nonesub:'سجّل كل مكيف أو سخان أو جهاز تتولى صيانته، وسيخبرك التطبيق بموعد كل واحد.',
+  as_kind:'النوع',as_where:'أي وحدة',as_whereex:'سبليت الصالة، غرفة ٢',
+  as_make:'الماركة',as_model:'الموديل',as_serial:'الرقم التسلسلي',as_installed:'تاريخ التركيب',
+  as_serviceevery:'الصيانة كل (أشهر)',as_last:'آخر صيانة',as_never:'لم تُصان أبداً',
+  as_months:'أشهر',as_every:'كل',as_visits:'زيارات',as_need:'العقار والاسم مطلوبان.',
+  as_added:'سُجّلت الوحدة.',as_note:'تحديد آخر صيانة يبدأ العد. اتركه فارغاً إن لم تُصن من قبل.',
+  as_due:'وحدات تحتاج صيانة',as_plan:'إنشاء الزيارات',as_planned:'زيارات أُنشئت',
+  as_alreadyplanned:'هذه العقارات لديها زيارة محجوزة.',as_nonedue:'لا يوجد مستحق.',
+  as_overdue:'يوم تأخير',as_in:'خلال',as_onthisjob:'الوحدات التي تمت صيانتها',
+  am_title:'عقود سنوية',am_add:'عقد جديد',am_none:'لا توجد عقود.',
+  am_nonesub:'النموذج المعتاد في دبي: يدفع العميل سنوياً مقابل عدد زيارات متفق عليه.',
+  am_from:'من',am_to:'إلى',am_visits:'الزيارات المشمولة',am_value:'قيمة العقد',
+  am_covers:'ما يشمله',am_coversex:'٦ وحدات سبليت، الفلاتر والغاز',
+  am_visitsused:'زيارات مستخدمة',am_left:'متبقية',am_exhausted:'استُنفد العقد',
+  am_end:'إنهاء',am_added:'أُضيف العقد.',am_needcust:'أي عميل؟',
+  am_note:'كل مهمة منجزة لهذا العميل ضمن التواريخ تُحتسب زيارة.',
+
   td_title:'نوع العمل',td_note:'يحدد الخدمات وقوائم المهام',
   td_which:'أي مجال',td_now:'مضبوط الآن على',td_keepone:'أبقِ مجالاً واحداً على الأقل.',
 
@@ -3862,6 +3904,15 @@ function vCustomer(){
    (c.contact?'<span>'+esc(c.contact)+'</span>':'')+(c.phone?'<span>'+esc(c.phone)+'</span>':'')+
    (c.email?'<span>'+esc(c.email)+'</span>':'')+'</div></div></div>';
  h+='</div>';
+ var amc=amcFor(c.name);
+ if(amc){
+  h+='<div class="card"><div class="card-h">'+ic('repeat')+'<h3>'+u('am_title')+'</h3></div>'+
+   '<div class="row"><span class="dot'+(amcLeft(amc)?' run':' prob')+'"></span><div class="grow">'+
+   '<div class="name">'+amc.id+'</div><div class="meta"><span>'+amc.from+' → '+amc.to+'</span>'+
+   '<span>'+amcUsed(amc)+' / '+amc.visits+' '+u('am_visitsused')+'</span>'+
+   (amc.value?'<span>'+aed(amc.value)+'</span>':'')+'</div></div>'+
+   '<span class="mono" style="color:'+(amcLeft(amc)?'var(--done)':'var(--stop)')+'">'+amcLeft(amc)+' '+u('am_left')+'</span></div></div>';
+ }
  if((c.notes||[]).length){
   h+='<div class="card"><div class="card-h">'+ic('list')+'<h3>'+u('cn_title')+'</h3></div>';
   c.notes.forEach(function(n){
@@ -4318,6 +4369,179 @@ function readingsLine(j){
  if(r.gas)bits.push(r.gas+' psi');
  if(r.amps)bits.push(r.amps+' A');
  return bits.length?'<span>'+bits.join(' · ')+'</span>':'';
+}
+
+
+/* ============================================================
+   What air-conditioning work needs that cleaning does not:
+   the units themselves, a service schedule per unit, and the
+   annual contract that pays for it.
+   ============================================================ */
+function assets(){db.assets=db.assets||[];return db.assets}
+function assetsAt(prop){return assets().filter(function(a){return a.prop===prop})}
+function assetById(id){return assets().filter(function(a){return a.id===id})[0]||null}
+var ASSET_KINDS=['Split unit','Window unit','Ducted','Cassette','Chiller','FAHU','Water heater','Other'];
+
+function addAsset(prop){open={type:'asset',prop:prop||''};render()}
+function saveAsset(){
+ var prop=((document.getElementById('as-prop')||{}).value||'').trim();
+ var label=((document.getElementById('as-label')||{}).value||'').trim();
+ if(!prop||!label){toast(u('as_need'));return}
+ assets().unshift({id:'a'+Date.now(),prop:prop,label:label,
+  kind:(document.getElementById('as-kind')||{}).value||'Split unit',
+  make:((document.getElementById('as-make')||{}).value||'').trim(),
+  model:((document.getElementById('as-model')||{}).value||'').trim(),
+  serial:((document.getElementById('as-serial')||{}).value||'').trim(),
+  installed:(document.getElementById('as-installed')||{}).value||'',
+  every:parseInt((document.getElementById('as-every')||{}).value||'6',10)||6,
+  last:(document.getElementById('as-last')||{}).value||'',
+  notes:''});
+ open=null;save();render();toast(u('as_added'));
+}
+function removeAsset(id){snapshot(u('as_title'));db.assets=assets().filter(function(a){return a.id!==id});save();render()}
+function assetDue(a){
+ if(!a.last)return {due:true,when:null,over:0};
+ var next=addMonths(a.last,a.every||6);
+ var days=Math.round((new Date(next)-new Date(todayStr()))/86400000);
+ return {due:days<=14,when:next,over:days<0?-days:0,days:days};
+}
+function addMonths(dstr,n){
+ var p=dstr.split('-'),d=new Date(+p[0],+p[1]-1,+p[2]);
+ d.setMonth(d.getMonth()+n);return ymd(d);
+}
+function assetsDue(){
+ return assets().filter(function(a){return assetDue(a).due})
+  .sort(function(x,y){return (assetDue(x).days||0)-(assetDue(y).days||0)});
+}
+/* a service visit records which units were worked on */
+function serviceHistory(id){
+ return db.jobs.filter(function(j){return (j.assets||[]).indexOf(id)>-1&&j.finished})
+  .sort(function(a,b){return b.finished-a.finished});
+}
+function toggleJobAsset(jobId,assetId){
+ var j=job(jobId);if(!j)return;
+ j.assets=j.assets||[];
+ var i=j.assets.indexOf(assetId);
+ if(i>-1)j.assets.splice(i,1);else j.assets.push(assetId);
+ /* servicing a unit resets its clock */
+ if(j.finished){var a=assetById(assetId);if(a&&i===-1)a.last=jobDate(j)}
+ save();render();
+}
+/* raise the visits that are due, as jobs */
+function planMaintenance(){
+ if(!managerOnly())return;
+ var due=assetsDue();
+ if(!due.length){toast(u('as_nonedue'));return}
+ var byProp={};
+ due.forEach(function(a){(byProp[a.prop]=byProp[a.prop]||[]).push(a)});
+ var made=0;
+ Object.keys(byProp).forEach(function(prop){
+  var list=byProp[prop];
+  var already=db.jobs.some(function(j){
+   return j.prop===prop&&j.status==='sched'&&(j.assets||[]).length&&jobDate(j)>=todayStr();
+  });
+  if(already)return;
+  var cu=(db.jobs.filter(function(j){return j.prop===prop})[0]||{}).customer||'Direct';
+  db.jobs.push({id:db.seqJob++,prop:prop,customer:cu,service:'Service',trade:'ac',
+   tier:'standard',cleaner:null,team:[],time:'09:00',date:addDays(todayStr(),3),
+   price:Math.max(120,list.length*90),status:'sched',started:null,finished:null,
+   checked:[],photos:[],rating:0,signed:false,onWay:null,geo:null,
+   assets:list.map(function(a){return a.id})});
+  made++;
+ });
+ save();render();
+ toast(made?(made+' '+u('as_planned')):u('as_alreadyplanned'));
+}
+
+/* ---- the annual contract Dubai runs on ---- */
+function amcs(){db.amcs=db.amcs||[];return db.amcs}
+function amcFor(name){return amcs().filter(function(a){return a.customer===name&&a.active!==false})[0]||null}
+function amcUsed(a){
+ return db.jobs.filter(function(j){
+  if(j.customer!==a.customer||j.status!=='done')return false;
+  if(jobDate(j)<a.from||jobDate(j)>a.to)return false;
+  /* a contract covers one trade. A cleaning visit must not consume an
+     air-conditioning contract, and a free re-clean is not a visit at all. */
+  if(a.trade&&a.trade!=='any'&&tradeOf(j)!==a.trade)return false;
+  if(j.rework)return false;
+  return true;
+ }).length;
+}
+function amcLeft(a){return Math.max(0,a.visits-amcUsed(a))}
+function addAmc(){open={type:'amc'};render()}
+function saveAmc(){
+ var cu=(document.getElementById('am-cust')||{}).value||'';
+ if(!cu){toast(u('am_needcust'));return}
+ amcs().unshift({id:'AMC-'+(1000+amcs().length+1),customer:cu,
+  from:(document.getElementById('am-from')||{}).value||todayStr(),
+  to:(document.getElementById('am-to')||{}).value||addMonths(todayStr(),12),
+  trade:(document.getElementById('am-trade')||{}).value||'any',
+  visits:parseInt((document.getElementById('am-visits')||{}).value||'4',10)||4,
+  value:parseFloat((document.getElementById('am-value')||{}).value||'0')||0,
+  covers:((document.getElementById('am-covers')||{}).value||'').trim(),active:true});
+ open=null;save();render();toast(u('am_added'));
+}
+function endAmc(id){snapshot(u('am_title'));amcs().forEach(function(a){if(a.id===id)a.active=false});save();render()}
+function vAssets(){
+ var due=assetsDue();
+ var h='';
+ if(due.length){
+  h+='<div class="card alert"><div class="card-h">'+ic('alert')+'<h3 style="color:var(--late)">'+u('as_due')+'</h3>'+
+   '<div class="right"><button class="btn" onclick="planMaintenance()">'+u('as_plan')+'</button></div></div>';
+  due.forEach(function(a){
+   var d=assetDue(a);
+   h+='<div class="row"><span class="dot'+(d.over?' prob':' gold')+'"></span><div class="grow">'+
+    '<div class="name">'+esc(a.label)+'<span style="color:var(--faint);font-weight:400">'+esc(a.prop)+'</span></div>'+
+    '<div class="meta"><span>'+esc(a.kind)+'</span>'+
+    (a.last?'<span>'+u('as_last')+' '+a.last+'</span>':'<span style="color:var(--late)">'+u('as_never')+'</span>')+
+    (d.over?'<span style="color:var(--stop)">'+d.over+' '+u('as_overdue')+'</span>':
+      (d.days!=null?'<span>'+u('as_in')+' '+d.days+' '+u('dc_daysleft')+'</span>':''))+'</div></div></div>';
+  });
+  h+='</div>';
+ }
+ h+='<div class="card"><div class="card-h">'+ic('box')+'<h3>'+u('as_title')+'</h3><div class="right">'+
+  '<span style="font-size:11px;color:var(--faint)">'+assets().length+' '+u('as_units')+'</span>'+
+  '<button class="btn" onclick="addAsset(\'\')">'+u('as_add')+'</button></div></div>';
+ if(!assets().length)h+='<div class="empty"><b>'+u('as_none')+'</b>'+u('as_nonesub')+'</div>';
+ else {
+  var byProp={};
+  assets().forEach(function(a){(byProp[a.prop]=byProp[a.prop]||[]).push(a)});
+  Object.keys(byProp).sort().forEach(function(prop){
+   h+='<div class="row" style="background:#161A21"><div class="grow"><div class="name">'+esc(prop)+'</div>'+
+    '<div class="meta"><span>'+byProp[prop].length+' '+u('as_units')+'</span></div></div>'+
+    '<button class="btn ghost" onclick="addAsset(\''+jarg(prop)+'\')">'+u('b_add')+'</button></div>';
+   byProp[prop].forEach(function(a){
+    var hist=serviceHistory(a.id);
+    h+='<div class="row"><span class="dot"></span><div class="grow">'+
+     '<div class="name" style="font-weight:400">'+esc(a.label)+
+     '<span class="pill">'+esc(a.kind)+'</span></div>'+
+     '<div class="meta">'+(a.make?'<span>'+esc(a.make)+' '+esc(a.model||'')+'</span>':'')+
+     (a.serial?'<span class="id">'+esc(a.serial)+'</span>':'')+
+     '<span>'+u('as_every')+' '+a.every+' '+u('as_months')+'</span>'+
+     (hist.length?'<span>'+hist.length+' '+u('as_visits')+'</span>':'')+'</div></div>'+
+     '<button class="btn ghost" onclick="removeAsset(\''+a.id+'\')">'+u('b_remove')+'</button></div>';
+   });
+  });
+ }
+ h+='</div>';
+
+ h+='<div class="card"><div class="card-h">'+ic('repeat')+'<h3>'+u('am_title')+'</h3><div class="right">'+
+  '<button class="btn" onclick="addAmc()">'+u('am_add')+'</button></div></div>';
+ var live=amcs().filter(function(a){return a.active!==false});
+ if(!live.length)h+='<div class="empty"><b>'+u('am_none')+'</b>'+u('am_nonesub')+'</div>';
+ else live.forEach(function(a){
+  var left=amcLeft(a),used=amcUsed(a);
+  h+='<div class="row"><span class="dot'+(left?'':' prob')+'"></span><div class="grow">'+
+   '<div class="name">'+esc(a.customer)+'<span class="pill">'+a.id+'</span></div>'+
+   '<div class="meta"><span>'+used+' / '+a.visits+' '+u('am_visitsused')+'</span>'+
+   '<span>'+a.from+' → '+a.to+'</span>'+
+   (a.value?'<span>'+aed(a.value)+'</span>':'')+
+   (a.covers?'<span>'+esc(a.covers)+'</span>':'')+
+   (left?'':'<span style="color:var(--stop)">'+u('am_exhausted')+'</span>')+'</div></div>'+
+   '<span class="mono" style="color:'+(left?'var(--done)':'var(--stop)')+'">'+left+' '+u('am_left')+'</span>'+
+   '<button class="btn ghost" onclick="endAmc(\''+a.id+'\')">'+u('am_end')+'</button></div>';
+ });
+ return h+'</div>';
 }
 
 /* ---------------- manager ---------------- */
@@ -6095,6 +6319,7 @@ function completeJob(id){var j=job(id);if(!j)return;
  if(gaps.length&&!confirm(u('q_missingrooms')+' '+gaps.map(function(g){return T.en[g]}).join(', ')+'. '+u('q_anyway')))return;
  if(j.checked.length<cl.length&&!confirm((cl.length-j.checked.length)+' items not ticked. Finish anyway?'))return;
  j.status='done';j.finished=Date.now();
+ (j.assets||[]).forEach(function(aid){var a=assetById(aid);if(a)a.last=jobDate(j)});
  consumeFor(j);
  notify('done',{a:cleaner(j.cleaner).name.split(' ')[0],p:j.prop,d:dur(j.started,j.finished)});
  save();pushNow();render();toast(u('st_completed'))}
@@ -6977,6 +7202,39 @@ function drawModal(){
   body='<div style="display:flex;gap:12px">'+strip(before,u('cm_before'))+strip(after,u('cm_after'))+'</div>'+
    '<p style="font-size:11px;color:var(--faint);margin:11px 0 0">'+u('cm_note')+'</p>';
   foot='<button class="btn" onclick="closeModal()">'+u('b_close')+'</button>'}
+ else if(open.type==='asset'){
+  head=u('as_add');
+  body='<div class="two"><div class="field"><label for="as-prop">'+u('f_property')+'</label>'+
+   '<select id="as-prop">'+db.props.map(function(p){return '<option'+(open.prop===p.name?' selected':'')+'>'+esc(p.name)+'</option>'}).join('')+'</select></div>'+
+   '<div class="field"><label for="as-kind">'+u('as_kind')+'</label><select id="as-kind">'+
+   ASSET_KINDS.map(function(k){return '<option>'+k+'</option>'}).join('')+'</select></div></div>'+
+   '<div class="field"><label for="as-label">'+u('as_where')+'</label><input id="as-label" placeholder="'+u('as_whereex')+'"></div>'+
+   '<div class="two"><div class="field"><label for="as-make">'+u('as_make')+'</label><input id="as-make" placeholder="Daikin"></div>'+
+   '<div class="field"><label for="as-model">'+u('as_model')+'</label><input id="as-model"></div></div>'+
+   '<div class="two"><div class="field"><label for="as-serial">'+u('as_serial')+'</label><input id="as-serial"></div>'+
+   '<div class="field"><label for="as-installed">'+u('as_installed')+'</label><input id="as-installed" type="date"></div></div>'+
+   '<div class="two"><div class="field"><label for="as-every">'+u('as_serviceevery')+'</label>'+
+   '<select id="as-every"><option value="3">3</option><option value="6" selected>6</option><option value="12">12</option></select></div>'+
+   '<div class="field"><label for="as-last">'+u('as_last')+'</label><input id="as-last" type="date"></div></div>'+
+   '<p style="font-size:11px;color:var(--faint);margin:0">'+u('as_note')+'</p>';
+  foot='<button class="btn ghost" onclick="closeModal()">'+u('b_cancel')+'</button>'+
+   '<button class="btn" onclick="saveAsset()">'+u('b_add')+'</button>'}
+ else if(open.type==='amc'){
+  head=u('am_add');
+  body='<div class="field"><label for="am-cust">'+u('h_customer')+'</label><select id="am-cust">'+
+   customers().map(function(c){return '<option>'+esc(c.name)+'</option>'}).join('')+'</select></div>'+
+   '<div class="two"><div class="field"><label for="am-from">'+u('am_from')+'</label><input id="am-from" type="date" value="'+todayStr()+'"></div>'+
+   '<div class="field"><label for="am-to">'+u('am_to')+'</label><input id="am-to" type="date" value="'+addMonths(todayStr(),12)+'"></div></div>'+
+   '<div class="two"><div class="field"><label for="am-visits">'+u('am_visits')+'</label><input id="am-visits" type="number" value="4"></div>'+
+   '<div class="field"><label for="am-value">'+u('am_value')+'</label><input id="am-value" type="number"></div></div>'+
+   '<div class="field"><label for="am-trade">'+u('am_trade')+'</label><select id="am-trade">'+
+   '<option value="any">'+u('am_anytrade')+'</option>'+
+   Object.keys(TRADES).map(function(k){return '<option value="'+k+'">'+TRADES[k].name+'</option>'}).join('')+
+   '</select></div>'+
+   '<div class="field"><label for="am-covers">'+u('am_covers')+'</label><input id="am-covers" placeholder="'+u('am_coversex')+'"></div>'+
+   '<p style="font-size:11px;color:var(--faint);margin:0">'+u('am_note')+'</p>';
+  foot='<button class="btn ghost" onclick="closeModal()">'+u('b_cancel')+'</button>'+
+   '<button class="btn" onclick="saveAmc()">'+u('b_add')+'</button>'}
  else if(open.type==='bug'){
   head=u('bg_title');
   body='<p style="font-size:12px;color:var(--muted);margin:0 0 10px">'+u('bg_help')+'</p>'+
@@ -7048,6 +7306,15 @@ function drawModal(){
    iss.forEach(function(x){body+='<div class="kv"><span>'+esc(T.en[x.type])+'</span><span>'+esc(x.note)+'</span></div>'})}
   var rep='Cleaning report — '+j.prop+' ('+j.time+'). '+(j.finished?'Finished '+hhmm(j.finished)+', '+dur(j.started,j.finished)+' on site, ':'')+
    j.checked.length+'/'+cl.length+' items, '+ps.length+' photos.';
+  var av=assetsAt(j.prop);
+  if(av.length){
+   body+='<div style="border-top:1px solid var(--line);margin-top:11px;padding-top:11px">'+
+    '<div style="font-size:10.5px;color:var(--muted);margin-bottom:7px">'+u('as_onthisjob')+'</div>'+
+    '<div style="display:flex;gap:5px;flex-wrap:wrap">'+
+    av.map(function(a){var on=(j.assets||[]).indexOf(a.id)>-1;
+     return '<button class="btn '+(on?'':'ghost')+'" style="font-size:11px" onclick="toggleJobAsset('+j.id+',\''+a.id+'\')">'+
+      esc(a.label)+'</button>'}).join('')+'</div></div>';
+  }
   body+=etaBar(j);
   var pa=photoAreas(j),areaLine=Object.keys(pa).map(function(k){return T.en[k]+' '+pa[k]}).join(' · ');
   if(areaLine)body+='<p style="font-size:11px;color:var(--faint);margin:6px 0 0">'+esc(areaLine)+'</p>';
@@ -7085,7 +7352,7 @@ function drawModal(){
 
 var TABS={
  manager:[['today','Today','board'],['sales','Sales','zap'],['schedule','Schedule','clock'],['chat','Messages','wa'],['map','Map','pin'],['tasks','Quick tasks','zap'],['jobs','Jobs','list'],['routes','Routes','clock'],
-  ['contracts','Contracts','repeat'],['props','Properties','key'],['keys','Keys & kit','box'],['customers','Customers','users'],['team','Team','users'],['avail','Availability','clock'],['people','Leave & docs','users'],['safety','Safety','alert'],['issues','Problems','alert'],
+  ['contracts','Contracts','repeat'],['props','Properties','key'],['keys','Keys & kit','box'],['assets','Units & contracts','repeat'],['customers','Customers','users'],['team','Team','users'],['avail','Availability','clock'],['people','Leave & docs','users'],['safety','Safety','alert'],['issues','Problems','alert'],
   ['stock','Stock','box'],['invoices','Invoices','receipt'],['money','Billing','card'],['metrics','Metrics','board'],['feed','Activity','bell'],['settings','Settings','gear']],
  cleaner:[['myday','My job','board'],['pool','Open jobs','zap'],['chat','Messages','wa'],['ctasks','Quick tasks','zap'],['mine','My jobs','list'],['supplies','Supplies','box']],
  customer:[['portal','My cleaning','board'],['chat','Messages','wa']]};
@@ -7125,6 +7392,7 @@ function render(){
  list.forEach(function(tb){var b='';
   if(tb[0]==='issues'&&openIssues().length)b='<span class="cnt hot">'+openIssues().length+'</span>';
   if(tb[0]==='stock'&&lowStock().length)b='<span class="cnt hot">'+lowStock().length+'</span>';
+  if(tb[0]==='assets'&&assetsDue().length)b='<span class="cnt hot">'+assetsDue().length+'</span>';
   if(tb[0]==='people'&&expiringDocs().length)b='<span class="cnt hot">'+expiringDocs().length+'</span>';
   if(tb[0]==='safety'&&incidents().filter(function(x){return x.status==='open'}).length)
    b='<span class="cnt hot">'+incidents().filter(function(x){return x.status==='open'}).length+'</span>';
@@ -7159,7 +7427,7 @@ function render(){
   '<span style="margin-left:auto" class="mono">'+aed(L.reduce(function(s,j){return s+j.price},0)+taskRev)+' '+u('c_booked')+'</span></div>'}
  var body='';
  if(tab==='today')body=vToday();else if(tab==='pool')body=vPool();else if(tab==='find')body=vFind();else if(tab==='sales')body=vSales();else if(tab==='schedule')body=vSchedule();else if(tab==='chat')body=vChat();else if(tab==='map')body=vMap();else if(tab==='tasks')body=vTasks();else if(tab==='jobs')body=bulkBar()+vJobs();
- else if(tab==='routes')body=vRoutePlan()+vRoutes();else if(tab==='contracts')body=vContracts();else if(tab==='props')body=vProps();else if(tab==='keys')body=vKeys();else if(tab==='customers')body=(openCu?vCustomer():vCustomers());
+ else if(tab==='routes')body=vRoutePlan()+vRoutes();else if(tab==='contracts')body=vContracts();else if(tab==='props')body=vProps();else if(tab==='keys')body=vKeys();else if(tab==='assets')body=vAssets();else if(tab==='customers')body=(openCu?vCustomer():vCustomers());
  else if(tab==='team')body=vTeam()+vLeaderboard();else if(tab==='avail')body=vAvailability();else if(tab==='people')body=vPeople();else if(tab==='safety')body=vSafety();else if(tab==='issues')body=vIssues();else if(tab==='stock')body=vStock();
  else if(tab==='invoices')body=vInvoices();else if(tab==='money')body=vMoney();else if(tab==='metrics')body=vMetrics();else if(tab==='feed')body=vFeed();else if(tab==='myday')body=vMyDay();
  else if(tab==='supplies')body=vSupplies();else if(tab==='ctasks')body=vCleanerTasks();else if(tab==='mine')body=vMine();else if(tab==='portal')body=vPortal();else if(tab==='settings')body=vSettings();
@@ -7167,7 +7435,7 @@ function render(){
  var _sc=document.querySelector('.wrap');var _y=_sc?_sc.scrollTop:0;
  root.innerHTML='<div class="app" dir="'+(session.role==='cleaner'?'ltr':uiDir())+'"><aside class="side"><div class="co"><b>'+esc(db.company)+'</b><span>Dubai</span></div>'+
  '<nav>'+nav+'</nav><div class="side-foot">'+esc(who)+'<br><button onclick="authSignOut()">'+u('b_signout')+'</button>'+
- '<div style="margin-top:6px;color:#3E4650;font-size:10px">build 54 \u00b7 trades</div></div></aside>'+
+ '<div style="margin-top:6px;color:#3E4650;font-size:10px">build 56 \u00b7 contracts</div></div></aside>'+
  '<div class="main"><div class="top"><h2>'+u('title_'+tab)+'</h2><span class="date">'+dow+' · '+hhmm(Date.now())+'</span>'+
  '<div class="tools">'+langSel+bell+'</div></div>'+counts+
  (online?'':'<div class="offline">Offline — '+queued+' change'+(queued===1?'':'s')+' waiting.</div>')+
