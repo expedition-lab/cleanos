@@ -348,6 +348,16 @@ var TIERS={
    ------------------------------------------------------------ */
 
 var FALLBACK_EN={
+ td_title:'What work you do',td_note:'this sets the services and the checklists',
+ td_which:'Which trade',td_now:'Now set up for',td_keepone:'Keep at least one trade.',
+
+ gl_link:'Link an address',gl_linked_short:'Linked',
+ gl_ask:'Which email or phone number will they sign in with? Leave empty to unlink.',
+ gl_linked:'Linked. They can now sign in with Google or their phone from any device.',
+ gl_unlinked:'Unlinked.',
+
+ mt_mine:'This is my own device — show my team',
+
  wz_step:'Step',
 
  mt_apptitle:'Cleaning operations',
@@ -816,6 +826,16 @@ var FALLBACK_EN={
 var U={
  en:{name:'English',dir:'ltr'},
  ar:{name:'العربية',dir:'rtl',
+  td_title:'نوع العمل',td_note:'يحدد الخدمات وقوائم المهام',
+  td_which:'أي مجال',td_now:'مضبوط الآن على',td_keepone:'أبقِ مجالاً واحداً على الأقل.',
+
+  gl_link:'ربط عنوان',gl_linked_short:'مرتبط',
+  gl_ask:'ما البريد أو الرقم الذي سيدخل به؟ اتركه فارغاً لإلغاء الربط.',
+  gl_linked:'تم الربط. يمكنه الآن الدخول عبر جوجل أو هاتفه من أي جهاز.',
+  gl_unlinked:'أُلغي الربط.',
+
+  mt_mine:'هذا جهازي — أظهر فريقي',
+
   wz_step:'خطوة',
 
   mt_apptitle:'إدارة عمليات التنظيف',
@@ -1402,7 +1422,7 @@ var TASK_TYPES=[
  {id:'inspect',name:'Check the property over',fee:45,mins:25},
  {id:'pharmacy',name:'Pharmacy or shop run',fee:35,mins:25}];
 var T={
- en:{name:'English',dir:'ltr',tfrom:'From:',tto:'To:',tgo:'directions',troute:'the whole route',nogps:'This phone cannot give a location.',needgps:'Turn location on to clock in. It records where the day started.',gettingpos:'Finding you...',pinned:'(pinned)',myhours:'My hours this week',nohours:'No hours yet.',nohourssub:'Clock in when you start and they appear here.',inat:'in',outat:'out',stillon:'still on the clock',thisweek:'This week at your rate',onjobs:'Time on jobs',clockin:'Clock in',clockout:'Clock out',clockedin:'On the clock since',notclocked:'Not clocked in',coming:'Coming up',navigate:'Navigate there',openmap:'Open the map',nolocation:'No location saved for this property yet',today:'Today',jobs:'jobs',free:'Free',onjob:'On a job',start:'Start job',complete:'Complete job',
+ en:{name:'English',dir:'ltr',filters:'Filters cleaned or replaced',coils:'Coils cleaned',drainpan:'Drain pan cleaned',drainline:'Drain line flushed',gas:'Gas pressure checked',thermostat:'Thermostat tested',airflow:'Airflow checked',outdoor:'Outdoor unit cleaned',electrical:'Electrical connections checked',leaktest:'Leak test done',readings:'Readings',tempin:'Air in',tempout:'Air out',amps:'Current',tempdrop:'Temperature drop',weakcooling:'below 8, worth investigating',tfrom:'From:',tto:'To:',tgo:'directions',troute:'the whole route',nogps:'This phone cannot give a location.',needgps:'Turn location on to clock in. It records where the day started.',gettingpos:'Finding you...',pinned:'(pinned)',myhours:'My hours this week',nohours:'No hours yet.',nohourssub:'Clock in when you start and they appear here.',inat:'in',outat:'out',stillon:'still on the clock',thisweek:'This week at your rate',onjobs:'Time on jobs',clockin:'Clock in',clockout:'Clock out',clockedin:'On the clock since',notclocked:'Not clocked in',coming:'Coming up',navigate:'Navigate there',openmap:'Open the map',nolocation:'No location saved for this property yet',today:'Today',jobs:'jobs',free:'Free',onjob:'On a job',start:'Start job',complete:'Complete job',
  addphoto:'Add photo',problem:'Report problem',nothing:'Nothing left today',alldone:'All your jobs are done.',since:'since',
  ticked:'done',before:'before',after:'after',photos:'Photos',access:'Access',whatwrong:'What happened',send:'Send to manager',
  cancel:'Cancel',priority:'Priority',low:'Low',med:'Medium',high:'High',clean:'clean',startnote:'Starting records your arrival.',
@@ -1413,7 +1433,7 @@ var T={
  inside_fridge:'Inside the fridge',inside_oven:'Inside the oven',balcony:'Balcony',skirting:'Skirting boards',
  damage:'Damage',missing:'Missing item',broken:'Broken equipment',heavydirt:'Heavy dirt',noaccess:'No access',
  customer:'Customer issue',nosupplies:'Supplies missing',other:'Other'},
- ar:{name:'العربية',dir:'rtl',coming:'المهام القادمة',myhours:'ساعاتي هذا الأسبوع',tfrom:'من:',tto:'إلى:',tgo:'الاتجاهات',troute:'المسار كاملاً',nohours:'لا توجد ساعات بعد.',nohourssub:'سجّل الدخول عند البدء وستظهر هنا.',inat:'دخول',outat:'خروج',stillon:'ما زال على الدوام',thisweek:'هذا الأسبوع بأجرك',onjobs:'الوقت في المهام',clockin:'تسجيل الدخول',clockout:'تسجيل الخروج',clockedin:'على الدوام منذ',notclocked:'غير مسجّل',today:'اليوم',navigate:'الاتجاهات',openmap:'افتح الخريطة',nolocation:'لم يُحفظ موقع لهذا العقار بعد',jobs:'مهام',free:'متاح',onjob:'في مهمة',start:'ابدأ المهمة',complete:'إنهاء المهمة',
+ ar:{name:'العربية',dir:'rtl',coming:'المهام القادمة',filters:'تنظيف أو تبديل الفلاتر',coils:'تنظيف الملفات',drainpan:'تنظيف حوض التصريف',drainline:'تسليك خط التصريف',gas:'فحص ضغط الغاز',thermostat:'اختبار الثرموستات',airflow:'فحص تدفق الهواء',outdoor:'تنظيف الوحدة الخارجية',electrical:'فحص التوصيلات الكهربائية',leaktest:'اختبار التسريب',readings:'القراءات',tempin:'هواء داخل',tempout:'هواء خارج',amps:'التيار',tempdrop:'انخفاض الحرارة',weakcooling:'أقل من ٨، يستحق الفحص',myhours:'ساعاتي هذا الأسبوع',tfrom:'من:',tto:'إلى:',tgo:'الاتجاهات',troute:'المسار كاملاً',nohours:'لا توجد ساعات بعد.',nohourssub:'سجّل الدخول عند البدء وستظهر هنا.',inat:'دخول',outat:'خروج',stillon:'ما زال على الدوام',thisweek:'هذا الأسبوع بأجرك',onjobs:'الوقت في المهام',clockin:'تسجيل الدخول',clockout:'تسجيل الخروج',clockedin:'على الدوام منذ',notclocked:'غير مسجّل',today:'اليوم',navigate:'الاتجاهات',openmap:'افتح الخريطة',nolocation:'لم يُحفظ موقع لهذا العقار بعد',jobs:'مهام',free:'متاح',onjob:'في مهمة',start:'ابدأ المهمة',complete:'إنهاء المهمة',
  addphoto:'إضافة صورة',problem:'الإبلاغ عن مشكلة',nothing:'لا يوجد المزيد اليوم',alldone:'اكتملت جميع مهامك.',since:'منذ',
  ticked:'مكتمل',before:'قبل',after:'بعد',photos:'الصور',access:'الدخول',whatwrong:'ماذا حدث',send:'إرسال للمدير',
  cancel:'إلغاء',priority:'الأولوية',low:'منخفضة',med:'متوسطة',high:'عالية',clean:'تنظيف',startnote:'البدء يسجل وقت وصولك.',
@@ -1424,7 +1444,7 @@ var T={
  inside_fridge:'داخل الثلاجة',inside_oven:'داخل الفرن',balcony:'الشرفة',skirting:'الوزرات',
  damage:'ضرر',missing:'شيء مفقود',broken:'معدات معطلة',heavydirt:'اتساخ شديد',noaccess:'لا يوجد دخول',
  customer:'مشكلة مع العميل',nosupplies:'نقص مستلزمات',other:'أخرى'},
- hi:{name:'हिन्दी',dir:'ltr',coming:'आगे आने वाले',myhours:'इस हफ़्ते मेरे घंटे',tfrom:'से:',tto:'तक:',tgo:'रास्ता',troute:'पूरा रास्ता',nohours:'अभी कोई घंटे नहीं।',nohourssub:'शुरू करते समय हाज़िरी लगाएँ।',inat:'आए',outat:'गए',stillon:'अभी ड्यूटी पर',thisweek:'इस हफ़्ते आपकी दर पर',onjobs:'कामों में समय',clockin:'हाज़िरी लगाएँ',clockout:'छुट्टी',clockedin:'ड्यूटी पर से',notclocked:'हाज़िरी नहीं',today:'आज',navigate:'रास्ता देखें',openmap:'नक्शा खोलें',nolocation:'इस प्रॉपर्टी का स्थान अभी दर्ज नहीं है',jobs:'काम',free:'खाली',onjob:'काम पर',start:'काम शुरू करें',complete:'काम पूरा करें',
+ hi:{name:'हिन्दी',dir:'ltr',coming:'आगे आने वाले',filters:'फ़िल्टर साफ़ या बदले',coils:'कॉइल साफ़',drainpan:'ड्रेन पैन साफ़',drainline:'ड्रेन लाइन साफ़',gas:'गैस प्रेशर जाँचा',thermostat:'थर्मोस्टेट जाँचा',airflow:'हवा का बहाव जाँचा',outdoor:'बाहरी यूनिट साफ़',electrical:'बिजली कनेक्शन जाँचे',leaktest:'लीक टेस्ट',readings:'रीडिंग',tempin:'अंदर की हवा',tempout:'बाहर की हवा',amps:'करंट',tempdrop:'तापमान गिरावट',weakcooling:'८ से कम, जाँचना चाहिए',myhours:'इस हफ़्ते मेरे घंटे',tfrom:'से:',tto:'तक:',tgo:'रास्ता',troute:'पूरा रास्ता',nohours:'अभी कोई घंटे नहीं।',nohourssub:'शुरू करते समय हाज़िरी लगाएँ।',inat:'आए',outat:'गए',stillon:'अभी ड्यूटी पर',thisweek:'इस हफ़्ते आपकी दर पर',onjobs:'कामों में समय',clockin:'हाज़िरी लगाएँ',clockout:'छुट्टी',clockedin:'ड्यूटी पर से',notclocked:'हाज़िरी नहीं',today:'आज',navigate:'रास्ता देखें',openmap:'नक्शा खोलें',nolocation:'इस प्रॉपर्टी का स्थान अभी दर्ज नहीं है',jobs:'काम',free:'खाली',onjob:'काम पर',start:'काम शुरू करें',complete:'काम पूरा करें',
  addphoto:'फोटो जोड़ें',problem:'समस्या बताएं',nothing:'आज और कुछ नहीं',alldone:'सभी काम पूरे हैं।',since:'से',
  ticked:'पूरे',before:'पहले',after:'बाद',photos:'फोटो',access:'प्रवेश',whatwrong:'क्या हुआ',send:'मैनेजर को भेजें',
  cancel:'रद्द करें',priority:'प्राथमिकता',low:'कम',med:'मध्यम',high:'ज़्यादा',clean:'सफाई',startnote:'शुरू करने पर समय दर्ज होता है।',
@@ -1435,7 +1455,7 @@ var T={
  inside_fridge:'फ्रिज के अंदर',inside_oven:'ओवन के अंदर',balcony:'बालकनी',skirting:'स्कर्टिंग',
  damage:'नुकसान',missing:'गायब सामान',broken:'टूटा उपकरण',heavydirt:'बहुत गंदगी',noaccess:'अंदर नहीं जा सके',
  customer:'ग्राहक समस्या',nosupplies:'सामान खत्म',other:'अन्य'},
- ur:{name:'اردو',dir:'rtl',coming:'آنے والے کام',myhours:'اس ہفتے میرے گھنٹے',tfrom:'سے:',tto:'تک:',tgo:'راستہ',troute:'پورا راستہ',nohours:'ابھی کوئی گھنٹے نہیں۔',nohourssub:'شروع کرتے وقت حاضری لگائیں۔',inat:'آمد',outat:'روانگی',stillon:'ابھی ڈیوٹی پر',thisweek:'اس ہفتے آپ کی شرح پر',onjobs:'کاموں میں وقت',clockin:'حاضری لگائیں',clockout:'چھٹی',clockedin:'ڈیوٹی پر سے',notclocked:'حاضری نہیں',today:'آج',navigate:'راستہ دیکھیں',openmap:'نقشہ کھولیں',nolocation:'اس پراپرٹی کا مقام ابھی محفوظ نہیں',jobs:'کام',free:'فارغ',onjob:'کام پر',start:'کام شروع کریں',complete:'کام مکمل کریں',
+ ur:{name:'اردو',dir:'rtl',coming:'آنے والے کام',filters:'فلٹر صاف یا تبدیل',coils:'کوائل صاف',drainpan:'ڈرین پین صاف',drainline:'ڈرین لائن صاف',gas:'گیس پریشر چیک',thermostat:'تھرموسٹیٹ چیک',airflow:'ہوا کا بہاؤ چیک',outdoor:'بیرونی یونٹ صاف',electrical:'بجلی کے کنکشن چیک',leaktest:'لیک ٹیسٹ',readings:'ریڈنگ',tempin:'اندر کی ہوا',tempout:'باہر کی ہوا',amps:'کرنٹ',tempdrop:'درجہ حرارت کی کمی',weakcooling:'٨ سے کم، جانچ ضروری',myhours:'اس ہفتے میرے گھنٹے',tfrom:'سے:',tto:'تک:',tgo:'راستہ',troute:'پورا راستہ',nohours:'ابھی کوئی گھنٹے نہیں۔',nohourssub:'شروع کرتے وقت حاضری لگائیں۔',inat:'آمد',outat:'روانگی',stillon:'ابھی ڈیوٹی پر',thisweek:'اس ہفتے آپ کی شرح پر',onjobs:'کاموں میں وقت',clockin:'حاضری لگائیں',clockout:'چھٹی',clockedin:'ڈیوٹی پر سے',notclocked:'حاضری نہیں',today:'آج',navigate:'راستہ دیکھیں',openmap:'نقشہ کھولیں',nolocation:'اس پراپرٹی کا مقام ابھی محفوظ نہیں',jobs:'کام',free:'فارغ',onjob:'کام پر',start:'کام شروع کریں',complete:'کام مکمل کریں',
  addphoto:'تصویر شامل کریں',problem:'مسئلہ بتائیں',nothing:'آج اور کچھ نہیں',alldone:'تمام کام مکمل ہیں۔',since:'سے',
  ticked:'مکمل',before:'پہلے',after:'بعد',photos:'تصاویر',access:'داخلہ',whatwrong:'کیا ہوا',send:'مینیجر کو بھیجیں',
  cancel:'منسوخ',priority:'ترجیح',low:'کم',med:'درمیانہ',high:'زیادہ',clean:'صفائی',startnote:'شروع کرنے پر وقت درج ہوتا ہے۔',
@@ -1446,7 +1466,7 @@ var T={
  inside_fridge:'فرج کے اندر',inside_oven:'اوون کے اندر',balcony:'بالکنی',skirting:'اسکرٹنگ',
  damage:'نقصان',missing:'گمشدہ چیز',broken:'ٹوٹا سامان',heavydirt:'زیادہ گندگی',noaccess:'اندر نہیں جا سکے',
  customer:'گاہک کا مسئلہ',nosupplies:'سامان ختم',other:'دیگر'},
- tl:{name:'Tagalog',dir:'ltr',coming:'Mga susunod',myhours:'Oras ko ngayong linggo',tfrom:'Mula:',tto:'Papunta:',tgo:'direksyon',troute:'buong ruta',nohours:'Wala pang oras.',nohourssub:'Mag-clock in kapag nagsimula.',inat:'pasok',outat:'labas',stillon:'naka-clock in pa',thisweek:'Ngayong linggo sa rate mo',onjobs:'Oras sa trabaho',clockin:'Mag-clock in',clockout:'Mag-clock out',clockedin:'Naka-clock in mula',notclocked:'Hindi naka-clock in',today:'Ngayon',navigate:'Puntahan',openmap:'Buksan ang mapa',nolocation:'Wala pang lokasyon ang property na ito',jobs:'trabaho',free:'Bakante',onjob:'May trabaho',start:'Simulan',complete:'Tapusin',
+ tl:{name:'Tagalog',dir:'ltr',coming:'Mga susunod',filters:'Nalinis o napalitan ang filter',coils:'Nalinis ang coils',drainpan:'Nalinis ang drain pan',drainline:'Nalinis ang drain line',gas:'Nasuri ang gas pressure',thermostat:'Nasubukan ang thermostat',airflow:'Nasuri ang airflow',outdoor:'Nalinis ang outdoor unit',electrical:'Nasuri ang koneksyon',leaktest:'Leak test tapos',readings:'Mga sukat',tempin:'Papasok na hangin',tempout:'Palabas na hangin',amps:'Kuryente',tempdrop:'Bagsak ng temperatura',weakcooling:'wala pang 8, dapat suriin',myhours:'Oras ko ngayong linggo',tfrom:'Mula:',tto:'Papunta:',tgo:'direksyon',troute:'buong ruta',nohours:'Wala pang oras.',nohourssub:'Mag-clock in kapag nagsimula.',inat:'pasok',outat:'labas',stillon:'naka-clock in pa',thisweek:'Ngayong linggo sa rate mo',onjobs:'Oras sa trabaho',clockin:'Mag-clock in',clockout:'Mag-clock out',clockedin:'Naka-clock in mula',notclocked:'Hindi naka-clock in',today:'Ngayon',navigate:'Puntahan',openmap:'Buksan ang mapa',nolocation:'Wala pang lokasyon ang property na ito',jobs:'trabaho',free:'Bakante',onjob:'May trabaho',start:'Simulan',complete:'Tapusin',
  addphoto:'Magdagdag ng litrato',problem:'Mag-ulat ng problema',nothing:'Wala nang natitira',alldone:'Tapos na lahat.',since:'mula',
  ticked:'tapos',before:'bago',after:'pagkatapos',photos:'Litrato',access:'Pagpasok',whatwrong:'Ano ang nangyari',send:'Ipadala sa manager',
  cancel:'Kanselahin',priority:'Prayoridad',low:'Mababa',med:'Katamtaman',high:'Mataas',clean:'paglilinis',startnote:'Nakatala ang oras.',
@@ -1572,7 +1592,8 @@ function travel(a,b){var A=property(a),B=property(b);if(!A||!B)return null;
  return Math.max(5,Math.round(metres(A.lat,A.lng,B.lat,B.lng)/1000*2.2+6))}
 function checklistFor(j){
  var own=propChecklist(j.prop);
- return (own||CHECK_KEYS).concat(TIERS[j.tier||'standard'].extras);
+ var base=own||checkFor(tradeOf(j));
+ return base.concat(TIERS[j.tier||'standard'].extras);
 }
 function openIssues(){return db.issues.filter(function(i){return i.open})}
 function lowStock(){return db.stock.filter(function(s){return s.qty<s.min})}
@@ -1689,9 +1710,14 @@ function readAuthRedirect(){
  var m=h.match(/access_token=([^&]+)/);
  if(!m)return false;
  var token=decodeURIComponent(m[1]);
+ saveJwt(token);
  try{localStorage.setItem('cleanos:token',token)}catch(e){}
  if(history.replaceState)history.replaceState(null,'',location.pathname);
- fetchAuthUser(token);
+ /* first ask the database who this is; fall back to matching locally */
+ resolveMembership(function(mem){
+  if(mem)return enterAsMember(mem);
+  fetchAuthUser(token);
+ });
  return true;
 }
 function fetchAuthUser(token){
@@ -1733,11 +1759,12 @@ function otpVerify(){
  .then(function(r){return r.json()})
  .then(function(d){
    if(!d.access_token)throw new Error(d.msg||u('au_badcode'));
+   saveJwt(d.access_token);
    try{localStorage.setItem('cleanos:token',d.access_token)}catch(e){}
    authUser={id:(d.user&&d.user.id)||'',email:(d.user&&d.user.email)||'',phone:otpPhone};
    try{localStorage.setItem('cleanos:user',JSON.stringify(authUser))}catch(e){}
    otpPhase=null;otpCode='';
-   matchAndEnter();
+   resolveMembership(function(mem){if(mem)return enterAsMember(mem);matchAndEnter()});
  }).catch(function(e){toast(String(e.message||e))});
 }
 function otpSet(k,v){if(k==='phone')otpPhone=v;else otpCode=v}
@@ -1836,10 +1863,23 @@ function verifyWorkspace(cb){
  });
 }
 /* the office may hide the team list on a shared or public device */
+function ownerDevice(){
+ try{return localStorage.getItem('cleanos:owner')==='1'}catch(e){return false}
+}
 function showTeamOnDevice(){
- /* Nobody is listed unless the office deliberately turns it on for this
-    device. A sign-in screen must never advertise who works here. */
- try{return localStorage.getItem('cleanos:showteam')==='1'}catch(e){return false}
+ /* A device that created the company, and is not signed in through someone
+    else's link, belongs to the office. Listing the team there is not a leak,
+    it is the only way in. Everywhere else: nobody is listed. */
+ try{
+  var forced=localStorage.getItem('cleanos:showteam');
+  if(forced==='1')return true;
+  if(forced==='0')return false;
+  return ownerDevice()&&!memberToken;
+ }catch(e){return false}
+}
+function thisIsMyDevice(){
+ try{localStorage.setItem('cleanos:showteam','1')}catch(e){}
+ render();toast(u('mt_listshown'));
 }
 function toggleTeamList(){
  var on=showTeamOnDevice();
@@ -1870,6 +1910,64 @@ function vCodeEntry(){
   '</div></div></div>';
 }
 
+
+/* ============================================================
+   Signing in with Google from a device that knows nothing yet.
+   The database answers "who is this, and which company are they
+   in" — using the address inside their own verified token, so
+   nobody can ask about anyone else.
+   ============================================================ */
+var authJwt='';
+function saveJwt(t){authJwt=t||'';try{localStorage.setItem('cleanos:jwt',authJwt)}catch(e){}}
+function loadJwt(){try{authJwt=localStorage.getItem('cleanos:jwt')||''}catch(e){}}
+function jwtHeaders(){
+ return {'apikey':cloud.key,'Authorization':'Bearer '+authJwt,'Content-Type':'application/json'};
+}
+/* ask the database who the signed-in person is */
+function resolveMembership(cb){
+ if(!cloud.url||!cloud.key||!authJwt){cb&&cb(null);return}
+ fetch(cloudBase()+'/rpc/my_membership',{method:'POST',headers:jwtHeaders(),body:'{}'})
+ .then(function(r){return r.json()})
+ .then(function(rows){cb&&cb(rows&&rows[0]?rows[0]:null)})
+ .catch(function(){cb&&cb(null)});
+}
+function enterAsMember(m){
+ cloud.ws=m.workspace_id;cloud.on=true;cloud.status='on';
+ setCurrentWs(m.workspace_id);saveToken(m.token);cloudSaveCfg();
+ cloudPullThen(function(){
+  if(m.role==='manager')signIn('manager',null);
+  else if(m.role==='cleaner')signIn('cleaner',m.person_id);
+  else signIn('customer',m.person_id);
+  toast(u('au_welcome')+' '+(m.name||''));
+ });
+}
+/* pull the company down before showing anything, so the screen is not empty */
+function cloudPullThen(cb){
+ if(!cloud.on){cb&&cb();return}
+ fetch(cloudBase()+'/workspaces?id=eq.'+encodeURIComponent(cloud.ws)+'&select=rev,data',
+  {headers:memberHeaders()})
+ .then(function(r){return r.json()})
+ .then(function(rows){
+   if(rows&&rows[0]&&rows[0].data&&rows[0].data.jobs)cloudApply(rows[0]);
+   cloudPollAdaptive();cb&&cb();
+ }).catch(function(){cb&&cb()});
+}
+/* the office links a person to the address they will sign in with */
+function linkAddress(token,personId){
+ var v=prompt(u('gl_ask'));
+ if(v===null)return;
+ v=String(v).trim();
+ var body=(v.indexOf('@')>-1)?{email:v}:{phone:v.replace(/[^0-9+]/g,'')};
+ fetch(cloudBase()+'/members?token=eq.'+encodeURIComponent(token),
+  {method:'PATCH',headers:memberHeaders(),body:JSON.stringify(body)})
+ .then(function(r){
+   if(!r.ok)throw new Error('rejected');
+   memberList.forEach(function(m){if(m.token===token){m.email=body.email||m.email;m.phone=body.phone||m.phone}});
+   render();toast(v?u('gl_linked'):u('gl_unlinked'));
+ })
+ .catch(function(){toast(u('mb_failed'))});
+}
+
 /* ---------------- login ---------------- */
 function vLogin(){
  var named=showTeamOnDevice();
@@ -1882,6 +1980,8 @@ function vLogin(){
    '<button class="btn ghost" style="width:100%;padding:12px;margin-bottom:7px" onclick="otpOpen()">'+u('au_phonebtn')+'</button>'
    :'')+
   '<button class="btn ghost" style="width:100%;padding:12px" onclick="startWizard()">'+u('wz_start')+'</button>'+
+  (!named&&ownerDevice()?'<button class="btn ghost" style="width:100%;padding:12px;margin-top:7px" onclick="thisIsMyDevice()">'+
+    u('mt_mine')+'</button>':'')+
   '<p style="font-size:11px;color:var(--faint);margin:13px 0 0;text-align:center;line-height:1.5">'+
    u('mt_privacy')+'</p>';
  /* Only a device the office has deliberately marked as trusted lists people. */
@@ -1927,7 +2027,7 @@ function jobRow(j){
    '<span class="grow" onclick="openJob('+j.id+')" style="display:contents"></span>':'')+
  '<span class="dot '+dot+'"></span><div class="av">'+c.initials+'</div><div class="grow">'+
  '<div class="name">'+esc(j.prop)+tierPill(j)+'<span style="color:var(--faint);font-weight:400">'+esc(j.service)+'</span></div>'+
- '<div class="meta"><span class="id">'+j.id+'</span><span>'+esc(c.name)+((j.team&&j.team.length)?' +'+j.team.length:'')+'</span><span>'+(isToday(j)?'':dayName(jobDate(j))+' ')+j.time+'</span>'+
+ '<div class="meta"><span class="id">'+j.id+'</span>'+(multiTrade()?'<span>'+TRADES[tradeOf(j)].name+'</span>':'')+readingsLine(j)+'<span>'+esc(c.name)+((j.team&&j.team.length)?' +'+j.team.length:'')+'</span><span>'+(isToday(j)?'':dayName(jobDate(j))+' ')+j.time+'</span>'+
  (np?'<span>'+np+' photo'+(np===1?'':'s')+'</span>':'')+
  (j.geo?'<span>checked in '+j.geo.dist+'m away</span>':'')+
  (j.signed?'<span>signed '+j.rating+'★</span>':'')+'</div>'+
@@ -2057,14 +2157,15 @@ function generateOn(dstr){
    business: double-booking a cleaner, and jobs that need
    more than one person.
    ============================================================ */
-function estMins(service,tier){
- var base={'Standard':120,'Deep clean':210,'Move-out':270,'Turnover':150}[service]||120;
+function estMins(service,tier,trade){
+ var table=(TRADES[trade||trades()[0]]||TRADES.cleaning).mins;
+ var base=table[service]||120;
  if(tier==='premium')base=Math.round(base*1.25);
  return base;
 }
 function jobStart(j){var p=jobDate(j).split('-'),t=(j.time||'09:00').split(':');
  return new Date(+p[0],+p[1]-1,+p[2],+t[0],+t[1]).getTime()}
-function jobEnd(j){return jobStart(j)+estMins(j.service,j.tier)*MIN}
+function jobEnd(j){return jobStart(j)+estMins(j.service,j.tier,tradeOf(j))*MIN}
 function teamOf(j){return [j.cleaner].concat(j.team||[]).filter(Boolean)}
 function offDays(c){return c.off||[]}
 function isOff(cid,dstr){var c=cleaner(cid);return offDays(c).indexOf(dstr)>-1}
@@ -3524,7 +3625,10 @@ function wizFinish(){
   }
  });
  db.setup=false;
- wiz=null;open=null;save();render();
+ /* the person who just created the company is the office on this device */
+ try{localStorage.setItem('cleanos:owner','1')}catch(e){}
+ wiz=null;open=null;save();
+ signIn('manager',null);
  toast(u('wz_done'));
 }
 function vWizard(){
@@ -4146,6 +4250,74 @@ function pushNow(){
  if(!cloud.on)return;
  if(pushTimer){clearTimeout(pushTimer);pushTimer=null}
  cloudPushNow(true);
+}
+
+
+/* ============================================================
+   More than one trade.
+   The same operation — dispatch, proof, invoicing — works for
+   air conditioning as well as cleaning. What changes is the
+   service list, the checklist, and the readings taken on site.
+   ============================================================ */
+var TRADES={
+ cleaning:{name:'Cleaning',icon:'zap',
+  services:['Standard','Deep clean','Move-out','Turnover'],
+  check:['kitchen','bathrooms','bedrooms','living','floors','windows','dusting','bins','linen','supplies'],
+  mins:{'Standard':120,'Deep clean':210,'Move-out':270,'Turnover':150}},
+ ac:{name:'Air conditioning',icon:'box',
+  services:['Service','Deep clean','Gas top-up','Repair','Installation','Inspection'],
+  check:['filters','coils','drainpan','drainline','gas','thermostat','airflow','outdoor','electrical','leaktest'],
+  mins:{'Service':75,'Deep clean':150,'Gas top-up':60,'Repair':120,'Installation':240,'Inspection':45},
+  readings:true}
+};
+function trades(){
+ var t=S().trades;
+ if(!t||!t.length)return ['cleaning'];
+ return t.filter(function(x){return TRADES[x]});
+}
+function tradeOf(j){return (j&&j.trade&&TRADES[j.trade])?j.trade:trades()[0]}
+function multiTrade(){return trades().length>1}
+function servicesFor(tr){return (TRADES[tr]||TRADES.cleaning).services}
+function checkFor(tr){return (TRADES[tr]||TRADES.cleaning).check}
+function toggleTrade(k){
+ var t=trades().slice(),i=t.indexOf(k);
+ if(i>-1){if(t.length===1){toast(u('td_keepone'));return}t.splice(i,1)}
+ else t.push(k);
+ S().trades=t;save();render();
+ toast(u('td_now')+' '+t.map(function(x){return TRADES[x].name}).join(' + '));
+}
+/* readings an engineer takes on an air conditioning job */
+var READINGS=[['tempin','°C'],['tempout','°C'],['gas','psi'],['amps','A']];
+function setReading(id,k,v){
+ var j=job(id);if(!j)return;
+ j.readings=j.readings||{};
+ if(v==='')delete j.readings[k];else j.readings[k]=v;
+ save();
+}
+function readingsBlock(j){
+ if(!TRADES[tradeOf(j)].readings)return '';
+ var d=T[lang]||T.en,r=j.readings||{};
+ return '<div style="border-top:1px solid var(--line);margin-top:11px;padding-top:11px">'+
+  '<div style="font-size:10.5px;color:var(--muted);margin-bottom:7px">'+d.readings+'</div>'+
+  '<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">'+
+  READINGS.map(function(x){
+   return '<div class="field" style="margin:0"><label for="rd-'+x[0]+'">'+d[x[0]]+' ('+x[1]+')</label>'+
+    '<input id="rd-'+x[0]+'" type="number" step="0.1" value="'+esc(r[x[0]]||'')+'" '+
+    'oninput="setReading('+j.id+',\''+x[0]+'\',this.value)"></div>';
+  }).join('')+'</div>'+
+  ((r.tempin&&r.tempout)?'<p style="font-size:11.5px;color:var(--teal);margin:8px 0 0">'+
+    d.tempdrop+' '+(Math.round((r.tempin-r.tempout)*10)/10)+'°C'+
+    ((r.tempin-r.tempout)<8?' — '+d.weakcooling:'')+'</p>':'')+
+  '</div>';
+}
+function readingsLine(j){
+ var r=j.readings;
+ if(!r)return '';
+ var bits=[];
+ if(r.tempin&&r.tempout)bits.push('Δ'+(Math.round((r.tempin-r.tempout)*10)/10)+'°C');
+ if(r.gas)bits.push(r.gas+' psi');
+ if(r.amps)bits.push(r.amps+' A');
+ return bits.length?'<span>'+bits.join(' · ')+'</span>':'';
 }
 
 /* ---------------- manager ---------------- */
@@ -5013,6 +5185,7 @@ function vMyDay(){
  } else if(p){
   h+='<div class="geo warn">'+ic('pin')+' '+d.nolocation+'</div>';
  }
+ h+=readingsBlock(j);
  if(j.geo)h+='<div class="geo ok">'+ic('pin')+' Checked in '+j.geo.dist+'m from the property at '+hhmm(j.geo.at)+'</div>';
  if(!active){
   h+=(p&&p.lat?'<a class="btn ghost big" style="display:block;text-align:center;text-decoration:none;margin-bottom:8px" '+
@@ -5678,6 +5851,12 @@ function vSettings(){
  '<button class="btn red" onclick="eraseAll()">'+u('b_delete')+'</button></div></div>';
 
  h+='<div class="card alert"><div class="card-h"><h3 style="color:var(--red)">'+u('demo_controls')+'</h3></div>'+
+ '<div class="row"><div class="grow"><div class="name">'+u('td_title')+'</div>'+
+ '<div class="meta"><span>'+trades().map(function(t){return TRADES[t].name}).join(' + ')+'</span>'+
+ '<span>'+u('td_note')+'</span></div></div>'+
+ Object.keys(TRADES).map(function(k){
+   return '<button class="btn '+(trades().indexOf(k)>-1?'':'ghost')+'" onclick="toggleTrade(\''+k+'\')">'+
+   TRADES[k].name+'</button>'}).join('')+'</div>'+
  '<div class="row"><div class="grow"><div class="name">'+u('mt_device')+'</div>'+
  '<div class="meta"><span>'+(currentWs()?u('mt_setupfor')+' '+esc(currentWs()):u('mt_nows'))+'</span>'+
  '<span>'+(showTeamOnDevice()?u('mt_listshown'):u('mt_listhidden'))+'</span></div></div>'+
@@ -5691,8 +5870,11 @@ function vSettings(){
    return '<div class="row"><span class="dot'+(m.active?' run':' prob')+'"></span><div class="grow">'+
     '<div class="name">'+esc(m.name||m.person_id)+'<span class="pill">'+esc(m.role)+'</span>'+
     (m.active?'':'<span class="pill" style="color:var(--stop);border-color:#4A2226">'+u('mb_off')+'</span>')+'</div>'+
-    '<div class="meta"><span class="id">'+esc(m.person_id)+'</span></div></div>'+
-    (m.active?'<button class="btn ghost" onclick="copyMemberLink(\''+m.token+'\')">'+u('mb_link')+'</button>'+
+    '<div class="meta"><span class="id">'+esc(m.person_id)+'</span>'+
+     (m.email?'<span>'+esc(m.email)+'</span>':'')+(m.phone?'<span>'+esc(m.phone)+'</span>':'')+'</div></div>'+
+    (m.active?'<button class="btn ghost" onclick="linkAddress(\''+m.token+'\',\''+m.person_id+'\')">'+
+      (m.email||m.phone?u('gl_linked_short'):u('gl_link'))+'</button>'+
+      '<button class="btn ghost" onclick="copyMemberLink(\''+m.token+'\')">'+u('mb_link')+'</button>'+
       '<button class="btn ghost" onclick="revokeMember(\''+m.token+'\')">'+u('mb_revoke')+'</button>':'')+'</div>'
   }).join(''):'')+
  '<div class="row"><div class="grow"><div class="name">'+u('ph_title')+'</div>'+
@@ -5958,7 +6140,11 @@ function pickProp(name){
  var pr=property(name);
  jobForm.lat=pr&&pr.lat?pr.lat:null;jobForm.lng=pr&&pr.lng?pr.lng:null;
  if(prev){
-  jobForm.cust=prev.customer;jobForm.serv=prev.service;jobForm.cleaner=prev.cleaner;
+  jobForm.cust=prev.customer;
+  /* only reuse the service if it belongs to the trade being booked */
+  var tr=jobForm.trade||trades()[0];
+  if(servicesFor(tr).indexOf(prev.service)>-1)jobForm.serv=prev.service;
+  if(prev.trade&&!jobForm.trade)jobForm.trade=prev.trade;jobForm.cleaner=prev.cleaner;
   jobForm.time=prev.time;jobForm.tier=prev.tier||'standard';
   jobForm.price=Math.round(prev.price/(TIERS[prev.tier||'standard'].mult));
   jobForm.from=prev.id;
@@ -6032,7 +6218,8 @@ function saveJob(){
   if(av.bad&&!confirm(cleaner(f.cleaner).name+' — '+av.text+'. '+u('av_anyway')))return;
  }
  db.jobs.push({id:db.seqJob++,prop:name,customer:(f.cust||'').trim()||'Direct',date:f.date||todayStr(),
-  service:f.serv||'Standard',tier:tierPick||'standard',cleaner:f.cleaner||null,team:(f.team||[]).slice(),
+  service:f.serv||servicesFor(f.trade||trades()[0])[0],trade:f.trade||trades()[0],
+  tier:tierPick||'standard',cleaner:f.cleaner||null,team:(f.team||[]).slice(),
   time:(f.time||'').trim()||'09:00',price:Math.round(base*TIERS[tierPick||'standard'].mult),
   status:'sched',started:null,finished:null,checked:[],photos:[],rating:0,signed:false,onWay:null,geo:null});
  var pr=property(name);
@@ -6326,9 +6513,13 @@ function drawModal(){
    '<select id="j-cust" onchange="jf(\'cust\',this.value)">'+
    customers().map(function(cu){return '<option'+(jobForm.cust===cu.name?' selected':'')+'>'+esc(cu.name)+'</option>'}).join('')+
    '<option value="Direct"'+(jobForm.cust==='Direct'?' selected':'')+'>'+u('cu_direct')+'</option></select></div>'+
+   (multiTrade()?'<div class="field"><label>'+u('td_which')+'</label><div style="display:flex;gap:5px">'+
+     trades().map(function(tr){return '<button class="btn '+((jobForm.trade||trades()[0])===tr?'':'ghost')+
+      '" style="flex:1;font-size:11.5px" onclick="jf(\'trade\',\''+tr+'\');jf(\'serv\',servicesFor(\''+tr+'\')[0]);render()">'+
+      TRADES[tr].name+'</button>'}).join('')+'</div></div>':'')+
    '<div class="two"><div class="field"><label for="j-serv">'+u('f_service')+'</label>'+
    '<select id="j-serv" onchange="jf(\'serv\',this.value)">'+
-   ['Standard','Deep clean','Move-out','Turnover'].map(function(x){
+   servicesFor(jobForm.trade||trades()[0]).map(function(x){
      return '<option'+(jobForm.serv===x?' selected':'')+'>'+x+'</option>'}).join('')+'</select></div>'+
    '<div class="field"><label for="j-clean">'+u('f_cleaner')+'</label>'+
    '<select id="j-clean" onchange="jf(\'cleaner\',this.value);render()">'+
@@ -6976,7 +7167,7 @@ function render(){
  var _sc=document.querySelector('.wrap');var _y=_sc?_sc.scrollTop:0;
  root.innerHTML='<div class="app" dir="'+(session.role==='cleaner'?'ltr':uiDir())+'"><aside class="side"><div class="co"><b>'+esc(db.company)+'</b><span>Dubai</span></div>'+
  '<nav>'+nav+'</nav><div class="side-foot">'+esc(who)+'<br><button onclick="authSignOut()">'+u('b_signout')+'</button>'+
- '<div style="margin-top:6px;color:#3E4650;font-size:10px">build 51 \u00b7 setupfix</div></div></aside>'+
+ '<div style="margin-top:6px;color:#3E4650;font-size:10px">build 54 \u00b7 trades</div></div></aside>'+
  '<div class="main"><div class="top"><h2>'+u('title_'+tab)+'</h2><span class="date">'+dow+' · '+hhmm(Date.now())+'</span>'+
  '<div class="tools">'+langSel+bell+'</div></div>'+counts+
  (online?'':'<div class="offline">Offline — '+queued+' change'+(queued===1?'':'s')+' waiting.</div>')+
@@ -6991,6 +7182,7 @@ if(typeof window!=='undefined'&&window.addEventListener){
  if(typeof navigator!=='undefined'&&navigator.onLine===false)online=false}
 cloudLoadCfg();
 loadToken();
+loadJwt();
 loadPhotoIndex();
 loadAuthUser();
 var invited=readInvite();
