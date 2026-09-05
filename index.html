@@ -7,6 +7,14 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>Sparkle Facilities — operations</title>
 <style>
+.nav-group{width:100%;display:flex;align-items:center;gap:8px;background:none;border:0;
+ color:var(--faint);font:inherit;font-size:10.5px;font-weight:600;letter-spacing:.05em;
+ text-transform:uppercase;padding:11px 13px 5px;cursor:pointer;text-align:start}
+.nav-group:hover{color:var(--muted)}
+.nav-group .chev{margin-inline-start:auto;font-size:9px;opacity:.7}
+.nav-group.open{color:var(--muted)}
+.nav-group .cnt{margin-inline-start:auto}
+
 /* A full-width panel for the sign-in, setup and code screens.
    These were using .box, which is the 17px checklist tick — the whole
    form was being squeezed into a square. */
@@ -348,6 +356,17 @@ var TIERS={
    ------------------------------------------------------------ */
 
 var FALLBACK_EN={
+ req_title:'Ask your cleaning company for access',
+ req_sub:'They will confirm it and send you a link. Nothing is shared until they do.',
+ req_which:'Company id',req_yourname:'Your name or company',req_prop:'Which property',
+ req_send:'Send the request',req_need:'Company id and your name, please.',
+ req_sent:'Request sent.',req_sentsub:'The office will confirm it and send you your link.',
+ req_nocompany:'No company with that id.',req_failed:'Could not send it. Try again later.',
+ req_waiting:'Access requests',req_approve:'Approve',req_refuse:'Refuse',
+ req_approved:'Approved.',req_sendlink:'Send them their link from People and access.',
+ req_setpin:'Set them a PIN in Sign-in links.',
+ g_work:'Work',g_places:'Places',g_people:'People',g_money:'Money',g_admin:'Admin',
+
  am_trade:'What it covers',am_anytrade:'Any work',
 
  nav_assets:'Units & contracts',title_assets:'Units & contracts',
@@ -847,6 +866,17 @@ var FALLBACK_EN={
 var U={
  en:{name:'English',dir:'ltr'},
  ar:{name:'العربية',dir:'rtl',
+  req_title:'اطلب صلاحية من شركة التنظيف',
+  req_sub:'سيؤكدون الطلب ويرسلون لك رابطاً. لا يُشارك شيء قبل ذلك.',
+  req_which:'معرّف الشركة',req_yourname:'اسمك أو اسم شركتك',req_prop:'أي عقار',
+  req_send:'إرسال الطلب',req_need:'معرّف الشركة واسمك من فضلك.',
+  req_sent:'أُرسل الطلب.',req_sentsub:'سيؤكده المكتب ويرسل لك رابطك.',
+  req_nocompany:'لا توجد شركة بهذا المعرّف.',req_failed:'تعذّر الإرسال. حاول لاحقاً.',
+  req_waiting:'طلبات الصلاحية',req_approve:'موافقة',req_refuse:'رفض',
+  req_approved:'تمت الموافقة.',req_sendlink:'أرسل له رابطه من الأشخاص والصلاحيات.',
+  req_setpin:'اضبط له رمزاً في روابط الدخول.',
+  g_work:'العمل',g_places:'الأماكن',g_people:'الأشخاص',g_money:'المال',g_admin:'الإدارة',
+
   am_trade:'ما يغطيه',am_anytrade:'أي عمل',
 
   nav_assets:'الوحدات والعقود',title_assets:'الوحدات والعقود',
@@ -2021,7 +2051,8 @@ function vLogin(){
    '<button class="btn ghost" style="width:100%;padding:12px;margin-bottom:7px" onclick="googleSignIn()">'+u('au_google')+'</button>'+
    '<button class="btn ghost" style="width:100%;padding:12px;margin-bottom:7px" onclick="otpOpen()">'+u('au_phonebtn')+'</button>'
    :'')+
-  '<button class="btn ghost" style="width:100%;padding:12px" onclick="startWizard()">'+u('wz_start')+'</button>'+
+  '<button class="btn ghost" style="width:100%;padding:12px;margin-bottom:7px" onclick="openAskAccess()">'+u('req_title')+'</button>'+
+ '<button class="btn ghost" style="width:100%;padding:12px" onclick="startWizard()">'+u('wz_start')+'</button>'+
   (!named&&ownerDevice()?'<button class="btn ghost" style="width:100%;padding:12px;margin-top:7px" onclick="thisIsMyDevice()">'+
     u('mt_mine')+'</button>':'')+
   '<p style="font-size:11px;color:var(--faint);margin:13px 0 0;text-align:center;line-height:1.5">'+
@@ -4544,6 +4575,103 @@ function vAssets(){
  return h+'</div>';
 }
 
+
+/* ============================================================
+   A customer asking for their own access, and a sidebar that
+   does not present twenty-two things at once.
+   ============================================================ */
+function accessRequests(){db.accessReqs=db.accessReqs||[];return db.accessReqs}
+var askAccess=false;
+function openAskAccess(){askAccess=true;render()}
+function closeAskAccess(){askAccess=false;render()}
+function sendAccessRequest(){
+ var n=((document.getElementById('ar-name')||{}).value||'').trim();
+ var w=((document.getElementById('ar-ws')||{}).value||'').trim();
+ if(!n||!w){toast(u('req_need'));return}
+ var req={id:'AR'+Date.now(),at:Date.now(),name:n,ws:w,
+  email:((document.getElementById('ar-email')||{}).value||'').trim(),
+  phone:((document.getElementById('ar-phone')||{}).value||'').replace(/[^0-9+]/g,''),
+  prop:((document.getElementById('ar-prop')||{}).value||'').trim(),
+  status:'waiting'};
+ /* if this device can reach the company, file it there; otherwise keep it
+    locally so the office picks it up when they next open the app */
+ if(cloud.on&&cloud.url){
+  fetch(cloudBase()+'/workspaces?id=eq.'+encodeURIComponent(w)+'&select=rev,data',{headers:memberHeaders()})
+  .then(function(r){return r.json()})
+  .then(function(rows){
+    if(!rows||!rows[0]){toast(u('req_nocompany'));return}
+    var d=rows[0].data||{};
+    d.accessReqs=(d.accessReqs||[]);d.accessReqs.unshift(req);
+    return fetch(cloudBase()+'/workspaces?id=eq.'+encodeURIComponent(w),
+     {method:'PATCH',headers:memberHeaders(),body:JSON.stringify({data:d})})
+     .then(function(){askAccess='done';render()});
+  }).catch(function(){toast(u('req_failed'))});
+ } else {
+  accessRequests().unshift(req);save();askAccess='done';render();
+ }
+}
+function approveAccess(id){
+ if(!managerOnly())return;
+ var r=accessRequests().filter(function(x){return x.id===id})[0];if(!r)return;
+ var cu=customerByName(r.name);
+ if(!cu){
+  cu={id:'cu'+Date.now(),name:r.name,contact:'',phone:r.phone||'',email:r.email||''};
+  customers().push(cu);
+ }
+ if(r.prop&&!property(r.prop))
+  db.props.push({name:r.prop,area:'',lat:null,lng:null,key:'',park:'',wifi:'—',alarm:'—',note:''});
+ r.status='approved';
+ if(cloud.on)addMember(cu.id,'customer',cu.name);
+ save();render();
+ toast(u('req_approved')+' '+(cloud.on?u('req_sendlink'):u('req_setpin')));
+}
+function refuseAccess(id){
+ accessRequests().forEach(function(x){if(x.id===id)x.status='refused'});
+ save();render();
+}
+function waitingAccess(){return accessRequests().filter(function(x){return x.status==='waiting'})}
+function vAskAccess(){
+ if(askAccess==='done')
+  return '<div class="login"><div class="lbox"><div class="lhead"><h1>'+u('req_sent')+'</h1>'+
+   '<p>'+u('req_sentsub')+'</p></div>'+
+   '<button class="btn ghost big" style="width:100%" onclick="closeAskAccess()">'+u('b_close')+'</button></div></div>';
+ return '<div class="login"><div class="lbox"><div class="lhead"><h1>'+u('req_title')+'</h1>'+
+  '<p>'+u('req_sub')+'</p></div><div class="panel">'+
+  '<div class="field"><label for="ar-ws">'+u('req_which')+'</label><input id="ar-ws" placeholder="gulfshine"></div>'+
+  '<div class="field"><label for="ar-name">'+u('req_yourname')+'</label><input id="ar-name"></div>'+
+  '<div class="two"><div class="field"><label for="ar-email">'+u('f_email')+'</label><input id="ar-email"></div>'+
+  '<div class="field"><label for="ar-phone">'+u('f_whatsapp')+'</label><input id="ar-phone"></div></div>'+
+  '<div class="field"><label for="ar-prop">'+u('req_prop')+'</label><input id="ar-prop"></div>'+
+  '<button class="btn big" style="width:100%" onclick="sendAccessRequest()">'+u('req_send')+'</button>'+
+  '<button class="btn ghost big" style="width:100%;margin-top:8px" onclick="closeAskAccess()">'+u('b_cancel')+'</button>'+
+  '</div></div></div>';
+}
+
+/* ---- the sidebar, grouped instead of a wall of twenty-two ---- */
+var GROUPS=[
+ ['g_work',   ['today','sales','schedule','chat','map','jobs','routes','tasks']],
+ ['g_places', ['props','keys','assets','customers','contracts']],
+ ['g_people', ['team','avail','people','safety','issues']],
+ ['g_money',  ['stock','invoices','money','metrics']],
+ ['g_admin',  ['feed','settings']]
+];
+var openGroups=null;
+function groupOf(tabId){
+ for(var i=0;i<GROUPS.length;i++)if(GROUPS[i][1].indexOf(tabId)>-1)return GROUPS[i][0];
+ return 'g_work';
+}
+function groupsShown(){
+ if(openGroups)return openGroups;
+ try{var v=localStorage.getItem('cleanos:groups');if(v)return (openGroups=JSON.parse(v))}catch(e){}
+ return (openGroups={});
+}
+function toggleGroup(g){
+ var o=groupsShown();
+ o[g]=!o[g];
+ try{localStorage.setItem('cleanos:groups',JSON.stringify(o))}catch(e){}
+ render();
+}
+
 /* ---------------- manager ---------------- */
 function vToday(){
  var h=db.setup?'':setupSteps();
@@ -4572,6 +4700,18 @@ function vToday(){
    '<span style="font-size:11px;color:var(--faint)">'+km.toFixed(1)+' km · '+mins+' min</span>'+
    '<button class="btn" onclick="go(\'routes\')">'+u('ro_look')+'</button></div></div>'+
    '<div style="padding:10px 13px;font-size:12px;color:var(--muted)">'+u('ro_note')+'</div></div>';
+ }
+ if(waitingAccess().length){
+  h+='<div class="card"><div class="card-h">'+ic('users')+'<h3>'+u('req_waiting')+'</h3></div>';
+  waitingAccess().forEach(function(r){
+   h+='<div class="row"><span class="dot gold"></span><div class="grow">'+
+    '<div class="name">'+esc(r.name)+'</div><div class="meta">'+
+    (r.prop?'<span>'+esc(r.prop)+'</span>':'')+(r.email?'<span>'+esc(r.email)+'</span>':'')+
+    (r.phone?'<span>'+esc(r.phone)+'</span>':'')+'</div></div>'+
+    '<button class="btn" onclick="approveAccess(\''+r.id+'\')">'+u('req_approve')+'</button>'+
+    '<button class="btn ghost" onclick="refuseAccess(\''+r.id+'\')">'+u('req_refuse')+'</button></div>';
+  });
+  h+='</div>';
  }
  if(canUndo()){
   h+='<div class="card" style="border-color:#3A3320"><div class="card-h">'+ic('clock')+
@@ -7366,6 +7506,7 @@ function render(){
   '<h1>'+esc(db.company)+'</h1><p>'+u('pb_thanks')+'</p></div>'+
   '<div class="panel" style="font-size:13px;color:var(--muted)">'+u('pb_thankssub')+'</div></div></div>';return}
  if(publicBooking){root.innerHTML=vPublicBook();return}
+ if(askAccess){root.innerHTML=vAskAccess();return}
  if(codeEntry){root.innerHTML=vCodeEntry();return}
  /* the wizard is reached from the sign-in screen, so it has to be a full
     screen of its own — a modal is never drawn while nobody is signed in */
@@ -7388,7 +7529,7 @@ function render(){
  var ok=false;
  for(var i=0;i<list.length;i++)if(list[i][0]===tab)ok=true;
  if(!ok)tab=list[0][0];
- var nav='';
+ var nav='',navItems={},navBadge={};
  list.forEach(function(tb){var b='';
   if(tb[0]==='issues'&&openIssues().length)b='<span class="cnt hot">'+openIssues().length+'</span>';
   if(tb[0]==='stock'&&lowStock().length)b='<span class="cnt hot">'+lowStock().length+'</span>';
@@ -7402,7 +7543,23 @@ function render(){
   if(tb[0]==='chat'&&unreadTotal())b='<span class="cnt hot">'+unreadTotal()+'</span>';
   if(tb[0]==='pool'&&openJobs().length)b='<span class="cnt">'+openJobs().length+'</span>';
   if((tb[0]==='tasks'||tb[0]==='ctasks')&&openTasks().length)b='<span class="cnt">'+openTasks().length+'</span>';
-  nav+='<button class="nav-btn'+(tb[0]===tab?' on':'')+'" onclick="go(\''+tb[0]+'\')">'+ic(tb[2])+u('nav_'+tb[0])+b+'</button>'});
+  navItems[tb[0]]='<button class="nav-btn'+(tb[0]===tab?' on':'')+'" onclick="go(\''+tb[0]+'\')">'+ic(tb[2])+u('nav_'+tb[0])+b+'</button>';
+  navBadge[tb[0]]=b});
+ /* a manager has too many screens for one flat list. Group them, keep the
+    group you are in open, and let the rest fold away. */
+ if(session.role==='manager'){
+  var shown=groupsShown(),here=groupOf(tab);
+  GROUPS.forEach(function(g){
+   var ids=g[1].filter(function(id){return navItems[id]});
+   if(!ids.length)return;
+   var isOpen=(g[0]===here)||shown[g[0]];
+   var count=ids.filter(function(id){return navBadge[id]}).length;
+   nav+='<button class="nav-group'+(isOpen?' open':'')+'" onclick="toggleGroup(\''+g[0]+'\')">'+
+    u(g[0])+(count&&!isOpen?'<span class="cnt hot">'+count+'</span>':'')+
+    '<span class="chev">'+(isOpen?'&#9662;':'&#9656;')+'</span></button>';
+   if(isOpen)ids.forEach(function(id){nav+=navItems[id]});
+  });
+ } else list.forEach(function(tb){nav+=navItems[tb[0]]});
  var who=session.role==='cleaner'?cleaner(session.id).name:session.role==='customer'?'Marina Heights Tower':'Layla Mansour';
  var langSel='',selStyle='background:var(--bg);border:1px solid var(--line2);color:var(--muted);font-size:11.5px;padding:5px 7px;border-radius:6px;width:auto';
  if(session.role==='cleaner'){langSel='<select onchange="setLang(this.value)" style="'+selStyle+'">';
@@ -7435,7 +7592,7 @@ function render(){
  var _sc=document.querySelector('.wrap');var _y=_sc?_sc.scrollTop:0;
  root.innerHTML='<div class="app" dir="'+(session.role==='cleaner'?'ltr':uiDir())+'"><aside class="side"><div class="co"><b>'+esc(db.company)+'</b><span>Dubai</span></div>'+
  '<nav>'+nav+'</nav><div class="side-foot">'+esc(who)+'<br><button onclick="authSignOut()">'+u('b_signout')+'</button>'+
- '<div style="margin-top:6px;color:#3E4650;font-size:10px">build 56 \u00b7 contracts</div></div></aside>'+
+ '<div style="margin-top:6px;color:#3E4650;font-size:10px">build 57 \u00b7 grouped</div></div></aside>'+
  '<div class="main"><div class="top"><h2>'+u('title_'+tab)+'</h2><span class="date">'+dow+' · '+hhmm(Date.now())+'</span>'+
  '<div class="tools">'+langSel+bell+'</div></div>'+counts+
  (online?'':'<div class="offline">Offline — '+queued+' change'+(queued===1?'':'s')+' waiting.</div>')+
