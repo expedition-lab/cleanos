@@ -1,7 +1,7 @@
 /* Network first for the page so an update lands immediately.
    Cache fallback so it opens with no signal. */
-var CACHE = 'ops-v24-billing';
-var SHELL = ['./index.html', './manifest.json', './icon-192.png', './icon-512.png'];
+var CACHE = 'ops-fef41475';
+var SHELL = ["./index.html", "./app.css", "./i18n.js", "./core.js", "./sync.js", "./screens.js", "./data.js", "./boot.js", "./manifest.json", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener('install', function (e) {
   self.skipWaiting();
@@ -29,4 +29,23 @@ self.addEventListener('fetch', function (e) {
       });
     })
   );
+});
+
+/* Notifications that arrive while the app is closed. */
+self.addEventListener('push', function (e) {
+  var d = {};
+  try { d = e.data.json(); } catch (x) { d = { title: 'Update', text: e.data ? e.data.text() : '' }; }
+  e.waitUntil(self.registration.showNotification(d.title || 'Update', {
+    body: d.text || '', tag: d.tag || undefined,
+    icon: './icon-192.png', badge: './icon-192.png'
+  }));
+});
+
+/* Tapping one opens the app, or brings it forward if it is already open. */
+self.addEventListener('notificationclick', function (e) {
+  e.notification.close();
+  e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (list) {
+    for (var i = 0; i < list.length; i++) { if ('focus' in list[i]) return list[i].focus(); }
+    return self.clients.openWindow('./');
+  }));
 });
